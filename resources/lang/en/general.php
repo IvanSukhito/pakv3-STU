@@ -15,6 +15,8 @@ return [
     'email' => 'Email',
     'phone' => 'Phone',
     'image' => 'Image',
+    'register' => 'Register',
+    'register_staff' => 'Register Staff',
     'instagram' => 'Instagram',
     'pin' => 'PIN',
     'login' => 'Login',

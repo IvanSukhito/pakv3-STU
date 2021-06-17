@@ -37,6 +37,8 @@ Route::group(['prefix' => env('ADMIN_URL'), 'middleware' => ['web']], function (
                 'App\Http\Controllers\Admin\SettingsController' => 'settings',
                 'App\Http\Controllers\Admin\AdminController' => 'admin',
                 'App\Http\Controllers\Admin\RoleController' => 'role',
+
+                'App\Http\Controllers\Admin\RegisterController' => 'register',
             ];
 
             foreach ($listRouter as $controller => $linkName) {

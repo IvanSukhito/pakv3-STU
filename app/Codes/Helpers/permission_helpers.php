@@ -289,6 +289,28 @@ if ( ! function_exists('listAllMenu')) {
                     ]
                 ]
             ],
+            [
+                'name' => __('general.register'),
+                'icon' => '<i class="nav-icon fa fa-user"></i>',
+                'title' => __('general.register'),
+                'active' => [
+                    'admin.register.',
+                    'admin.register.staff'
+                   
+                ],
+                'type' => 2,
+                'data' => [
+                    [
+                        'name' => __('general.register_staff'),
+                        'title' => __('general.register_staff'),
+                        'active' => ['admin.settings.'],
+                        'route' => 'admin.settings.index',
+                        'key' => 'settings',
+                        'type' => 1
+                    ]
+                
+                ]
+            ],
 
         ];
     }
