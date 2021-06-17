@@ -19,6 +19,10 @@ class Role extends Model
     {
         $this->hasMany(Admin::class, 'role_id', 'id');
     }
+    public function getUser()
+    {
+        $this->hasMany(User::class, 'role_id', 'id');
+    }
 
     public static function boot()
     {
