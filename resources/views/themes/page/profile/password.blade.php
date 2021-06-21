@@ -14,7 +14,7 @@ else {
     ];
 }
 ?>
-@extends(env('ADMIN_TEMPLATE').'._base.layout')
+@extends(env('ADMIN_TEMPLATE').'._base.profile')
 
 @section('title', $formsTitle)
 
@@ -33,7 +33,6 @@ else {
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?php echo route('admin') ?>"><i class="fa fa-dashboard"></i> {{ __('general.home') }}</a></li>
                         <li class="breadcrumb-item"><a href="<?php echo route('admin.' . $thisRoute) ?>"> {{ __('general.title_home', ['field' => $thisLabel]) }}</a></li>
                         <li class="breadcrumb-item active">{{ $formsTitle }}</li>
                     </ol>
@@ -51,7 +50,7 @@ else {
                 </div>
                 <!-- /.card-header -->
 
-                {{ Form::open(['route' => ['admin.post_password'], 'method' => 'POST', 'files' => true, 'id'=>'form', 'role' => 'form'])  }}
+                {{ Form::open(['route' => ['admin.postPassword'], 'method' => 'POST', 'files' => true, 'id'=>'form', 'role' => 'form'])  }}
 
                 <div class="card-body">
                     @include(env('ADMIN_TEMPLATE').'._component.generate_forms')

@@ -17,7 +17,7 @@ class Kernel extends HttpKernel
         // \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
         \Fruitcake\Cors\HandleCors::class,
-        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        \App\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
@@ -40,20 +40,17 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:api',
+            'throttle:60,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
-        'adminLogin' => [
-            'adminLogin' => \App\Http\Middleware\AdminLogin::class
+        'admin_login' => [
+            'admin_login' => \App\Http\Middleware\AdminLogin::class
         ],
-        'adminHaveLogin' => [
-            'adminHaveLogin' => \App\Http\Middleware\AdminHaveLogin::class
+        'have_login_admin' => [
+            'have_login_admin' => \App\Http\Middleware\HaveLoginAdmin::class
         ],
-        'adminAccessPermission' => [
-            'adminAccessPermission' => \App\Http\Middleware\AdminAccessPermission::class
-        ],
-        'userLogin' => [
-            'userLogin' => \App\Http\Middleware\UserLogin::class
+        'admin_access_permission' => [
+            'admin_access_permission' => \App\Http\Middleware\AdminAccessPermission::class
         ],
     ];
 
@@ -67,6 +64,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
@@ -75,5 +73,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'preventBackHistory' => \App\Http\Middleware\PreventBackHistory::class,
+
     ];
 }

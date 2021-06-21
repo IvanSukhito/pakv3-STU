@@ -72,80 +72,54 @@ class _GlobalFunctionController extends Controller
             }
         }
 
-        foreach ($getListCollectData as $imageKey => $setData) {
+        foreach ($getListCollectData as $image_key => $setData) {
             if (in_array($setData['type'], ['image'])) {
-                unset($data[$imageKey]);
-                $image = $this->request->file($imageKey);
+                unset($data[$image_key]);
+                $image = $this->request->file($image_key);
                 if ($image) {
                     if ($image->getError() != 1) {
 
-                        $getFileName = $image->getClientOriginalName();
-                        $ext = explode('.', $getFileName);
+                        $get_file_name = $image->getClientOriginalName();
+                        $ext = explode('.', $get_file_name);
                         $ext = end($ext);
-                        $setFileName = md5(strtotime('now').rand(0, 100)).'.'.$ext;
+                        $set_file_name = md5(strtotime('now').rand(0, 100)).'.'.$ext;
                         $destinationPath = $setData['path'];
-                        if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'svg', 'gif'])) {
-                            if ($getData && strlen($getData->$imageKey) > 0 && is_file($destinationPath.$getData->$imageKey)) {
-                                unlink($destinationPath.$getData->$imageKey);
+                        if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png'])) {
+                            if ($getData && strlen($getData->$image_key) > 0 && is_file($destinationPath.$getData->$image_key)) {
+                                unlink($destinationPath.$getData->$image_key);
                             }
 
-                            $image->move($destinationPath, $setFileName);
+                            $image->move($destinationPath, $set_file_name);
+                            $img = Image::make('./'.$destinationPath.$set_file_name);
+                            $img->resize(800, null, function ($constraint) {
+                                $constraint->aspectRatio();
+                            });
+                            $img->save();
 
-                            $data[$imageKey] = $setFileName;
+                            $data[$image_key] = $set_file_name;
                         }
                     }
                 }
             }
-            else if (in_array($setData['type'], ['sound', 'video', 'file'])) {
-                unset($data[$imageKey]);
-                $image = $this->request->file($imageKey);
+            else if (in_array($setData['type'], ['video', 'file'])) {
+                unset($data[$image_key]);
+                $image = $this->request->file($image_key);
                 if ($image) {
                     if ($image->getError() != 1) {
-                        $getFileName = $image->getClientOriginalName();
-                        $ext = explode('.', $getFileName);
+                        $get_file_name = $image->getClientOriginalName();
+                        $ext = explode('.', $get_file_name);
                         $ext = end($ext);
-                        $setFileName = md5(strtotime('now').rand(0, 100)).'.'.$ext;
+                        $set_file_name = md5(strtotime('now').rand(0, 100)).'.'.$ext;
                         $destinationPath = $setData['path'];
 
-                        if ($getData && strlen($getData->$imageKey) > 0 && is_file($destinationPath.$getData->$imageKey)) {
-                            unlink($destinationPath.$getData->$imageKey);
+                        if ($getData && strlen($getData->$image_key) > 0 && is_file($destinationPath.$getData->$image_key)) {
+                            unlink($destinationPath.$getData->$image_key);
                         }
 
-                        $image->move($destinationPath, $setFileName);
-                        $data[$imageKey] = $setFileName;
+                        $image->move($destinationPath, $set_file_name);
+                        $data[$image_key] = $set_file_name;
                     }
                 }
-            }
-            else if (in_array($setData['type'], ['image_many'])) {
-                unset($data[$imageKey]);
-                $tempImage = [];
-                if ($this->request->file($imageKey)) {
-                    foreach ($this->request->file($imageKey) as $image) {
-                        if ($image) {
-                            if ($image->getError() != 1) {
-
-                                $getFileName = $image->getClientOriginalName();
-                                $ext = explode('.', $getFileName);
-                                $ext = end($ext);
-                                $setFileName = md5(strtotime('now').rand(0, 100)).'.'.$ext;
-                                $destinationPath = $setData['path'];
-                                if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'svg', 'gif'])) {
-                                    if ($getData && strlen($getData->$imageKey) > 0 && is_file($destinationPath.$getData->$imageKey)) {
-                                        unlink($destinationPath.$getData->$imageKey);
-                                    }
-
-                                    $image->move($destinationPath, $setFileName);
-
-                                    $tempImage[] = $setFileName;
-                                }
-                            }
-                        }
-                    }
-
-                    $data[$imageKey] = json_encode($tempImage);
-
-                }
-
             }
         }
 
@@ -155,13 +129,13 @@ class _GlobalFunctionController extends Controller
     protected function callPermission() {
         $this->permission = getDetailPermission($this->module);
 
-//        $this->permission = array(
-//            'create' => true,
-//            'edit' => true,
-//            'show' => true,
-//            'list' => true,
-//            'destroy' => true
-//        );
+        $this->permission = array(
+            'create' => true,
+            'edit' => true,
+            'show' => true,
+            'list' => true,
+            'destroy' => true
+        );
 
         $this->data['permission'] = $this->permission;
     }

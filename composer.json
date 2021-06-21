@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "doctrine/dbal": "^3.1",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -35,9 +36,11 @@
         },
         "files": [
             "app/Codes/Helpers/helpers.php",
-            "app/Codes/Helpers/api_send_email_helpers.php",
+            "app/Codes/Helpers/list_helpers.php",
+            "app/Codes/Helpers/google_helpers.php",
+            "app/Codes/Helpers/api_mail_helpers.php",
             "app/Codes/Helpers/permission_helpers.php",
-            "app/Codes/Helpers/list_helpers.php"
+            "app/Codes/Helpers/list_helpers_html.php"
         ]
     },
     "autoload-dev": {

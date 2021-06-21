@@ -5,7 +5,7 @@ foreach ($fieldExtra as $extraKey => $extraVal) {
 }
 $attribute['id'] = $fieldName;
 $attribute['multiple'] = 'true';
-$attribute['class'] = 'form-control tagging';
+$attribute['class'] = 'form-control tagging '.$fieldClass;
 if ($errors->has($fieldName)) {
     $attribute['class'] .= ' is-invalid';
 }
@@ -16,7 +16,7 @@ if (is_string($fieldValue) && strlen($fieldValue) > 0) {
     $fieldValue = explode(',', $fieldValue);
 }
 ?>
-<div class="form-group">
+<div class="form-group  {{ $fieldClassParent }}">
     <label for="{{$fieldName}}">{{ __($fieldLang) }} {{ $fieldRequired == 1 ? ' *' : '' }}</label>
     {{ Form::select($fieldName.'[]', $listFieldName, old($fieldName, $fieldValue), $attribute) }}
     @if(isset($fieldMessage)) <span class="small">{!! $fieldMessage !!}</span> @endif

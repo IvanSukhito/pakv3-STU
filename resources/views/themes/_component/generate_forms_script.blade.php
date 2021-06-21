@@ -6,8 +6,20 @@
                 autoParagraph: true,
                 allowedContent: true,
                 extraAllowedContent: '*(*);*{*};*[*]{*};div(class);span(class);h5[*]',
-                extraPlugins: 'justify,format,colorbutton,font,smiley'
+                extraPlugins: 'justify,format,colorbutton,font,smiley',
+                filebrowserBrowseUrl: '/assets/themes/js/ckeditor/plugins/ckfinder/ckfinder.html',
+                filebrowserUploadUrl: '/assets/themes/js/ckeditor/plugins/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&_token={{csrf_token()}}'
             });
+        });
+
+        $('.dateyear').datepicker({
+            format: 'yyyy',
+            weekStart:1,
+            keyboardNavigation: false,
+            viewMode: "years",
+            minViewMode: "years",
+            todayHighlight: true,
+            autoclose: true
         });
 
         $('.datemonthyear').datepicker({
@@ -71,35 +83,6 @@
             rightAlign: true
         });
     });
-
-    function add_image(curr) {
-        let $getInput = $(curr).parent().find('div.upload-image').children();
-        let $clone = '';
-        $.each($getInput, function(index, item) {
-            $clone = $(item).clone().val("");
-        });
-        $(curr).parent().find('div.upload-image').append($clone);
-        return false;
-    }
-
-    function remove_image(curr) {
-        let ListId = '';
-        let storageData = $(curr).data('storage');
-        let removeId = $(curr).data('id');
-        $.each($(curr).parent().parent().find('div.showing-image'), function(index, item) {
-            if (parseInt(removeId) !== parseInt($(item).data('id'))) {
-                if (ListId.length <= 0) {
-                    ListId += $(item).data('id');
-                }
-                else {
-                    ListId += ',' + $(item).data('id');
-                }
-            }
-        });
-        $(curr).parent().remove();
-        $("#" + storageData).val(ListId);
-        return false;
-    }
 
     function removeFormatMoney(money) {
         if (typeof money !== "undefined") {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\AccessLogin;
 use App\Codes\Models\Role;
+use App\Codes\Models\Staffs;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -29,21 +30,40 @@ class AccessAdminController extends Controller
     public function postLogin()
     {
         $this->validate($this->request, [
-            'username' => 'required',
+            'username' => 'required|max:191',
             'password' => 'required'
+        ], [
+            'username.required' => 'NIP harus di isi',
+            'username.max' => 'NIP terlalu panjang',
+            'password.required' => 'Password harus di isi'
         ]);
 
         $user = $this->accessLogin->cekLogin($this->request->get('username'),
-            $this->request->get('password'), 'Admin', 'username', 'password', ['status'=>1]);
+            $this->request->get('password'), 'Users', 'username', ['status'=>1]);
         if ($user) {
-            $getRole = Role::where('id', $user->role_id)->first();
-            $getPermissionData = isset($getRole) ? json_decode($getRole->permission_data, TRUE) : null;
-
             session()->flush();
-            session()->put('admin_id', $user->id);
-            session()->put('admin_name', $user->name);
-            session()->put('admin_role', $user->role_id);
-            session()->put('admin_super_admin', isset($getPermissionData['super_admin']) ? 1 : 0);
+            session()->put(env('APP_NAME').'admin_id', $user->id);
+            session()->put(env('APP_NAME').'admin_name', $user->name);
+
+            $getSuperAdmin = $user->superadmin;
+            $getPerancang = 0;
+            $getAtasan = 0;
+            $getSekretariat = 0;
+            $getTimPenilai = 0;
+            $getStaff = Staffs::where('user_id', $user->id)->first();
+            if ($getStaff) {
+                $getPerancang = $getStaff->perancang;
+                $getAtasan = $getStaff->atasan;
+                $getSekretariat = $getStaff->sekretariat;
+                $getTimPenilai = $getStaff->tim_penilai;
+            }
+
+            session()->put(env('APP_NAME').'admin_super_admin', $getSuperAdmin);
+            session()->put(env('APP_NAME').'admin_perancang', $getPerancang);
+            session()->put(env('APP_NAME').'admin_atasan', $getAtasan);
+            session()->put(env('APP_NAME').'admin_sekretariat', $getSekretariat);
+            session()->put(env('APP_NAME').'admin_tim_penilai', $getTimPenilai);
+
             try {
                 session_start();
                 $_SESSION['set_login_ck_editor'] = 1;
@@ -52,7 +72,7 @@ class AccessAdminController extends Controller
 
             }
 
-            return redirect()->route('admin');
+            return redirect()->route('admin.portal');
         }
         else {
             return redirect()->back()->withInput()->withErrors(
@@ -77,5 +97,7 @@ class AccessAdminController extends Controller
 
         return redirect()->route('admin.login');
     }
+
+
 
 }

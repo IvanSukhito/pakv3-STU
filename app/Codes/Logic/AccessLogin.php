@@ -13,11 +13,10 @@ class AccessLogin
      * @param $password
      * @param $model
      * @param string $key
-     * @param string $keyPass
      * @param array $setWhere
      * @return bool
      */
-    public function cekLogin($email, $password, $model, $key = 'email', $keyPass = 'password', $setWhere = array())
+    public function cekLogin($email, $password, $model, $key = 'email', $setWhere = array())
     {
         $getModel = 'App\Codes\Models\\' . $model;
 
@@ -37,8 +36,8 @@ class AccessLogin
         $getUser = $getUser->first();
 
         if($getUser) {
-            $checkPassword = app('hash')->check($password, $getUser->$keyPass);
-            if($checkPassword) {
+            $check_password = app('hash')->check($password, $getUser->password);
+            if($check_password) {
                 return $getUser;
             }
         }

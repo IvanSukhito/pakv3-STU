@@ -13,7 +13,6 @@ class _CrudParentController extends _GlobalFunctionController
     protected $listView;
     protected $masterId;
     protected $crud;
-    protected $rootRoute;
     protected $parentModel;
     protected $parentRoute;
     protected $parentId;
@@ -26,12 +25,10 @@ class _CrudParentController extends _GlobalFunctionController
      * @param $route
      * @param $model
      * @param $module
-     * @param $parent
      * @param $passing
      * @param $master_id
      */
-    public function __construct(Request $request, $title, $route, $model, $module, $parent, $passing, $masterId = 'id',
-                                $envTemplate = 'ADMIN_TEMPLATE', $rootRoute = 'admin')
+    public function __construct(Request $request, $title, $route, $model, $module, $parent, $passing, $master_id = 'id')
     {
         $this->request = $request;
         $this->crud = new _CRUD($model);
@@ -42,18 +39,17 @@ class _CrudParentController extends _GlobalFunctionController
 
         $this->passingData = generatePassingData($passing);
 
-        $this->masterId = $masterId;
+        $this->masterId = $master_id;
         $this->route = $route;
         $this->model = 'App\Codes\Models\\' . $model;
         $this->module = $module;
-        $this->rootRoute = $rootRoute;
 
         $this->listView = [
-            'index' => env($envTemplate).'._general_parent.list',
-            'dataTable' => env($envTemplate).'._general_parent.list_button',
-            'create' => env($envTemplate).'._general_parent.forms',
-            'show' => env($envTemplate).'._general_parent.forms',
-            'edit' => env($envTemplate).'._general_parent.forms'
+            'index' => env('ADMIN_TEMPLATE').'._general_parent.list',
+            'dataTable' => env('ADMIN_TEMPLATE').'._general_parent.list_button',
+            'create' => env('ADMIN_TEMPLATE').'._general_parent.forms',
+            'show' => env('ADMIN_TEMPLATE').'._general_parent.forms',
+            'edit' => env('ADMIN_TEMPLATE').'._general_parent.forms'
         ];
 
         $this->data = [
@@ -283,31 +279,6 @@ class _CrudParentController extends _GlobalFunctionController
         }
 
         $data = $this->getCollectedData($getListCollectData, $viewType, $data, $getData);
-
-        foreach ($getListCollectData as $key => $val) {
-            if($val['type'] == 'image_many') {
-                $getStorage = [];
-                if ($this->request->get($key.'_storage')) {
-                    $getStorage = explode(',', $this->request->get($key.'_storage')) ?? [];
-                }
-                $getOldData = json_decode($getData->$key, true);
-                $tempData = [];
-                if ($getOldData) {
-                    foreach ($getOldData as $index => $value) {
-                        if (in_array($index, $getStorage)) {
-                            $tempData[] = $value;
-                        }
-                    }
-                }
-
-                if (isset($data[$key])) {
-                    foreach (json_decode($data[$key], true) as $index => $value) {
-                        $tempData[] = $value;
-                    }
-                }
-                $data[$key] = json_encode($tempData);
-            }
-        }
 
         $getData = $this->crud->update($data, $id);
 
