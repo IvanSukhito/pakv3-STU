@@ -641,6 +641,7 @@ class StaffController extends _CrudController
                 $setValidateArray['address'] = '';
                 $setValidateArray['birthdate'] = '';
                 $setValidateArray['pob'] = '';
+                $setValidateArray['unit_kerja_id'] = 'required|numeric';
                 $setValidateArray['jabatan_perancang_id'] = 'required|numeric';
                 $setValidateArray['golongan_id'] = 'required|numeric';
                 $setValidateArray['tmt_golongan'] = '';
