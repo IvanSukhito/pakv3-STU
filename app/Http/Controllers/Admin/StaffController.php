@@ -641,7 +641,7 @@ class StaffController extends _CrudController
                 $setValidateArray['address'] = '';
                 $setValidateArray['birthdate'] = '';
                 $setValidateArray['pob'] = '';
-                $setValidateArray['unit_kerja_id'] = 'required|numeric';
+                 $setValidateArray['unit_kerja_id'] = 'required|numeric';
                 $setValidateArray['jabatan_perancang_id'] = 'required|numeric';
                 $setValidateArray['golongan_id'] = 'required|numeric';
                 $setValidateArray['tmt_golongan'] = '';
@@ -713,7 +713,8 @@ class StaffController extends _CrudController
         if ($getData->jenjang_perancang_id != 6) {
             $jk = $data['gender_id'] == 1 ? '01' : '02';
             $thn_diangkat = $data['tahun_diangkat'];
-            $getData->register_id = $id.'-'.$jk.'-'.$thn_diangkat;
+            //$getData->register_id = $id.'-'.$jk.'-'.$thn_diangkat;
+            $getData->register_id = $user->id;
             $getData->save();
         }
 

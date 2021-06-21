@@ -389,6 +389,7 @@ class UserRegisteredController extends _CrudController
 
         $staff = new Staffs();
         $staff->user_id = $user->id;
+        $staff->register_id = $user->id;
         $staff->user_register_id = $id;
         $staff->unit_kerja_id = $this->request->get('unit_kerja_id'); 
         $staff->name = $this->request->get('name');
@@ -403,8 +404,12 @@ class UserRegisteredController extends _CrudController
         $unit_kerja->save();
 
         $user_register = UserRegister::where('id', $id)->update([
-            'create_staff_status' => 1,
+            
+            'unit_kerja_id' => $this->request->get('unit_kerja_id'),
+            'create_staff_status' => 1
+            
         ]);
+       
 
 
 //        foreach ($setValidateArray as $key => $value) {
