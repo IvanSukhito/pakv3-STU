@@ -358,6 +358,7 @@ class UserRegisteredController extends _CrudController
             'username' => 'required|min:3|unique:users,username',
             'email' => 'required|min:3|unique:users,email',
             'password' => 'required',
+            'unit_kerja_id' => 'required',
 
         ];
 
@@ -382,12 +383,14 @@ class UserRegisteredController extends _CrudController
         $user->password = bcrypt($this->request->get('password'));
         $user->email = $this->request->get('email');
         $user->status = $this->request->get('status');
+        $user->superadmin = 0;
         $user->save();
 
 
         $staff = new Staffs();
         $staff->user_id = $user->id;
         $staff->user_register_id = $id;
+        $staff->unit_kerja_id = $this->request->get('unit_kerja_id'); 
         $staff->name = $this->request->get('name');
         $staff->top = intval($this->request->get('top')) == 1 ? 1 : 0;
         $staff->perancang = intval($this->request->get('perancang')) == 1 ? 1 : 0;

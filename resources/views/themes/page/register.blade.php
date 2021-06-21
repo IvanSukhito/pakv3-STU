@@ -112,7 +112,7 @@
                     </div>
                     <div class="form-group">
                         <label class="text"><b>Nomer HP</b></label>
-                        <input type="text" name="no_hp" class="form-control" placeholder="Format no Hp : 0855xxxxxxxx " value="{{ old('address') }}">
+                        <input type="text" name="telp" class="form-control" placeholder="Format no Hp : 0855xxxxxxxx " value="{{ old('telp') }}">
                     </div>
                     <div class="form-group">
                         <label class="text"><b>Email</b></label>

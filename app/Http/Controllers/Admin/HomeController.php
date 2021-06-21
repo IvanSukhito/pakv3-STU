@@ -459,14 +459,14 @@ class HomeController extends Controller
 
         $this->validate($this->request, [
             'name' => 'required',
-            'no_hp' => 'required|numeric|regex:/^(08\d+)/|unique:user_register,address',
+            'telp' => 'required|numeric|regex:/^(08\d+)/|unique:user_register,telp',
             'email' => 'required|email|unique:user_register,email,',
             'fileDokumen' => 'required',
             'fileDokumenLampiran' => 'required',
 
         ], [
             'name.required' => 'Nama harus di isi',
-            'no_hp.required' => 'Nomer HP harus diisi',
+            'telp.required' => 'Nomer HP harus diisi',
             'email.required' => 'Email harus diisi',
             'fileDokumen.required' => 'Surat permohonan tidak boleh kosong',
             'fileDokumenLampiran.required' => 'Dokumen Terlampir tidak boleh kosong',
@@ -478,7 +478,7 @@ class HomeController extends Controller
 
 
         $name = $this->request->get('name');
-        $noHp = $this->request->get('no_hp');
+        $telp = $this->request->get('telp');
         $email = $this->request->get('email');
         $unit_kerja_id = $this->request->get('unit_kerja_id');
 
@@ -500,7 +500,7 @@ class HomeController extends Controller
 
         $userRegister = new UserRegister;
         $userRegister->name = $name;
-        $userRegister->address = $noHp;
+        $userRegister->telp = $telp;
         $userRegister->email = $email;
         $userRegister->status = 0;
         $userRegister->file = $nama_file;
