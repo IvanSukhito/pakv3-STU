@@ -13,11 +13,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>{{ __('general.title_home', ['field' => $thisLabel]) }} - {{ $parent->name }}</h1>
+                    <h1>{{ __('general.title_home', ['field' => $thisLabel]) }}</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?php echo route('admin.profile') ?>"><i class="fa fa-user"></i> {{ __('general.profile') }}</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo route('admin') ?>"><i class="fa fa-dashboard"></i> {{ __('general.home') }}</a></li>
                         <li class="breadcrumb-item"><a href="<?php echo route('admin.'.$thisParentRoute.'.index') ?>"> {{ $parent->name }}</a></li>
                         <li class="breadcrumb-item active">{{ __('general.title_home', ['field' => $thisLabel]) }}</li>
                     </ol>
@@ -76,10 +76,10 @@
         function actionData(link, method) {
 
             if(confirm('{{ __('general.ask_delete') }}')) {
-                let test_split = link.split('/');
+                let linkSplit = link.split('/');
                 let url = '';
-                for(let i=3; i<test_split.length; i++) {
-                    url += '/'+test_split[i];
+                for(let i=3; i<linkSplit.length; i++) {
+                    url += '/'+linkSplit[i];
                 }
 
                 jQuery.ajax({

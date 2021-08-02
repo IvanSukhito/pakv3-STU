@@ -26,15 +26,10 @@ else {
 @section('script-top')
     @parent
     <script>
-        let getUrlCkEditorFull = '{{ asset('assets/js/ckeditor/') }}';
-        let getSplit = getUrlCkEditorFull.split('/');
-        let getUrlCkEditor = '';
-        for(let i=3; i<getSplit.length; i++) {
-            getUrlCkEditor += '/'+getSplit[i];
-        }
-        CKEDITOR_BASEPATH = getUrlCkEditor + '/';
+        CKEDITOR_BASEPATH = '/assets/js/ckeditor/';
     </script>
 @stop
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -45,7 +40,7 @@ else {
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?php echo route('admin.profile') ?>"><i class="fa fa-user"></i> {{ __('general.profile') }}</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo route('admin') ?>"><i class="fa fa-dashboard"></i> {{ __('general.home') }}</a></li>
                         <li class="breadcrumb-item"><a href="<?php echo route('admin.'.$thisParentRoute.'.index') ?>"> {{ $parent->name }}</a></li>
                         <li class="breadcrumb-item"><a href="<?php echo route('admin.' . $thisRoute . '.index', $parentId) ?>"> {{ __('general.title_home', ['field' => $thisLabel]) }}</a></li>
                         <li class="breadcrumb-item active">{{ $formsTitle }}</li>

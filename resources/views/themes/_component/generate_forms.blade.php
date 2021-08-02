@@ -1,19 +1,14 @@
 @foreach($passing as $fieldName => $fieldData)
     <?php
         $fieldValue = isset($data->$fieldName) ? $data->$fieldName : null;
-        if ($fieldValue == null) {
-            $fieldValue = isset($fieldData['value']) ? $fieldData['value'] : null;
-        }
         $listPassing = [
             'fieldName' => $fieldName,
             'fieldLang' => __($fieldData['lang']),
             'fieldRequired' => isset($fieldData['validation'][$viewType]) && in_array('required', explode('|', $fieldData['validation'][$viewType])) ? 1 : 0,
             'fieldValue' => $fieldValue,
-            'fieldMessage' => $fieldData['message'],
-            'fieldClass' => $fieldData['class'],
-            'fieldClassParent' => $fieldData['classParent'],
-            'path' => $fieldData['path'],
-            'addAttribute' => $addAttribute,
+            'fieldMessage'=>$fieldData['message'],
+            'path'=>$fieldData['path'],
+            'addAttribute'=>$addAttribute,
             'fieldExtra' => isset($fieldData['extra'][$viewType]) ? $fieldData['extra'][$viewType] : [],
             'viewType' => $viewType
         ];
