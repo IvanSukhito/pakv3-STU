@@ -16,7 +16,7 @@ class CreateUnitKerjaTable extends Migration
         Schema::create('unit_kerja', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
-            $table->tinyInteger('status')->length(4)->default(1);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }

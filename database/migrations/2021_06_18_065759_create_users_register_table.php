@@ -19,7 +19,7 @@ class CreateUsersRegisterTable extends Migration
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->string('telp')->nullable();
-            $table->tinyInteger('status')->length(4)->default(1);
+            $table->tinyInteger('status')->default(1);
             $table->integer('create_staff_status')->default(0);
             $table->text('file')->nullable();
             $table->text('dokumen_lampiran')->nullable();
