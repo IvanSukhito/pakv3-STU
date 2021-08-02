@@ -98,8 +98,9 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
             });
             $router->get('report', 'Admin\ReportController@index')->name('admin.report');
 
-            $router->get('portal', 'Admin\HomeController@portal')->name('admin.portal');
-            $router->get('data-informasi', 'Admin\HomeController@dataInformasi')->name('admin.dataInformasi');
+            //$router->get('portal', 'Admin\HomeController@portal')->name('admin.portal');
+            $router->get('portal', ['uses'=>'Admin\HomeController@portal'])->name('admin.portal');
+            $router->get('data-informasi', ['uses' => 'Admin\HomeController@dataInformasi'])->name('admin.dataInformasi');
         });
 
     });

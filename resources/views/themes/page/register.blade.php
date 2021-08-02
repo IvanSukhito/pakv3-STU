@@ -147,7 +147,7 @@
                     </div>
                     </form>
 {{--                    {{ Form::close() }}--}}
-                    <div class="copy-text">PAK-V3</div>
+                    <div class="copy-text">2020@PAK</div>
                 </div>
                 <div class="col-sm-12 col-md-8 banner-sec" style="background-color: rgba(0, 0, 0, 0.9);">
 

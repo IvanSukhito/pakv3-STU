@@ -1,6 +1,6 @@
 @extends('themes._base.login')
 
-@section('title', __('general.register'))
+@section('title', __('general.login'))
 
 @section('css')
     @parent
@@ -96,42 +96,15 @@
                     <h2 class="text-center" style="margin-top: 40px;">
                         <img width="200px" height="" src="{{ asset('assets/images/e74ec2ba411c70834dbcf3dbc50a5ad6e86585af.png') }}">
                     </h2>
-                    <form method="POST" action="{{route('admin.post.register')}}" enctype="multipart/form-data">
-                        {{ csrf_field() }}
+                    {{ Form::open(['route'=>'admin.login.post','role'=>'form', 'id'=>'form', 'class'=>'login-form', 'novalidate'=>'novalidate'])  }}
                     <div class="form-group">
-                        <label class="text"><b>Nama</b></label>
-                        <input type="text" name="name" class="form-control" placeholder="Masukan Nama Anda" value="{{ old('name') }}">
+                        <label class="text"><b>Username</b></label>
+                        {{ Form::text('username', old('username'), ['id'=>'username', 'name'=>'username', 'placeholder'=>'Masukan username Anda', 'class'=>'form-control']) }}
                     </div>
                     <div class="form-group">
-                        <label class="text"><b>Nama Instansi</b></label>
-                        <select name="unit_kerja_id" id="unit_kerja_id" class="form-control select2">
-                            @foreach($listData['unit_kerja_id'] as $key => $val)
-                            <option value="{{ $key }}">{{ $val }}</option>
-                            @endforeach
-                        </select>
+                        <label class="text"><b>Kata Sandi</b></label>
+                        {{ Form::password('password', ['id'=>'password', 'name'=>'password', 'placeholder'=>'Masukan Kata Sandi Anda', 'class'=>'form-control']) }}
                     </div>
-                    <div class="form-group">
-                        <label class="text"><b>Nomer HP</b></label>
-                        <input type="text" name="no_hp" class="form-control" placeholder="Format no Hp : 0855xxxxxxxx " value="{{ old('address') }}">
-                    </div>
-                    <div class="form-group">
-                        <label class="text"><b>Email</b></label>
-                        <input type="email" name="email" class="form-control" placeholder="Masukan Email anda" value="{{ old('email') }}" >
-                    </div>
-                    <div class="form-group">
-                        <label class="file"><b>Surat Permohonan</b></label>
-                        <input type="file" name="fileDokumen" class="form-control"  value="{{ old('file') }}">
-                    </div>
-                    <div class="form-group">
-                        <label class="file"><b>Dokumen Lampiran</b></label>
-                        <input type="file" name="fileDokumenLampiran" class="form-control"  value="{{ old('dokumen_lampiran') }}">
-                    </div>
-{{--                    <select class="form-control" id="status" name="status" data-live-search="true" style="width:100%">--}}
-{{--                        <option value=""> --Silahkan Pilih Status-- </option>--}}
-{{--                            <option value="1">Pending</option>--}}
-{{--                            <option value="2">Di proses</option>--}}
-{{--                            <option value="3">Selesai</option>--}}
-{{--                    </select>--}}
                     @if($errors->any())
                         @foreach ($errors->all() as $error)
                             <div class="form-group">
@@ -140,17 +113,20 @@
                         @endforeach
                     @endif
                     <div class="form-group">
-                        <button type="submit" class="btn btn-3">Daftar</button>
+                        <button type="submit" class="btn btn-3">Masuk</button>
+                        <a href="{{ URL::route('admin.get.register') }}" class="btn btn-3"> Mendaftar </a>
                     </div>
                     <div class="form-group" style="text-align: center;">
-                        <a style="font-size: 18px;color:#03ee59;padding-left:5px;text-align:right !important;width:100%;" href="{{route('admin.login')}}"><b style="text-align: right;">Sudah punya akun? Klik Disini</b></a>
+                        <a style="font-size: 18px;color:#03ee59;padding-left:5px;text-align:right !important;width:100%;" href="mailto:help.eperancang@gmail.com"><b style="text-align: right;">Butuh Bantuan? Klik Disini</b></a>
                     </div>
-                    </form>
-{{--                    {{ Form::close() }}--}}
-                    <div class="copy-text">PAK-V3</div>
+                    {{ Form::close() }}
+                    <div class="copy-text">2020@PAK</div>
                 </div>
                 <div class="col-sm-12 col-md-8 banner-sec" style="background-color: rgba(0, 0, 0, 0.9);">
-
+                    <div class="banner-text" style="padding-left: 10%;padding-right: 10%;margin: auto;vertical-align: middle;bottom:30%;">
+                        <h1 style="font-size: 90px;color: #FFF;font-weight: 600;">Lihat Data Perancang</h1>
+                        <a style="font-size: 18px;color:#03ee59;padding-left:5px;text-align:right !important;width:100%;" href="{{ route('admin.dataPerancang') }}"><b style="text-align: right;">Lihat Data Perancang >>></b></a>
+                    </div>
                 </div>
             </div>
         </div>

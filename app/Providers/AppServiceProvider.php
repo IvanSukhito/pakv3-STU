@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +26,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app['request']->server->set('HTTPS', $this->app->environment() != 'local');
+        config(['app.locale' => 'id']);
+	    Carbon::setLocale('id');
     }
 }

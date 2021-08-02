@@ -19,6 +19,7 @@ class UserRegisteredController extends _CrudController
                 'create' => 0,
                 'edit' => 0,
                 'show' => 0
+
             ],
             'name' => [
                 'validate' => [
@@ -391,7 +392,7 @@ class UserRegisteredController extends _CrudController
         $staff->user_id = $user->id;
         $staff->register_id = $user->id;
         $staff->user_register_id = $id;
-        $staff->unit_kerja_id = $this->request->get('unit_kerja_id'); 
+        $staff->unit_kerja_id = $this->request->get('unit_kerja_id');
         $staff->name = $this->request->get('name');
         $staff->top = intval($this->request->get('top')) == 1 ? 1 : 0;
         $staff->perancang = intval($this->request->get('perancang')) == 1 ? 1 : 0;
@@ -404,12 +405,12 @@ class UserRegisteredController extends _CrudController
         $unit_kerja->save();
 
         $user_register = UserRegister::where('id', $id)->update([
-            
+
             'unit_kerja_id' => $this->request->get('unit_kerja_id'),
             'create_staff_status' => 1
-            
+
         ]);
-       
+
 
 
 //        foreach ($setValidateArray as $key => $value) {
