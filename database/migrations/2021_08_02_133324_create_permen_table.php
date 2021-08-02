@@ -15,7 +15,6 @@ class CreatePermenTable extends Migration
     {
         Schema::create('permen', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('ms_kegiatan_id')->nullable();
             $table->text('name')->nullable();
             $table->date('tanggal_start')->nullable();
             $table->date('tanggal_end')->nullable();
