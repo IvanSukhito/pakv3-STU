@@ -29,11 +29,15 @@ class CreateUsersTable extends Migration
             $table->string('alamat_kantor')->nullable();
             $table->integer('jenis_kelamin')->default(1);
             $table->string('tempat_lahir')->nullable();
-            $table->date('masa_penilaian_terakhir')->nullable();
+            $table->date('tmt_kenaikan_jenjang_terakhir')->nullable();
+            $table->date('kenaikan_jenjang_terakhir')->nullable();
+            $table->date('masa_penilaian_terakhir_awal')->nullable();
+            $table->date('masa_penilaian_terakhir_akhir')->nullable();
+            $table->date('tahun_diangkat')->nullable();
             $table->date('tahun_pelaksanaan_diklat')->nullable();
             $table->date('tanggal_pak_terakhir')->nullable();
             $table->string('alasan')->nullable();
-            $table->string('angka_kredit_terakhir')->nullable();
+            $table->decimal('angka_kredit_terakhir')->nullable();
             $table->string('nomor_pak_terakhir')->nullable();
             $table->unsignedBigInteger('role_id')->default(0);
             $table->dateTime('last_login')->nullable();

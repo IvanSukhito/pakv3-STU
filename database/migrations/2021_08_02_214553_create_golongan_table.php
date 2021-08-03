@@ -16,6 +16,7 @@ class CreateGolonganTable extends Migration
         Schema::create('golongan', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }

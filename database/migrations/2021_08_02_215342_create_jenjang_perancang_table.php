@@ -16,6 +16,7 @@ class CreateJenjangPerancangTable extends Migration
         Schema::create('jenjang_perancang', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }

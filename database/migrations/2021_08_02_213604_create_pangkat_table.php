@@ -16,6 +16,7 @@ class CreatePangkatTable extends Migration
         Schema::create('pangkat', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }

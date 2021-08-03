@@ -16,6 +16,7 @@ class CreatePendidikanTable extends Migration
         Schema::create('pendidikan', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }
