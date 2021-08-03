@@ -46,12 +46,5 @@ class Users extends Model
 
     protected $hidden = ['password'];
 
-    public function getStaffs() {
-        return $this->hasOne(Staffs::class, 'user_id', 'id');
-    }
-
-    public function getDupak() {
-        return $this->hasMany(Dupak::class, 'user_id',  'id');
-    }
 
 }
