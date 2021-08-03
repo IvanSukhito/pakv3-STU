@@ -42,27 +42,28 @@ class AccessAdminController extends Controller
             $this->request->get('password'), 'Users', 'username', ['status'=>1]);
         if ($user) {
             session()->flush();
-            session()->put(env('APP_NAME').'admin_id', $user->id);
-            session()->put(env('APP_NAME').'admin_name', $user->name);
+            session()->put('admin_id', $user->id);
+            session()->put('admin_name', $user->name);
+            session()->put('admin_role', $user->role_id);
 
             $getSuperAdmin = $user->superadmin;
             $getPerancang = 0;
             $getAtasan = 0;
             $getSekretariat = 0;
             $getTimPenilai = 0;
-            $getStaff = Staffs::where('user_id', $user->id)->first();
-            if ($getStaff) {
-                $getPerancang = $getStaff->perancang;
-                $getAtasan = $getStaff->atasan;
-                $getSekretariat = $getStaff->sekretariat;
-                $getTimPenilai = $getStaff->tim_penilai;
-            }
+            //$getStaff = Staffs::where('user_id', $user->id)->first();
+            //if ($getStaff) {
+            //    $getPerancang = $getStaff->perancang;
+            //    $getAtasan = $getStaff->atasan;
+            //    $getSekretariat = $getStaff->sekretariat;
+            //    $getTimPenilai = $getStaff->tim_penilai;
+            //}
 
-            session()->put(env('APP_NAME').'admin_super_admin', $getSuperAdmin);
-            session()->put(env('APP_NAME').'admin_perancang', $getPerancang);
-            session()->put(env('APP_NAME').'admin_atasan', $getAtasan);
-            session()->put(env('APP_NAME').'admin_sekretariat', $getSekretariat);
-            session()->put(env('APP_NAME').'admin_tim_penilai', $getTimPenilai);
+            session()->put('admin_super_admin', $getSuperAdmin);
+            session()->put('admin_perancang', $getPerancang);
+            session()->put('admin_atasan', $getAtasan);
+            session()->put('admin_sekretariat', $getSekretariat);
+            session()->put('admin_tim_penilai', $getTimPenilai);
 
             try {
                 session_start();
@@ -72,7 +73,7 @@ class AccessAdminController extends Controller
 
             }
 
-            return redirect()->route('admin.portal');
+            return redirect()->route('admin');
         }
         else {
             return redirect()->back()->withInput()->withErrors(

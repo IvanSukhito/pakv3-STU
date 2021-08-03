@@ -2,8 +2,18 @@
 if ( ! function_exists('generateMenu')) {
     function generateMenu() {
         $html = '';
+        $adminRole = session()->get('admin_role');
+        //dd($adminRole);
+        if ($adminRole) {
+            $role = \Illuminate\Support\Facades\Cache::remember('role'.$adminRole, env('SESSION_LIFETIME'), function () use ($adminRole) {
+                return \App\Codes\Models\Role::where('id', '=', $adminRole)->first();
+            });
+            if ($role) {
+                $permissionRoute = json_decode($role->permission_route, TRUE);
+                //dd($permissionRoute);
         $getRoute = \Illuminate\Support\Facades\Route::current()->action['as'];
-        foreach (listGetPermission(listAllMenu(), []) as $key => $value) {
+         // dd($getRoute);
+         foreach (listGetPermission(listAllMenu(), $permissionRoute) as $key => $value) {
             $active = '';
             $class = '';
             foreach ($value['active'] as $getActive) {
@@ -54,6 +64,8 @@ if ( ! function_exists('generateMenu')) {
 
             $html .= '</a></li>';
         }
+    }
+}
         return $html;
     }
 }
@@ -215,15 +227,19 @@ if ( ! function_exists('listGetPermission')) {
     function listGetPermission($listMenu, $permissionRoute)
     {
         $result = [];
-        foreach ($listMenu as $list) {
-            if (in_array($list['type'], [1,3])) {
-                $result[] = $list;
-            }
-            else {
-                $getResult = listGetPermission($list['data'], $permissionRoute);
-                if (count($getResult) > 0) {
-                    $list['data'] = $getResult;
-                    $result[] = $list;
+        if ($permissionRoute) {
+            foreach ($listMenu as $list) {
+                if ($list['type'] == 1) {
+                    if (in_array($list['route'], $permissionRoute)) {
+                        $result[] = $list;
+                    }
+                }
+                else {
+                    $getResult = listGetPermission($list['data'], $permissionRoute);
+                    if (count($getResult) > 0) {
+                        $list['data'] = $getResult;
+                        $result[] = $list;
+                    }
                 }
             }
         }
@@ -237,220 +253,12 @@ if ( ! function_exists('listAllMenu')) {
     {
         return [
             [
-                'name' => __('general.kegiatan'),
+                'name' => __('general.permen'),
                 'icon' => '<i class="nav-icon fa fa-book"></i>',
-                'title' => __('general.kegiatan'),
-                'active' => [
-                    'admin.kegiatan.'
-                ],
-                'type' => 2,
-                'data' => [
-                    [
-                        'name' => __('general.kegiatan'),
-                        'title' => __('general.kegiatan'),
-                        'active' => ['admin.kegiatan.index', 'admin.kegiatan.show', 'admin.kegiatan.edit'],
-                        'route' => 'admin.kegiatan.index',
-                        'key' => 'kegiatan',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.create_kegiatan'),
-                        'title' => __('general.create_kegiatan'),
-                        'active' => ['admin.kegiatan.create'],
-                        'route' => 'admin.kegiatan.create',
-                        'key' => 'kegiatan',
-                        'type' => 3
-                    ]
-                ]
-            ],
-            [
-                'name' => __('general.surat_pernyataan'),
-                'icon' => '<i class="nav-icon fa fa-envelope"></i>',
-                'title' => __('general.surat_pernyataan'),
-                'active' => [
-                    'admin.surat-pernyataan.',
-                ],
-                'type' => 2,
-                'data' => [
-                    [
-                        'name' => __('general.surat_pernyataan'),
-                        'title' => __('general.surat_pernyataan'),
-                        'active' => ['admin.surat-pernyataan.index', 'admin.surat-pernyataan.show', 'admin.surat-pernyataan.edit'],
-                        'route' => 'admin.surat-pernyataan.index',
-                        'key' => 'surat-pernyataan',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.create_surat_pernyataan'),
-                        'title' => __('general.create_surat_pernyataan'),
-                        'active' => ['admin.surat-pernyataan.create'],
-                        'route' => 'admin.surat-pernyataan.create',
-                        'key' => 'surat-pernyataan',
-                        'type' => 3
-                    ],
-                    [
-                        'name' => __('general.verification'),
-                        'title' => __('general.verification'),
-                        'active' => ['admin.surat-pernyataan.verification'],
-                        'route' => 'admin.surat-pernyataan.verification',
-                        'key' => 'surat-pernyataan',
-                        'type' => 3
-                    ]
-                ]
-            ],
-            [
-                'name' => __('general.dupak'),
-                'icon' => '<i class="nav-icon fa fa-briefcase"></i>',
-                'title' => __('general.dupak'),
-                'active' => [
-                    'admin.dupak.',
-                ],
-                'type' => 2,
-                'data' => [
-                    [
-                        'name' => __('general.dupak'),
-                        'title' => __('general.dupak'),
-                        'active' => ['admin.dupak.index', 'admin.dupak.show', 'admin.dupak.edit'],
-                        'route' => 'admin.dupak.index',
-                        'key' => 'dupak',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.create_dupak'),
-                        'title' => __('general.create_dupak'),
-                        'active' => ['admin.dupak.create'],
-                        'route' => 'admin.dupak.create',
-                        'key' => 'dupak',
-                        'type' => 3
-                    ],
-                    [
-                        'name' => __('general.verification'),
-                        'title' => __('general.verification'),
-                        'active' => ['admin.dupak.verification'],
-                        'route' => 'admin.dupak.verification',
-                        'key' => 'dupak',
-                        'type' => 3
-                    ]
-                ]
-            ],
-            [
-                'name' => __('general.bapak'),
-                'icon' => '<i class="nav-icon fa fa-newspaper-o"></i>',
-                'title' => __('general.bapak'),
-                'active' => [
-                    'admin.bapak.',
-                ],
-                'type' => 2,
-                'data' => [
-                    [
-                        'name' => __('general.bapak'),
-                        'title' => __('general.bapak'),
-                        'active' => ['admin.bapak.index', 'admin.bapak.show', 'admin.bapak.edit'],
-                        'route' => 'admin.bapak.index',
-                        'key' => 'bapak',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.create_bapak'),
-                        'title' => __('general.create_bapak'),
-                        'active' => ['admin.bapak.create'],
-                        'route' => 'admin.bapak.create',
-                        'key' => 'bapak',
-                        'type' => 3
-                    ],
-                    [
-                        'name' => __('general.verification'),
-                        'title' => __('general.verification'),
-                        'active' => ['admin.bapak.verification'],
-                        'route' => 'admin.bapak.verification',
-                        'key' => 'bapak',
-                        'type' => 3
-                    ]
-                ]
-            ],
-            [
-                'name' => __('general.staff'),
-                'icon' => '<i class="nav-icon fa fa-users"></i>',
-                'title' => __('general.staff'),
-                'active' => [
-                    'admin.staff.'
-                ],
-                'type' => 2,
-                'data' => [
-                    [
-                        'name' => __('general.staff'),
-                        'title' => __('general.staff'),
-                        'active' => ['admin.staff.index'],
-                        'route' => 'admin.staff.index',
-                        'key' => 'staff',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.atasan'),
-                        'title' => __('general.atasan'),
-                        'active' => ['admin.staff.indexAtasan'],
-                        'route' => 'admin.staff.indexAtasan',
-                        'key' => 'staff',
-                        'type' => 3
-                    ],
-                    [
-                        'name' => __('general.perancang'),
-                        'title' => __('general.perancang'),
-                        'active' => ['admin.staff.indexPerancang'],
-                        'route' => 'admin.staff.indexPerancang',
-                        'key' => 'staff',
-                        'type' => 3
-                    ],
-                    [
-                        'name' => __('general.calon_perancang'),
-                        'title' => __('general.calon_perancang'),
-                        'active' => ['admin.staff.indexCalonAtasan'],
-                        'route' => 'admin.staff.indexCalonAtasan',
-                        'key' => 'staff',
-                        'type' => 3
-                    ],
-                    [
-                        'name' => __('general.sekretariat'),
-                        'title' => __('general.sekretariat'),
-                        'active' => ['admin.staff.indexSekretariat'],
-                        'route' => 'admin.staff.indexSekretariat',
-                        'key' => 'staff',
-                        'type' => 3
-                    ],
-                    [
-                        'name' => __('general.tim_penilai'),
-                        'title' => __('general.tim_penilai'),
-                        'active' => ['admin.staff.indexTimPenilai'],
-                        'route' => 'admin.staff.indexTimPenilai',
-                        'key' => 'staff',
-                        'type' => 3
-                    ],
-                    [
-                        'name' => __('general.create_staff'),
-                        'title' => __('general.create_staff'),
-                        'active' => ['admin.staff.create'],
-                        'route' => 'admin.staff.create',
-                        'key' => 'staff',
-                        'type' => 3
-                    ]
-                ]
-            ],
-            [
-                'name' => __('general.setting'),
-                'icon' => '<i class="nav-icon fa fa-gear"></i>',
-                'title' => __('general.setting'),
+                'title' => __('general.permen'),
                 'active' => [
                     'admin.permen.',
-                    'admin.user-registered.',
-                    'admin.gender.',
-                    'admin.golongan.',
-                    'admin.jabatan-perancang.',
-                    'admin.jenjang-perancang.',
-                    'admin.ms-kegiatan.',
-                    'admin.pendidikan.',
-                    'admin.unit-kerja.',
-                    'admin.role.',
-
+                    'admin.mskegiatan.'
                 ],
                 'type' => 2,
                 'data' => [
@@ -463,69 +271,29 @@ if ( ! function_exists('listAllMenu')) {
                         'type' => 1
                     ],
                     [
-                        'name' => __('general.user_registered'),
-                        'title' => __('general.user_registered'),
-                        'active' => ['admin.user-registered.'],
-                        'route' => 'admin.user-registered.index',
-                        'key' => 'user-registered',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.gender'),
-                        'title' => __('general.gender'),
-                        'active' => ['admin.gender.'],
-                        'route' => 'admin.gender.index',
-                        'key' => 'gender',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.golongan'),
-                        'title' => __('general.golongan'),
-                        'active' => ['admin.golongan.'],
-                        'route' => 'admin.golongan.index',
-                        'key' => 'golongan',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.jabatan_perancang'),
-                        'title' => __('general.jabatan_perancang'),
-                        'active' => ['admin.jabatan-perancang.'],
-                        'route' => 'admin.jabatan-perancang.index',
-                        'key' => 'jabatan-perancang',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.jenjang_perancang'),
-                        'title' => __('general.jenjang_perancang'),
-                        'active' => ['admin.jenjang-perancang.'],
-                        'route' => 'admin.jenjang-perancang.index',
-                        'key' => 'jenjang-perancang',
-                        'type' => 1
-                    ],
-                    [
                         'name' => __('general.ms_kegiatan'),
                         'title' => __('general.ms_kegiatan'),
-                        'active' => ['admin.ms-kegiatan.'],
-                        'route' => 'admin.ms-kegiatan.index',
-                        'key' => 'ms-kegiatan',
+                        'active' => ['admin.mskegiatan.'],
+                        'route' => 'admin.mskegiatan.index',
+                        'key' => 'mskegiatan',
                         'type' => 1
-                    ],
-                    [
-                        'name' => __('general.pendidikan'),
-                        'title' => __('general.pendidikan'),
-                        'active' => ['admin.pendidikan.'],
-                        'route' => 'admin.pendidikan.index',
-                        'key' => 'pendidikan',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.unit_kerja'),
-                        'title' => __('general.unit_kerja'),
-                        'active' => ['admin.unit-kerja.'],
-                        'route' => 'admin.unit-kerja.index',
-                        'key' => 'unit-kerja',
-                        'type' => 1
-                    ],
+                    ]
+                ]
+            ],
+
+            [
+                'name' => __('general.setting'),
+                'icon' => '<i class="nav-icon fa fa-gear"></i>',
+                'title' => __('general.setting'),
+                'active' => [
+                   
+                    'admin.role.'
+                ],
+
+
+                'type' => 2,
+                'data' => [
+              
                     [
                         'name' => __('general.role'),
                         'title' => __('general.role'),
@@ -535,7 +303,7 @@ if ( ! function_exists('listAllMenu')) {
                         'type' => 1
                     ]
                 ]
-            ]
+            ],
         ];
     }
 }
@@ -548,19 +316,19 @@ if ( ! function_exists('listAvailablePermission'))
         foreach ([
             'permen',
             'mskegiatan',
-            'kegiatan',
-            'surat-pernyataan',
-            'dupak',
-            'bapak',
-            'staff',
-            'gender',
-            'user-registered',
-            'golongan',
-            'jabatan-perancang',
-            'jenjang-perancang',
-            'ms-kegiatan',
-            'pendidikan',
-            'unit-kerja',
+            //'kegiatan',
+            //'surat-pernyataan',
+            //'dupak',
+            //'bapak',
+            //'staff',
+            //'gender',
+            //'user-registered',
+            //'golongan',
+            //'jabatan-perancang',
+            //'jenjang-perancang',
+            //'ms-kegiatan',
+            //'pendidikan',
+            //'unit-kerja',
             'role'
                  ] as $keyPermission) {
             $listPermission[$keyPermission] = [
@@ -584,6 +352,15 @@ if ( ! function_exists('listAvailablePermission'))
                 ]
             ];
         }
+        $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
+        $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';
+        
+        $listPermission['permen']['edit'][] = 'admin.mskegiatan.edit';
+        $listPermission['permen']['edit'][] = 'admin.mskegiatan.update';
+        $listPermission['permen']['create'][] = 'admin.mskegiatan.create';
+        $listPermission['permen']['create'][] = 'admin.mskegiatan.store';
+        $listPermission['permen']['show'][] = 'admin.mskegiatan.show';
+        $listPermission['permen']['destroy'][] = 'admin.mskegiatan.destroy';
 
 
         return $listPermission;
