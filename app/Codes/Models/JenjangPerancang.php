@@ -11,8 +11,8 @@ class JenjangPerancang extends Model
     protected $fillable = [
         'id',
         'name',
-        'order_high',
-        'status'
+        'status',
+        'order_high'
     ];
 
 }
