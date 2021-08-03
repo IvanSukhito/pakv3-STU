@@ -73,7 +73,7 @@ class MsKegiatanController extends _CrudController
         ];
 
         parent::__construct(
-            $request, 'general.ms_kegiatan', 'mskegiatan', 'MsKegiatan', 'mskegiatan',
+            $request, 'general.ms_kegiatan', 'ms-kegiatan', 'MsKegiatan', 'ms-kegiatan',
             $passingData
         );
 

@@ -6,26 +6,28 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kegiatan extends Model
 {
-    protected $table = 'kegiatan';
+    protected $table = 'tx_kegiatan';
     protected $primaryKey = 'id';
     protected $fillable = [
         'id',
         'user_id',
-        'parent_id',
+        'upline_id',
         'ms_kegiatan_id',
         'permen_id',
         'tanggal',
         'judul',
         'deskripsi',
-        'dokument',
-        'dokumen_fisik',
+        'dokument_pendukung',
+        'dokument_fisik',
         'kredit_lama',
         'kredit',
         'satuan',
         'pelaksana',
         'pelaksana_id',
-        'sp',
-        'dupak',
+        'surat_pernyataan_id',
+        'dupak_id',
+        'status',
+        'message',
         'approved',
         'connect'
     ];
@@ -43,7 +45,7 @@ class Kegiatan extends Model
     }
 
     public function getSuratPernyataan() {
-        return $this->belongsTo(SuratPernyataan::class, 'sp', 'id');
+        return $this->belongsTo(SuratPernyataan::class, 'surat_pernyataan_id', 'id');
     }
 
     public function getDupak() {

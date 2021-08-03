@@ -160,9 +160,9 @@ class KegiatanController extends _CrudController
     {
         $this->callPermission();
 
-        $userId = session()->get(env('APP_NAME') . 'admin_id');
+        $userId = session()->get('admin_id');
 
-        $getStaff = Staffs::where('user_id', $userId)->first();
+        $getStaff = Users::where('id', $userId)->first();
 
         $getFilterPermen = Permen::where('status', 1)->pluck('name', 'id')->toArray();
         $getKegiatan = MsKegiatan::where('status', 1)->where('permen_id', '>', 0)->get();
@@ -237,11 +237,11 @@ class KegiatanController extends _CrudController
 
         $viewType = 'create';
 
-        $userId = session()->get(env('APP_NAME') . 'admin_id');
-        $getStaff = Staffs::where('user_id', $userId)->first();
+        $userId = session()->get('admin_id');
+        $getStaff = Users::where('id', $userId)->first();
         $getUser = Users::where('id', $userId)->first();
         $user_nip = $getUser->username;
-
+        
         $list_ms_kegiatan = [];
         $ms_kegiatan = MsKegiatan::where('status', 1)->get();
         foreach ($ms_kegiatan as $list) {
@@ -425,8 +425,8 @@ class KegiatanController extends _CrudController
                 'pelaksana' => isset($list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id]) ? $list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id] : $list_ms_kegiatan[$key]->jenjang_perancang_id,
                 'pelaksana_id' => $list_ms_kegiatan[$key]->jenjang_perancang_id,
                 'parent_id' => MsKegiatan::getLastParent($key),
-                'dokument' => json_encode($total_dokument),
-                'dokumen_fisik' => json_encode($total_dokument_fisik),
+                'dokument_pendukung' => json_encode($total_dokument),
+                'dokument_fisik' => json_encode($total_dokument_fisik),
             ];
 
             $kegiatan = new Kegiatan();
