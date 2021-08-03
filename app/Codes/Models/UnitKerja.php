@@ -10,7 +10,11 @@ class UnitKerja extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'id',
-        'name',
+        'permen_id',
+        'parent_id',
+        'ak',
+        'satuan',
+        'jenjang_perancang_id',
         'status'
     ];
 
