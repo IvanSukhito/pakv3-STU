@@ -286,14 +286,13 @@ if ( ! function_exists('listAllMenu')) {
                 'icon' => '<i class="nav-icon fa fa-gear"></i>',
                 'title' => __('general.setting'),
                 'active' => [
-                   
+
                     'admin.role.'
                 ],
 
-
                 'type' => 2,
                 'data' => [
-              
+
                     [
                         'name' => __('general.role'),
                         'title' => __('general.role'),
@@ -301,7 +300,32 @@ if ( ! function_exists('listAllMenu')) {
                         'route' => 'admin.role.index',
                         'key' => 'role',
                         'type' => 1
-                    ]
+                    ],
+                    [
+                        'name' => __('general.golongan'),
+                        'title' => __('general.golongan'),
+                        'active' => ['admin.golongan.'],
+                        'route' => 'admin.golongan.index',
+                        'key' => 'golongan',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.unit_kerja'),
+                        'title' => __('general.unit_kerja'),
+                        'active' => ['admin.unit_kerja.'],
+                        'route' => 'admin.unit-kerja.index',
+                        'key' => 'unit-kerja',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.pendidikan'),
+                        'title' => __('general.pendidikan'),
+                        'active' => ['admin.pendidikan.'],
+                        'route' => 'admin.pendidikan.index',
+                        'key' => 'pendidikan',
+                        'type' => 1
+                    ],
+
                 ]
             ],
         ];
@@ -323,12 +347,12 @@ if ( ! function_exists('listAvailablePermission'))
             //'staff',
             //'gender',
             //'user-registered',
-            //'golongan',
+            'golongan',
             //'jabatan-perancang',
             //'jenjang-perancang',
             //'ms-kegiatan',
-            //'pendidikan',
-            //'unit-kerja',
+            'pendidikan',
+            'unit-kerja',
             'role'
                  ] as $keyPermission) {
             $listPermission[$keyPermission] = [
@@ -354,7 +378,7 @@ if ( ! function_exists('listAvailablePermission'))
         }
         $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
         $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';
-        
+
         $listPermission['permen']['edit'][] = 'admin.mskegiatan.edit';
         $listPermission['permen']['edit'][] = 'admin.mskegiatan.update';
         $listPermission['permen']['create'][] = 'admin.mskegiatan.create';

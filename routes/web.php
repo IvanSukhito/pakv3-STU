@@ -37,18 +37,20 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\SettingsController' => 'settings',
                 'Admin\AdminController' => 'admin',
                 'Admin\RoleController' => 'role',
-
+                'Admin\GolonganController' => 'golongan',
+                'Admin\UnitKerjaController' => 'unit-kerja',
+                'Admin\PendidikanController' => 'pendidikan',
                 'Admin\PermenController' => 'permen',
                 'Admin\MsKegiatanController' => 'mskegiatan',
 
             ];
             foreach ($listRouter as $controller => $linkName) {
-               
+
                 $router->get($linkName . '/data', $controller . '@dataTable')->name('admin.' . $linkName . '.dataTable');
                 $router->resource($linkName, $controller, ['as' => 'admin']);
             }
 
-            
+
             $router->get('report', 'Admin\ReportController@index')->name('admin.report');
             $router->get('/', ['uses' => 'Admin\DashboardController@dashboard'])->name('admin');
 

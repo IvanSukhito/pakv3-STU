@@ -45,4 +45,34 @@ class UnitKerjaController extends _CrudController
 
     }
 
+    public function index()
+    {
+        $this->callPermission();
+
+        $data = $this->data;
+
+        $data['passing'] = collectPassingData($this->passingData);
+
+        return view($this->listView['index'], $data);
+    }
+
+    public function show($id)
+    {
+        $this->callPermission();
+
+        $getData = $this->crud->show($id);
+        if (!$getData) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $data = $this->data;
+
+        $data['viewType'] = 'show';
+        $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
+        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
+        $data['data'] = $getData;
+
+        return view($this->listView[$data['viewType']], $data);
+    }
+
 }
