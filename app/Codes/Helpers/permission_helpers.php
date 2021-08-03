@@ -252,6 +252,36 @@ if ( ! function_exists('listAllMenu')) {
     function listAllMenu()
     {
         return [
+       //KEGIATAN
+            [
+                'name' => __('general.kegiatan'),
+                'icon' => '<i class="nav-icon fa fa-book"></i>',
+                'title' => __('general.kegiatan'),
+                'active' => [
+                    'admin.kegiatan.',
+                   
+                ],
+                'type' => 2,
+                'data' => [
+                    [
+                        'name' => __('general.kegiatan'),
+                        'title' => __('general.kegiatan'),
+                        'active' => ['admin.kegiatan.'],
+                        'route' => 'admin.kegiatan.index',
+                        'key' => 'kegiatan',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.create_kegiatan'),
+                        'title' => __('general.create_kegiatan'),
+                        'active' => ['admin.kegiatan.create'],
+                        'route' => 'admin.kegiatan.create',
+                        'key' => 'kegiatan',
+                        'type' => 1
+                    ]
+                ]
+            ],
+            //PERMEN
             [
                 'name' => __('general.permen'),
                 'icon' => '<i class="nav-icon fa fa-book"></i>',
@@ -273,9 +303,9 @@ if ( ! function_exists('listAllMenu')) {
                     [
                         'name' => __('general.ms_kegiatan'),
                         'title' => __('general.ms_kegiatan'),
-                        'active' => ['admin.mskegiatan.'],
-                        'route' => 'admin.mskegiatan.index',
-                        'key' => 'mskegiatan',
+                        'active' => ['admin.ms-kegiatan.'],
+                        'route' => 'admin.ms-kegiatan.index',
+                        'key' => 'ms-kegiatan',
                         'type' => 1
                     ]
                 ]
@@ -340,6 +370,9 @@ if ( ! function_exists('listAvailablePermission'))
         foreach ([
             'permen',
             'mskegiatan',
+            'ms-kegiatan',
+            'kegiatan',
+            'create_kegiatan',
             //'kegiatan',
             //'surat-pernyataan',
             //'dupak',
