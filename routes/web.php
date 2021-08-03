@@ -37,6 +37,9 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\SettingsController' => 'settings',
                 'Admin\AdminController' => 'admin',
                 'Admin\RoleController' => 'role',
+                'Admin\GolonganController' => 'golongan',
+                'Admin\UnitKerjaController' => 'unit-kerja',
+                'Admin\PendidikanController' => 'pendidikan',
 
                 'Admin\PermenController' => 'permen',
                 'Admin\MsKegiatanController' => 'mskegiatan',
