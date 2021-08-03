@@ -17,6 +17,7 @@ class CreateJenjangPerancangTable extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->tinyInteger('status')->default(1);
+            $table->integer('order_high')->default(0);
             $table->timestamps();
         });
     }

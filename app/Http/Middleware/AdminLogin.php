@@ -16,7 +16,8 @@ class AdminLogin
      */
     public function handle($request, Closure $next)
     {
-        if($request->session()->has(env('APP_NAME').'admin_id'))
+       
+        if($request->session()->has('admin_id'))
         {
             return $next($request);
         }
