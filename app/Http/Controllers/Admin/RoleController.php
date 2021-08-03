@@ -126,5 +126,4 @@ class RoleController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.show', $id);
         }
     }
-
 }
