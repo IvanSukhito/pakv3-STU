@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class KegiatanSeeder extends Seeder
+class KegiatanSeeder_old extends Seeder
 {
     /**
      * Run the database seeds.
