@@ -34,7 +34,7 @@ class AccessAdminController extends Controller
         ]);
 
         $user = $this->accessLogin->cekLogin($this->request->get('username'),
-            $this->request->get('password'), 'Admin', 'username', 'password', ['status'=>1]);
+            $this->request->get('password'), 'Users', 'username', 'password', ['status'=>1]);
         if ($user) {
             $getRole = Role::where('id', $user->role_id)->first();
             $getPermissionData = isset($getRole) ? json_decode($getRole->permission_data, TRUE) : null;
