@@ -21,6 +21,7 @@ class CreateMsKegiatanTable extends Migration
             $table->float('ak', 10, 3)->nullable();
             $table->string('satuan')->nullable();
             $table->bigInteger('jenjang_perancang_id')->default(0);
+            $table->integer('orders')->default(1);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
