@@ -18,8 +18,8 @@ class AdminAccessPermission
      */
     public function handle($request, Closure $next)
     {
-        if($request->session()->has('admin_role')){
-
+        if($request->session()->has('admin_role'))
+        {
             $adminRole = $request->session()->get('admin_role');
             $getModuleName = Route::current()->action['as'];
             $role = Cache::remember('role'.$adminRole, env('SESSION_LIFETIME'), function () use ($adminRole) {
@@ -32,13 +32,11 @@ class AdminAccessPermission
                 }
             }
 
-        }  
-        
-        return $next($request);
+        }
 
         session()->flash('message', __('general.no_permission'));
         session()->flash('message_alert', 1);
 
-        return redirect()->route('admin.profile');
+        return redirect()->route('admin');
     }
 }

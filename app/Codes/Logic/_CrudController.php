@@ -13,6 +13,7 @@ class _CrudController extends _GlobalFunctionController
     protected $listView;
     protected $masterId;
     protected $crud;
+    protected $rootRoute;
 
     /**
      * _CrudController constructor.
@@ -22,9 +23,12 @@ class _CrudController extends _GlobalFunctionController
      * @param $model
      * @param $module
      * @param $passing
-     * @param $masterId
+     * @param string $masterId
+     * @param string $envTemplate
+     * @param string $rootRoute
      */
-    public function __construct(Request $request, $title, $route, $model, $module, $passing, $masterId = 'id')
+    public function __construct(Request $request, $title, $route, $model, $module, $passing, $masterId = 'id',
+                                $envTemplate = 'ADMIN_TEMPLATE', $rootRoute = 'admin')
     {
         $this->request = $request;
         $this->crud = new _CRUD($model);
@@ -35,13 +39,14 @@ class _CrudController extends _GlobalFunctionController
         $this->route = $route;
         $this->model = 'App\Codes\Models\\' . $model;
         $this->module = $module;
+        $this->rootRoute = $rootRoute;
 
         $this->listView = [
-            'index' => env('ADMIN_TEMPLATE').'._general.list',
-            'dataTable' => env('ADMIN_TEMPLATE').'._general.list_button',
-            'create' => env('ADMIN_TEMPLATE').'._general.forms',
-            'show' => env('ADMIN_TEMPLATE').'._general.forms',
-            'edit' => env('ADMIN_TEMPLATE').'._general.forms'
+            'index' => env($envTemplate).'._general.list',
+            'dataTable' => env($envTemplate).'._general.list_button',
+            'create' => env($envTemplate).'._general.forms',
+            'show' => env($envTemplate).'._general.forms',
+            'edit' => env($envTemplate).'._general.forms',
         ];
 
         $this->data = [
@@ -91,27 +96,16 @@ class _CrudController extends _GlobalFunctionController
                     return isset($getList[$query->$fieldName]) ? $getList[$query->$fieldName] : $query->$fieldName;
                 });
             }
-            else if (in_array($list['type'], ['money'])) {
-                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
-                    return number_format($query->$fieldName, 0);
-                });
-            }
-            else if (in_array($list['type'], ['image'])) {
+            else if (in_array($list['type'], ['image', 'image_preview'])) {
                 $listRaw[] = $fieldName;
                 $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
                     return '<img src="' . asset($list['path'] . $query->$fieldName) . '" class="img-responsive max-image-preview"/>';
                 });
             }
-            else if (in_array($list['type'], ['image_preview'])) {
-                $listRaw[] = $fieldName;
-                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
-                    return '<img src="' . $query->$fieldName . '" class="img-responsive max-image-preview"/>';
-                });
-            }
             else if (in_array($list['type'], ['code'])) {
                 $listRaw[] = $fieldName;
                 $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
-                    return '<pre>' . json_encode(json_decode($query->$fieldName, true), JSON_PRETTY_PRINT) . '"</pre>';
+                    return '<pre>' . json_encode(json_decode($query->$fieldName, true), JSON_PRETTY_PRINT) . '</pre>';
                 });
             }
             else if (in_array($list['type'], ['texteditor'])) {
@@ -143,7 +137,7 @@ class _CrudController extends _GlobalFunctionController
 
         $getData = $this->crud->show($id);
         if (!$getData) {
-            return redirect()->route('admin.' . $this->route . '.index');
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
         $data = $this->data;
@@ -162,7 +156,7 @@ class _CrudController extends _GlobalFunctionController
 
         $getData = $this->crud->show($id);
         if (!$getData) {
-            return redirect()->route('admin.' . $this->route . '.index');
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
         $data = $this->data;
@@ -181,7 +175,7 @@ class _CrudController extends _GlobalFunctionController
 
         $getData = $this->crud->show($id);
         if (!$getData) {
-            return redirect()->route('admin.' . $this->route . '.index');
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
         foreach ($this->passingData as $fieldName => $fieldValue) {
@@ -196,12 +190,12 @@ class _CrudController extends _GlobalFunctionController
         $this->crud->destroy($id);
 
         if($this->request->ajax()){
-            return response()->json(['result' => 1]);
+            return response()->json(['result' => 1, 'message' => __('general.success_delete_', ['field' => $this->data['thisLabel']])]);
         }
         else {
-            session()->flash('message', __('general.success_delete'));
+            session()->flash('message', __('general.success_delete_', ['field' => $this->data['thisLabel']]));
             session()->flash('message_alert', 2);
-            return redirect()->route('admin.' . $this->route . '.index');
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
     }
 
@@ -225,19 +219,17 @@ class _CrudController extends _GlobalFunctionController
         }
 
         $data = $this->getCollectedData($getListCollectData, $viewType, $data);
-//        $data['created_by'] = session()->get('admin_name');
-
         $getData = $this->crud->store($data);
 
         $id = $getData->id;
 
         if($this->request->ajax()){
-            return response()->json(['result' => 1, 'message' => __('general.success_add')]);
+            return response()->json(['result' => 1, 'message' => __('general.success_add_', ['field' => $this->data['thisLabel']])]);
         }
         else {
-            session()->flash('message', __('general.success_add'));
+            session()->flash('message', __('general.success_add_', ['field' => $this->data['thisLabel']]));
             session()->flash('message_alert', 2);
-            return redirect()->route('admin.' . $this->route . '.show', $id);
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.show', $id);
         }
     }
 
@@ -249,7 +241,7 @@ class _CrudController extends _GlobalFunctionController
 
         $getData = $this->crud->show($id);
         if (!$getData) {
-            return redirect()->route('admin.' . $this->route . '.index');
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
         $getListCollectData = collectPassingData($this->passingData, $viewType);
@@ -267,19 +259,38 @@ class _CrudController extends _GlobalFunctionController
 
         $data = $this->getCollectedData($getListCollectData, $viewType, $data, $getData);
 
-//        $data['updated_by'] = session()->get('admin_name');
+        foreach ($getListCollectData as $key => $val) {
+            if($val['type'] == 'image_many') {
+                $getStorage = explode(',', $this->request->get($key.'_storage')) ?? [];
+                $getOldData = json_decode($getData->$key, true);
+                $tempData = [];
+                if ($getOldData) {
+                    foreach ($getOldData as $index => $value) {
+                        if (in_array($index, $getStorage)) {
+                            $tempData[] = $value;
+                        }
+                    }
+                }
+                if (isset($data[$key])) {
+                    foreach (json_decode($data[$key], true) as $index => $value) {
+                        $tempData[] = $value;
+                    }
+                }
+                $data[$key] = json_encode($tempData);
+            }
+        }
 
         $getData = $this->crud->update($data, $id);
 
         $id = $getData->id;
 
         if($this->request->ajax()){
-            return response()->json(['result' => 1, 'message' => __('general.success_edit')]);
+            return response()->json(['result' => 1, 'message' => __('general.success_edit_', ['field' => $this->data['thisLabel']])]);
         }
         else {
-            session()->flash('message', __('general.success_edit'));
+            session()->flash('message', __('general.success_edit_', ['field' => $this->data['thisLabel']]));
             session()->flash('message_alert', 2);
-            return redirect()->route('admin.' . $this->route . '.show', $id);
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.show', $id);
         }
     }
 

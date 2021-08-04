@@ -18,45 +18,56 @@ class _CRUD
 
     public function store($data)
     {
-        $save_data = new $this->model();
+        $saveData = new $this->model();
         foreach ($data as $key => $value) {
-            $save_data->$key = $value;
+            $saveData->$key = $value;
         }
-        $save_data->save();
+        $saveData->save();
 
-        return $save_data;
+        return $saveData;
     }
 
-    public function show($id, $key = 'id')
+    public function show($id, $key = 'id', $condition = [])
     {
-        return $this->model::where($key, $id)->first();
+        $model = $this->model::where($key, $id);
+        if ($condition) {
+            foreach ($condition as $keyCondition => $valCondition) {
+                if (is_array($valCondition)) {
+                    $model = $model->whereIn($keyCondition, $valCondition);
+                }
+                else {
+                    $model = $model->where($keyCondition, '=', $valCondition);
+                }
+            }
+        }
+        return $model->first();
     }
 
     public function update($data, $id, $key = 'id')
     {
-        $save_data = $this->model::where($key, $id)->first();
+        $saveData = $this->model::where($key, $id)->first();
         foreach ($data as $key => $value) {
-            $save_data->$key = $value;
+            $saveData->$key = $value;
         }
-        $save_data->save();
+        $saveData->save();
 
-        return $save_data;
+        return $saveData;
     }
 
     public function destroy($id, $key = 'id')
     {
-        $get_data = $this->model::where($key, $id)->first();
-        $get_data->delete();
+        $getData = $this->model::where($key, $id)->first();
+        $getData->delete();
     }
 
-    public function saveImageFile($list_image, $request, $destinationPath)
+    public function saveImageFile($listImage, $request, $destinationPath)
     {
         $data = [];
 
-        foreach ($list_image as $image_key => $list) {
+        foreach ($listImage as $imageKey => $list) {
 
             try {
-                $image = $request->file($image_key);
+                $image = $request->file($imageKey);
                 if ($image && $image->getError() == 1) {
                     if ($list === true) {
                         if ($image->getSize() <= 0) {
@@ -67,19 +78,19 @@ class _CRUD
                         return [
                             'success' => 0,
                             'message' => [
-                                $image_key => $message
+                                $imageKey => $message
                             ]
                         ];
                     }
                 }
                 if ($image) {
-                    $get_file_name = $image->getClientOriginalName();
-                    $ext = explode('.', $get_file_name);
+                    $getFileName = $image->getClientOriginalName();
+                    $ext = explode('.', $getFileName);
                     $ext = end($ext);
-                    $set_file_name = md5($image_key . strtotime('now') . rand(0, 100)) . '.' . $ext;
+                    $setFileName = md5($imageKey . strtotime('now') . rand(0, 100)) . '.' . $ext;
 
-                    $image->move($destinationPath, $set_file_name);
-                    $data[$image_key] = $set_file_name;
+                    $image->move($destinationPath, $setFileName);
+                    $data[$imageKey] = $setFileName;
 
                 }
             }
@@ -87,7 +98,7 @@ class _CRUD
                 return [
                     'success' => 0,
                     'message' => [
-                        $image_key => 'Error'
+                        $imageKey => 'Error'
                     ]
                 ];
             }
@@ -101,22 +112,22 @@ class _CRUD
 
     }
 
-    public function saveImageBase64($list_image, $request, $destinationPath)
+    public function saveImageBase64($listImage, $request, $destinationPath)
     {
         $data = [];
 
-        foreach ($list_image as $image_key => $list) {
+        foreach ($listImage as $imageKey => $list) {
             try {
-                $image = base64_to_jpeg($request->get($image_key));
-                $set_file_name = md5($image_key.strtotime('now').rand(0, 100)).'.jpg';
-                file_put_contents($destinationPath.$set_file_name, $image);
-                $data[$image_key] = $set_file_name;
+                $image = base64_to_jpeg($request->get($imageKey));
+                $setFileName = md5($imageKey.strtotime('now').rand(0, 100)).'.jpg';
+                file_put_contents($destinationPath.$setFileName, $image);
+                $data[$imageKey] = $setFileName;
             }
             catch (\Exception $e) {
                 return [
                     'success' => 0,
                     'message' => [
-                        $image_key => 'Error'
+                        $imageKey => 'Error'
                     ]
                 ];
             }

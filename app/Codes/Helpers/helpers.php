@@ -152,8 +152,6 @@ if (! function_exists('generatePassingData')) {
                     'create' => isset($fieldValue['validate']['create']) ? $fieldValue['validate']['create'] : '',
                     'edit' => isset($fieldValue['validate']['edit']) ? $fieldValue['validate']['edit'] : ''
                 ],
-                'class' => isset($fieldValue['class']) ? $fieldValue['class'] : '',
-                'classParent' => isset($fieldValue['classParent']) ? $fieldValue['classParent'] : '',
                 'value' => isset($fieldValue['value']) ? $fieldValue['value'] : '',
                 'path' => isset($fieldValue['path']) ? $fieldValue['path'] : '',
                 'message' => isset($fieldValue['message']) ? $fieldValue['message'] : ''
@@ -176,78 +174,12 @@ if (! function_exists('collectPassingData')) {
     }
 }
 
-if ( ! function_exists('calculate_jenjang')) {
-    function calculate_jenjang($jenjang_perancang_id, $get_jenjang_id, $list_jenjang_perancang, $ak)
+if (! function_exists('printInitial')) {
+    function printInitial($string)
     {
-        $getOwner = 0;
-        $getJenjang = 0;
-        if($list_jenjang_perancang) {
-            foreach($list_jenjang_perancang as $list) {
-                if(isset($list->d) == $jenjang_perancang_id) {
-                    $getOwner = isset($list->order_high) ? $list->order_high : ' ';
-                }
-                if(isset($list->id) == $get_jenjang_id) {
-                    $getJenjang = $list->order_high;
-                }
-            }
-        }
-
-        if($getOwner == 0 || $getJenjang == 0) {
-            return $ak;
-        }
-        else if($getJenjang > $getOwner) {
-            $ak = $ak * 0.8;
-        }
-
-        return $ak;
+        $getString = explode(' ', $string);
+        $getString1 = $getString[0][0] ?? '';
+        $getString2 = $getString[1][0] ?? $getString1;
+        return $getString1.$getString2;
     }
 }
-
-if ( ! function_exists('set_deep_ms_kegiatan')) {
-    function set_deep_ms_kegiatan($data)
-    {
-        $master = [];
-        $masterData = [];
-        foreach ($data as $list) {
-            $master[$list->parent_id][] = $list->id;
-            $masterData[$list->id] = $list;
-        }
-
-        $getDeep = 0;
-        foreach ($master as $index => $listMaster) {
-            foreach ($listMaster as $list) {
-                if (isset($master[$list])) {
-                    $tempDeep = check_deep_ms_kegiatan($master[$list], $master, 1);
-                    if ($getDeep < $tempDeep) {
-                        $getDeep = $tempDeep;
-                    }
-                }
-            }
-        }
-
-        return [
-            'deep' => $getDeep + 1,
-            'path' => $master,
-            'data' => $masterData
-        ];
-
-    }
-}
-
-if ( ! function_exists('check_deep_ms_kegiatan')) {
-    function check_deep_ms_kegiatan($data, $master, $deep = 1)
-    {
-        $getDeep = $deep;
-        foreach ($data as $list) {;
-            if (isset($master[$list])) {
-                $tempDeep = check_deep_ms_kegiatan($master[$list], $master, $deep + 1);
-                if ($getDeep < $tempDeep) {
-                    $getDeep = $tempDeep;
-                }
-            }
-        }
-        return $getDeep;
-    }
-}
-
-
