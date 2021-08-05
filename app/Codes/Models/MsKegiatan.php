@@ -10,12 +10,13 @@ class MsKegiatan extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'id',
+        'permen_id',
         'parent_id',
         'name',
         'ak',
         'satuan',
         'jenjang_perancang_id',
-        'permen_id',
+        'orders',
         'status'
     ];
 
@@ -81,7 +82,7 @@ class MsKegiatan extends Model
     {
         $result = [];
         $get_list = self::where('status', 1)->whereIn('id', $ids)->get();
-   
+
         if($get_list) {
             foreach($get_list as $list) {
                 $result[] = $list->id;
@@ -104,7 +105,7 @@ class MsKegiatan extends Model
     }
 
     protected static function call_parent($child = null) {
-        
+
         $result = [];
         $get_parent = $child->getParent()->first();
 
