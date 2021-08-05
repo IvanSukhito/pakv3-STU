@@ -3,67 +3,69 @@ if ( ! function_exists('generateMenu')) {
     function generateMenu() {
         $html = '';
         $adminRole = session()->get('admin_role');
+        //dd($adminRole);
         if ($adminRole) {
             $role = \Illuminate\Support\Facades\Cache::remember('role'.$adminRole, env('SESSION_LIFETIME'), function () use ($adminRole) {
                 return \App\Codes\Models\Role::where('id', '=', $adminRole)->first();
             });
             if ($role) {
                 $permissionRoute = json_decode($role->permission_route, TRUE);
-                $getRoute = \Illuminate\Support\Facades\Route::current()->action['as'];
-                foreach (listGetPermission(listAllMenu(), $permissionRoute) as $key => $value) {
-                    $active = '';
-                    $class = '';
-                    foreach ($value['active'] as $getActive) {
-                        if (strpos($getRoute, $getActive) === 0) {
-                            $active = ' active';
-                        }
-                    }
-                    if (isset($value['inactive'])) {
-                        foreach ($value['inactive'] as $getInActive) {
-                            if (strpos($getRoute, $getInActive) === 0) {
-                                $active = '';
-                            }
-                        }
-                    }
-
-                    if (in_array($value['type'], [2]) && strlen($active) > 0) {
-                        $class .= ' nav-item has-treeview menu-open';
-                        $extraLi = '<i class="right fa fa-angle-left"></i>';
-                    }
-                    else if (in_array($value['type'], [2])) {
-                        $class .= ' nav-item has-treeview';
-                        $extraLi = '<i class="right fa fa-angle-left"></i>';
-                    }
-                    else {
-                        $class .= 'nav-item';
-                        $extraLi = '';
-                    }
-
-                    if(isset($value['route'])) {
-                        $route = route($value['route']);
-                    }
-                    else {
-                        $route = '#';
-                    }
-
-                    $getIcon = isset($value['icon']) ? $value['icon'] : '';
-                    $getAdditional = isset($value['additional']) ? $value['additional'] : '';
-                    $html .= '<li class="'.$class.'">
-                    <a href="'.$route.'" title="'.$value['name'].'" class="nav-link'.$active.'">
-                    '.$getIcon.'
-                    <p>'.
-                        $value['title'].$extraLi.$getAdditional.'</p></a>';
-
-                    if (in_array($value['type'], [2])) {
-                        $html .= '<ul class="nav nav-treeview">';
-                        $html .= getMenuChild($value['data'], $getRoute);
-                        $html .= '</ul>';
-                    }
-
-                    $html .= '</a></li>';
+                //dd($permissionRoute);
+        $getRoute = \Illuminate\Support\Facades\Route::current()->action['as'];
+         // dd($getRoute);
+         foreach (listGetPermission(listAllMenu(), $permissionRoute) as $key => $value) {
+            $active = '';
+            $class = '';
+            foreach ($value['active'] as $getActive) {
+                if (strpos($getRoute, $getActive) === 0) {
+                    $active = ' active';
                 }
             }
+            if (isset($value['inactive'])) {
+                foreach ($value['inactive'] as $getInActive) {
+                    if (strpos($getRoute, $getInActive) === 0) {
+                        $active = '';
+                    }
+                }
+            }
+
+            if (in_array($value['type'], [2]) && strlen($active) > 0) {
+                $class .= ' nav-item has-treeview menu-open';
+                $extraLi = '<i class="right fa fa-angle-left"></i>';
+            }
+            else if (in_array($value['type'], [2])) {
+                $class .= ' nav-item has-treeview';
+                $extraLi = '<i class="right fa fa-angle-left"></i>';
+            }
+            else {
+                $class .= 'nav-item';
+                $extraLi = '';
+            }
+
+            if(isset($value['route'])) {
+                $route = route($value['route']);
+            }
+            else {
+                $route = '#';
+            }
+
+            $getIcon = isset($value['icon']) ? $value['icon'] : '';
+            $html .= '<li class="'.$class.'">
+            <a href="'.$route.'" title="'.$value['name'].'" class="nav-link'.$active.'">
+            '.$getIcon.'
+            <p>'.
+                $value['title'].$extraLi.'</p></a>';
+
+            if (in_array($value['type'], [2])) {
+                $html .= '<ul class="nav nav-treeview">';
+                $html .= getMenuChild($value['data'], $getRoute);
+                $html .= '</ul>';
+            }
+
+            $html .= '</a></li>';
         }
+    }
+}
         return $html;
     }
 }
@@ -142,8 +144,6 @@ if ( ! function_exists('getValidatePermissionMenu')) {
                 }
             }
         }
-
-
         return $listMenu;
     }
 }
@@ -169,7 +169,7 @@ if ( ! function_exists('createTreePermission')) {
                 $html .= '<label>'.$list['name'].'</label><br/>';
                 $html .= createTreePermission($list['data'], $left + 1, $class, $getData);
             }
-            else {
+            else if (in_array($list['type'], [1])) {
                 $value = isset($getData[$list['key']]) ? 'checked' : '';
                 $html .= '<label for="checkbox-'.$index.'-'.$list['key'].'">
                             <input '.$value.' style="margin-left: '.($left*30).'px; margin-right: 5px;" type="checkbox"
@@ -252,108 +252,78 @@ if ( ! function_exists('listAllMenu')) {
     function listAllMenu()
     {
         return [
+       //KEGIATAN
             [
-                'name' => __('general.page'),
-                'icon' => '<i class="nav-icon fa fa-clipboard"></i>',
-                'title' => __('general.page'),
-                'active' => ['admin.page.'],
-                'route' => 'admin.page.index',
-                'key' => 'page',
-                'type' => 1,
-            ],
-            [
-                'name' => __('general.how_to_play'),
-                'icon' => '<i class="nav-icon fa fa-question-circle-o"></i>',
-                'title' => __('general.how_to_play'),
-                'active' => ['admin.how-to-play.'],
-                'route' => 'admin.how-to-play.index',
-                'key' => 'how-to-play',
-                'type' => 1,
-            ],
-            [
-                'name' => __('general.riddle'),
-                'icon' => '<i class="nav-icon fa fa-gamepad"></i>',
-                'additional' => '<small class="label right bg-green">new</small>',
-                'title' => __('general.riddle'),
+                'name' => __('general.kegiatan'),
+                'icon' => '<i class="nav-icon fa fa-book"></i>',
+                'title' => __('general.kegiatan'),
                 'active' => [
-                    'admin.v1-questions.',
-                    'admin.v1-question-details.',
-                    'admin.v1-mantra.',
-                    'admin.v1-users.',
-                    'admin.v1-log-login.',
-                    'admin.v1-games.'
+                    'admin.kegiatan.',
+                   
                 ],
                 'type' => 2,
                 'data' => [
                     [
-                        'name' => __('general.questions'),
-                        'title' => __('general.questions'),
-                        'active' => ['admin.v1-questions.', 'admin.v1-question-details'],
-                        'route' => 'admin.v1-questions.index',
-                        'key' => 'v1-questions',
+                        'name' => __('general.kegiatan'),
+                        'title' => __('general.kegiatan'),
+                        'active' => ['admin.kegiatan.'],
+                        'route' => 'admin.kegiatan.index',
+                        'key' => 'kegiatan',
                         'type' => 1
                     ],
                     [
-                        'name' => __('general.mantra'),
-                        'title' => __('general.mantra'),
-                        'active' => ['admin.v1-mantra.'],
-                        'route' => 'admin.v1-mantra.index',
-                        'key' => 'v1-mantra',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.users'),
-                        'title' => __('general.users'),
-                        'active' => ['admin.v1-users.'],
-                        'route' => 'admin.v1-users.index',
-                        'key' => 'v1-users',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.log_login'),
-                        'title' => __('general.log_login'),
-                        'active' => ['admin.v1-log-login.'],
-                        'route' => 'admin.v1-log-login.index',
-                        'key' => 'v1-log-login',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.games'),
-                        'title' => __('general.games'),
-                        'active' => ['admin.v1-games.'],
-                        'route' => 'admin.v1-games.index',
-                        'key' => 'v1-games',
+                        'name' => __('general.create_kegiatan'),
+                        'title' => __('general.create_kegiatan'),
+                        'active' => ['admin.kegiatan.create'],
+                        'route' => 'admin.kegiatan.create',
+                        'key' => 'kegiatan',
                         'type' => 1
                     ]
                 ]
             ],
+            //PERMEN
+            [
+                'name' => __('general.permen'),
+                'icon' => '<i class="nav-icon fa fa-book"></i>',
+                'title' => __('general.permen'),
+                'active' => [
+                    'admin.permen.',
+                    'admin.mskegiatan.'
+                ],
+                'type' => 2,
+                'data' => [
+                    [
+                        'name' => __('general.permen'),
+                        'title' => __('general.permen'),
+                        'active' => ['admin.permen.'],
+                        'route' => 'admin.permen.index',
+                        'key' => 'permen',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.ms_kegiatan'),
+                        'title' => __('general.ms_kegiatan'),
+                        'active' => ['admin.ms-kegiatan.'],
+                        'route' => 'admin.ms-kegiatan.index',
+                        'key' => 'ms-kegiatan',
+                        'type' => 1
+                    ]
+                ]
+            ],
+
             [
                 'name' => __('general.setting'),
                 'icon' => '<i class="nav-icon fa fa-gear"></i>',
                 'title' => __('general.setting'),
                 'active' => [
-                    'admin.settings.',
-                    'admin.admin.',
+                   
                     'admin.role.'
                 ],
+
+
                 'type' => 2,
                 'data' => [
-                    [
-                        'name' => __('general.setting'),
-                        'title' => __('general.setting'),
-                        'active' => ['admin.settings.'],
-                        'route' => 'admin.settings.index',
-                        'key' => 'settings',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.admin'),
-                        'title' => __('general.admin'),
-                        'active' => ['admin.admin.'],
-                        'route' => 'admin.admin.index',
-                        'key' => 'admin',
-                        'type' => 1
-                    ],
+              
                     [
                         'name' => __('general.role'),
                         'title' => __('general.role'),
@@ -364,7 +334,6 @@ if ( ! function_exists('listAllMenu')) {
                     ]
                 ]
             ],
-
         ];
     }
 }
@@ -372,35 +341,28 @@ if ( ! function_exists('listAllMenu')) {
 if ( ! function_exists('listAvailablePermission'))
 {
     function listAvailablePermission() {
-
         $listPermission = [];
 
         foreach ([
-            'settings',
-            'page',
-            'v1-users',
-                 ] as $keyPermission) {
-            $listPermission[$keyPermission] = [
-                'list' => [
-                    'admin.'.$keyPermission.'.index',
-                    'admin.'.$keyPermission.'.dataTable'
-                ],
-                'edit' => [
-                    'admin.'.$keyPermission.'.edit',
-                    'admin.'.$keyPermission.'.update'
-                ],
-                'show' => [
-                    'admin.'.$keyPermission.'.show'
-                ]
-            ];
-        }
-
-        foreach ([
-                     'admin',
-                     'role',
-                     'privilege',
-                     'how-to-play',
-                     'v1-questions',
+            'permen',
+            'mskegiatan',
+            'ms-kegiatan',
+            'kegiatan',
+            'create_kegiatan',
+            //'kegiatan',
+            //'surat-pernyataan',
+            //'dupak',
+            //'bapak',
+            //'staff',
+            //'gender',
+            //'user-registered',
+            //'golongan',
+            //'jabatan-perancang',
+            //'jenjang-perancang',
+            //'ms-kegiatan',
+            //'pendidikan',
+            //'unit-kerja',
+            'role'
                  ] as $keyPermission) {
             $listPermission[$keyPermission] = [
                 'list' => [
@@ -423,51 +385,16 @@ if ( ! function_exists('listAvailablePermission'))
                 ]
             ];
         }
+        $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
+        $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';
+        
+        $listPermission['permen']['edit'][] = 'admin.mskegiatan.edit';
+        $listPermission['permen']['edit'][] = 'admin.mskegiatan.update';
+        $listPermission['permen']['create'][] = 'admin.mskegiatan.create';
+        $listPermission['permen']['create'][] = 'admin.mskegiatan.store';
+        $listPermission['permen']['show'][] = 'admin.mskegiatan.show';
+        $listPermission['permen']['destroy'][] = 'admin.mskegiatan.destroy';
 
-        foreach ([
-                     'v1-mantra',
-                 ] as $keyPermission) {
-            $listPermission[$keyPermission] = [
-                'list' => [
-                    'admin.'.$keyPermission.'.index',
-                    'admin.'.$keyPermission.'.dataTable'
-                ],
-                'create' => [
-                    'admin.'.$keyPermission.'.create',
-                    'admin.'.$keyPermission.'.store'
-                ],
-                'edit' => [
-                    'admin.'.$keyPermission.'.edit',
-                    'admin.'.$keyPermission.'.update'
-                ],
-                'show' => [
-                    'admin.'.$keyPermission.'.show'
-                ]
-            ];
-        }
-
-        foreach ([
-                     'v1-log-login',
-                     'v1-games',
-                 ] as $keyPermission) {
-            $listPermission[$keyPermission] = [
-                'list' => [
-                    'admin.'.$keyPermission.'.index',
-                    'admin.'.$keyPermission.'.dataTable'
-                ],
-                'show' => [
-                    'admin.'.$keyPermission.'.show'
-                ]
-            ];
-        }
-
-        $listPermission['v1-questions']['list'][] = 'admin.v1-question-details.index';
-        $listPermission['v1-questions']['list'][] = 'admin.v1-question-details.dataTable';
-        $listPermission['v1-questions']['create'][] = 'admin.v1-question-details.create';
-        $listPermission['v1-questions']['create'][] = 'admin.v1-question-details.store';
-        $listPermission['v1-questions']['edit'][] = 'admin.v1-question-details.edit';
-        $listPermission['v1-questions']['edit'][] = 'admin.v1-question-details.update';
-        $listPermission['v1-questions']['show'][] = 'admin.v1-question-details.show';
 
         return $listPermission;
     }

@@ -48,8 +48,6 @@
         "files": [
             "app/Codes/Helpers/helpers.php",
             "app/Codes/Helpers/list_helpers.php",
-            "app/Codes/Helpers/google_helpers.php",
-            "app/Codes/Helpers/api_mail_helpers.php",
             "app/Codes/Helpers/permission_helpers.php",
             "app/Codes/Helpers/list_helpers_html.php"
         ]

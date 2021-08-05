@@ -25,8 +25,10 @@ class AdminAccessPermission
             $role = Cache::remember('role'.$adminRole, env('SESSION_LIFETIME'), function () use ($adminRole) {
                 return Role::where('id', '=', $adminRole)->first();
             });
+            
             if ($role) {
                 $permissionRoute = json_decode($role->permission_route, TRUE);
+            
                 if (in_array($getModuleName, $permissionRoute)) {
                     return $next($request);
                 }

@@ -51,6 +51,10 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 $router->resource($linkName, $controller, ['as' => 'admin']);
             }
 
+         $router->group(['prefix' => 'permen/{parent_id}'], function () use ($router) {
+             $router->get('mskegiatan/data', 'Admin\PermenMsKegiatanController@dataTable')->name('admin.mskegiatan.dataTable');
+             $router->resource('mskegiatan', 'Admin\PermenMsKegiatanController', ['as' => 'admin']);
+    });
 
             $router->get('report', 'Admin\ReportController@index')->name('admin.report');
             $router->get('/', ['uses' => 'Admin\DashboardController@dashboard'])->name('admin');

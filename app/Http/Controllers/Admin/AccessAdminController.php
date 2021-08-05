@@ -35,10 +35,11 @@ class AccessAdminController extends Controller
 
         $user = $this->accessLogin->cekLogin($this->request->get('username'),
             $this->request->get('password'), 'Users', 'username', 'password', ['status'=>1]);
+          //dd($user);
         if ($user) {
             $getRole = Role::where('id', $user->role_id)->first();
             $getPermissionData = isset($getRole) ? json_decode($getRole->permission_data, TRUE) : null;
-
+            
             session()->flush();
             session()->put('admin_id', $user->id);
             session()->put('admin_name', $user->name);
