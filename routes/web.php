@@ -61,7 +61,7 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
             $router->get('/', ['uses' => 'Admin\DashboardController@dashboard'])->name('admin');
 
            
-            $router->get('portal', ['uses'=>'Admin\HomeController@portal'])->name('admin.portal');
+           // $router->get('portal', ['uses'=>'Admin\HomeController@portal'])->name('admin.portal');
             $router->get('data-informasi', ['uses' => 'Admin\HomeController@dataInformasi'])->name('admin.dataInformasi');
        
 
