@@ -410,7 +410,6 @@ if ( ! function_exists('listAvailablePermission'))
             //'gender',
             //'user-registered',
             'golongan',
-            'jabatan-perancang',
             'jenjang-perancang',
             //'ms-kegiatan',
             'pendidikan',
