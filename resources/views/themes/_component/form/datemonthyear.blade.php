@@ -4,7 +4,7 @@ foreach ($fieldExtra as $extraKey => $extraVal) {
     $attribute[$extraKey] = $extraVal;
 }
 $attribute['id'] = $fieldName;
-$attribute['class'] = 'form-control pull-right datemonthyear';
+$attribute['class'] = 'form-control pull-right datemonthyear '.$fieldClass;
 if ($errors->has($fieldName)) {
     $attribute['class'] .= ' is-invalid';
 }
@@ -13,7 +13,7 @@ if ($fieldRequired == 1) {
     $attribute['required'] = 'true';
 }
 ?>
-<div class="form-group">
+<div class="form-group  {{ $fieldClassParent }}">
     <label for="{{$fieldName}}">{{ __($fieldLang) }} {{ $fieldRequired == 1 ? ' *' : '' }}</label>
     <div class="input-group">
         <div class="input-group-prepend datepicker-trigger">

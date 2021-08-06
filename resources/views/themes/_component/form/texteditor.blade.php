@@ -1,7 +1,7 @@
 <?php
 $attribute = $addAttribute;
 $attribute['id'] = $fieldName;
-$attribute['class'] = 'form-control texteditor';
+$attribute['class'] = 'form-control texteditor '.$fieldClass;
 if ($errors->has($fieldName)) {
     $attribute['class'] .= ' is-invalid';
 }
@@ -10,7 +10,7 @@ if ($fieldRequired == 1) {
     $attribute['required'] = 'true';
 }
 ?>
-<div class="form-group">
+<div class="form-group  {{ $fieldClassParent }}">
     <label for="{{$fieldName}}">{{ __($fieldLang) }} {{ $fieldRequired == 1 ? ' *' : '' }}</label>
     {{ Form::textarea($fieldName, old($fieldName, $fieldValue), $attribute) }}
     @if(isset($fieldMessage)) <span class="small">{!! $fieldMessage !!}</span> @endif

@@ -11,9 +11,16 @@ if ($fieldRequired == 1) {
 <div class="form-group  {{ $fieldClassParent }}">
     <label for="{{$fieldName}}">{{ __($fieldLang) }} {{ $fieldRequired == 1 ? ' *' : '' }}</label>
     @if($fieldValue)
-{{--        <br/>--}}
-{{--        <a href="{{ asset($path.$fieldValue) }}" target="_blank" title="{{$fieldName}}" download>{{ __('Download') }} </a>--}}
-{{--        <br/>--}}
+        <?php
+        $getFile = json_decode($fieldValue, true);
+        ?>
+        @if ($getFile)
+        @foreach($getFile as $file)
+        <br/>
+        <a href="{{ asset($file['location']) }}" target="_blank" title="{{$file['name']}}" download>{{ $file['name'] }} </a>
+        <br/>
+        @endforeach
+        @endif
     @endif
     @if(!in_array($viewType, ['show']))
         <br/>

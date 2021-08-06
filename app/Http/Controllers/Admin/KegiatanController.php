@@ -98,16 +98,16 @@ class KegiatanController extends _CrudController
     {
         $this->callPermission();
 
-        $userId = session()->get(env('APP_NAME') . 'admin_id');
+        $userId = session()->get('admin_id');
 
         $dataTables = new DataTables();
 
-        $builder = $this->model::query()->selectRaw('kegiatan.id, kegiatan.tanggal, kegiatan.judul, kegiatan.kredit,
-        kegiatan.satuan, B.name AS ms_kegiatan_name, C.nomor AS sp_nomor, D.nomor AS dupak_nomor, sp')
-            ->where('kegiatan.user_id', '=', $userId)
-            ->leftJoin('ms_kegiatan AS B', 'B.id', '=', 'kegiatan.ms_kegiatan_id')
-            ->leftJoin('surat_pernyataan AS C', 'C.id', '=', 'kegiatan.sp')
-            ->leftJoin('dupak AS D', 'D.id', '=', 'kegiatan.dupak_id');
+        $builder = $this->model::query()->selectRaw('tx_kegiatan.id, tx_kegiatan.tanggal, tx_kegiatan.judul, tx_kegiatan.kredit,
+        tx_kegiatan.satuan, B.name AS ms_kegiatan_name, C.nomor AS sp_nomor, D.nomor AS dupak_nomor')
+            ->where('tx_kegiatan.user_id', '=', $userId)
+            ->leftJoin('ms_kegiatan AS B', 'B.id', '=', 'tx_kegiatan.ms_kegiatan_id')
+            ->leftJoin('tx_surat_pernyataan AS C', 'C.id', '=', 'tx_kegiatan.surat_pernyataan_id')
+            ->leftJoin('dupak AS D', 'D.id', '=', 'tx_kegiatan.dupak_id');
 
         $dataTables = $dataTables->eloquent($builder)
             ->addColumn('action', function ($query) {

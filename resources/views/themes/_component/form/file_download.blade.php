@@ -11,9 +11,9 @@ if ($fieldRequired == 1) {
 <div class="form-group  {{ $fieldClassParent }}">
     <label for="{{$fieldName}}">{{ __($fieldLang) }} {{ $fieldRequired == 1 ? ' *' : '' }}</label>
     @if($fieldValue)
-{{--        <br/>--}}
-{{--        <a href="{{ asset($path.$fieldValue) }}" target="_blank" title="{{$fieldName}}" download>{{ __('Download') }} </a>--}}
-{{--        <br/>--}}
+        <br/>
+        <a href="{{ asset($path.$fieldValue) }}" target="_blank" title="{{$fieldName}}" download>{{ __('Download') }} </a>
+        <br/>
     @endif
     @if(!in_array($viewType, ['show']))
         <br/>
