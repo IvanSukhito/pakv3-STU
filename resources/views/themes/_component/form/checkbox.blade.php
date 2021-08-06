@@ -1,7 +1,7 @@
 <?php
 $attribute = $addAttribute;
 $attribute['id'] = $fieldName;
-$attribute['class'] = 'form-check-input '.$fieldClass;
+$attribute['class'] = 'form-check-input';
 if ($errors->has($fieldName)) {
     $attribute['class'] .= ' is-invalid';
 }
@@ -10,7 +10,7 @@ if ($fieldRequired == 1) {
     $attribute['required'] = 'true';
 }
 ?>
-<div class="form-group form-check {{ $fieldClassParent }}">
+<div class="form-group form-check">
     <label for="{{$fieldName}}" class="form-check-label">
         {{ Form::checkbox($fieldName, 1, old($fieldName, $fieldValue), $attribute) }}
         {{ __($fieldLang) }} {{ $fieldRequired == 1 ? ' *' : '' }}

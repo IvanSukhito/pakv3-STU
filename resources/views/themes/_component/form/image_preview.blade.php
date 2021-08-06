@@ -5,7 +5,7 @@ if ($fieldRequired == 1) {
     $attribute['required'] = 'true';
 }
 ?>
-<div class="form-group  {{ $fieldClassParent }}">
+<div class="form-group">
     <label for="{{$fieldName}}">{{ __($fieldLang) }} {{ $fieldRequired == 1 ? ' *' : '' }}</label>
     @if($fieldValue)
         <br/>
