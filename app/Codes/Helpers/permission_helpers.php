@@ -155,6 +155,35 @@ if ( ! function_exists('generateListPermission')) {
                     data-name="super_admin" name="permission[super_admin]" value="1" id="super_admin"/>
                     Super Admin
                 </label><br/><br/>';
+
+        $value = isset($data['perancang']) ? 'checked' : '';
+        $html .= '<label for="perancang">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="checkThis perancang"
+                    data-name="perancang" name="permission[perancang]" value="1" id="perancang"/>
+                    Perancang
+                </label><br/><br/>';
+
+        $value = isset($data['atasan']) ? 'checked' : '';
+        $html .= '<label for="atasan">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="checkThis atasan"
+                    data-name="atasan" name="permission[atasan]" value="1" id="atasan"/>
+                    Atasan
+                </label><br/><br/>';
+
+        $value = isset($data['seketariat']) ? 'checked' : '';
+        $html .= '<label for="seketariat">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="checkThis seketariat"
+                    data-name="seketariat" name="permission[seketariat]" value="1" id="seketariat"/>
+                    Seketariat
+                </label><br/><br/>';
+
+        $value = isset($data['tim_penilai']) ? 'checked' : '';
+        $html .= '<label for="tim_penilai">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="checkThis tim_penilai"
+                    data-name="tim_penilai" name="permission[tim_penilai]" value="1" id="tim_penilai"/>
+                    Time Penilai
+                </label><br/><br/>';
+
         $html .= createTreePermission(listAllMenu(), 0, 'checkThis super_admin', $data);
         return $html;
     }
@@ -258,7 +287,7 @@ if ( ! function_exists('listAllMenu')) {
                 'title' => __('general.kegiatan'),
                 'active' => [
                     'admin.kegiatan.',
-                   
+
                 ],
                 'type' => 2,
                 'data' => [
@@ -360,14 +389,14 @@ if ( ! function_exists('listAllMenu')) {
                 'icon' => '<i class="nav-icon fa fa-gear"></i>',
                 'title' => __('general.setting'),
                 'active' => [
-                   
+
                     'admin.role.'
                 ],
 
 
                 'type' => 2,
                 'data' => [
-              
+
                     [
                         'name' => __('general.role'),
                         'title' => __('general.role'),
@@ -431,7 +460,7 @@ if ( ! function_exists('listAvailablePermission'))
         }
         $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
         $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';
-        
+
         $listPermission['permen']['edit'][] = 'admin.mskegiatan.edit';
         $listPermission['permen']['edit'][] = 'admin.mskegiatan.update';
         $listPermission['permen']['create'][] = 'admin.mskegiatan.create';
