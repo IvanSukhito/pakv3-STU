@@ -258,7 +258,7 @@ if ( ! function_exists('listAllMenu')) {
                 'title' => __('general.kegiatan'),
                 'active' => [
                     'admin.kegiatan.',
-                   
+
                 ],
                 'type' => 2,
                 'data' => [
@@ -280,44 +280,7 @@ if ( ! function_exists('listAllMenu')) {
                     ]
                 ]
             ],
-            [
-                                       'name' => __('general.golongan'),
-                                       'icon' => '<i class="nav-icon fa fa-users"></i>',
-                                       'title' => __('general.golongan'),
-                                       'active' => ['admin.golongan.'],
-                                       'route' => 'admin.golongan.index',
-                                       'key' => 'golongan',
-                                       'type' => 1
-                                   ],
-                                   [
-                                       'name' => __('general.unit_kerja'),
-                                       'icon' => '<i class="nav-icon fa fa-university"></i>',
-                                       'title' => __('general.unit_kerja'),
-                                       'active' => ['admin.unit_kerja.'],
-                                       'route' => 'admin.unit-kerja.index',
-                                       'key' => 'unit-kerja',
-                                       'type' => 1
-                                   ],
-                                   [
-                                       'name' => __('general.pendidikan'),
-                                       'icon' => '<i class="nav-icon fa fa-graduation-cap"></i>',
-                                       'title' => __('general.pendidikan'),
-                                       'active' => ['admin.pendidikan.'],
-                                       'route' => 'admin.pendidikan.index',
-                                       'key' => 'pendidikan',
-                                       'type' => 1
-                                   ],
-                                   
-                                 
-                                [
-                                    'name' => __('general.jenjang-perancang'),
-                                    'icon' => '<i class="nav-icon fa fa-server"></i>',
-                                    'title' => __('general.jenjang-perancang'),
-                                    'active' => ['admin.jenjang-perancang.'],
-                                    'route' => 'admin.jenjang-perancang.index',
-                                    'key' => 'jenjang-perancang',
-                                    'type' => 1
-                                ],
+
             //PERMEN
             [
                 'name' => __('general.permen'),
@@ -353,14 +316,14 @@ if ( ! function_exists('listAllMenu')) {
                 'icon' => '<i class="nav-icon fa fa-gear"></i>',
                 'title' => __('general.setting'),
                 'active' => [
-                   
+
                     'admin.role.'
                 ],
 
 
                 'type' => 2,
                 'data' => [
-              
+
                     [
                         'name' => __('general.role'),
                         'title' => __('general.role'),
@@ -368,7 +331,44 @@ if ( ! function_exists('listAllMenu')) {
                         'route' => 'admin.role.index',
                         'key' => 'role',
                         'type' => 1
-                    ]
+                    ],
+                    [
+                        'name' => __('general.golongan'),
+                        'icon' => '<i class="nav-icon fa fa-users"></i>',
+                        'title' => __('general.golongan'),
+                        'active' => ['admin.golongan.'],
+                        'route' => 'admin.golongan.index',
+                        'key' => 'golongan',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.unit_kerja'),
+                        'icon' => '<i class="nav-icon fa fa-university"></i>',
+                        'title' => __('general.unit_kerja'),
+                        'active' => ['admin.unit_kerja.'],
+                        'route' => 'admin.unit-kerja.index',
+                        'key' => 'unit-kerja',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.pendidikan'),
+                        'icon' => '<i class="nav-icon fa fa-graduation-cap"></i>',
+                        'title' => __('general.pendidikan'),
+                        'active' => ['admin.pendidikan.'],
+                        'route' => 'admin.pendidikan.index',
+                        'key' => 'pendidikan',
+                        'type' => 1
+                    ],
+
+                    [
+                        'name' => __('general.jenjang-perancang'),
+                        'icon' => '<i class="nav-icon fa fa-server"></i>',
+                        'title' => __('general.jenjang-perancang'),
+                        'active' => ['admin.jenjang-perancang.'],
+                        'route' => 'admin.jenjang-perancang.index',
+                        'key' => 'jenjang-perancang',
+                        'type' => 1
+                    ],
                 ]
             ],
         ];
@@ -424,7 +424,7 @@ if ( ! function_exists('listAvailablePermission'))
         }
         $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
         $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';
-        
+
         $listPermission['permen']['edit'][] = 'admin.mskegiatan.edit';
         $listPermission['permen']['edit'][] = 'admin.mskegiatan.update';
         $listPermission['permen']['create'][] = 'admin.mskegiatan.create';
