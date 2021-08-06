@@ -16,14 +16,6 @@ class AdminController extends _CrudController
                 'edit' => 0,
                 'show' => 0
             ],
-            'role_id' => [
-                'validate' => [
-                    'create' => 'required',
-                    'edit' => 'required'
-                ],
-                'type' => 'select',
-                'lang' => 'general.role'
-            ],
             'name' => [
                 'validate' => [
                     'create' => 'required',
@@ -51,6 +43,14 @@ class AdminController extends _CrudController
                 ],
                 'type' => 'select'
             ],
+            'role_id' => [
+                'validate' => [
+                    'create' => 'required',
+                    'edit' => 'required'
+                ],
+                'type' => 'select',
+                'lang' => 'general.role'
+            ],
             'created_at' => [
                 'create' => 0,
                 'edit' => 0,
@@ -64,7 +64,7 @@ class AdminController extends _CrudController
         ];
 
         parent::__construct(
-            $request, 'general.admin', 'admin', 'Admin', 'admin',
+            $request, 'general.admin', 'admin', 'Users', 'admin',
             $passingData
         );
 
@@ -74,6 +74,7 @@ class AdminController extends _CrudController
         ];
 
     }
+
 
     public function destroy($id)
     {
