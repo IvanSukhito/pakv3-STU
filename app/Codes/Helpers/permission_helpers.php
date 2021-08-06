@@ -280,7 +280,54 @@ if ( ! function_exists('listAllMenu')) {
     function listAllMenu()
     {
         return [
-       //KEGIATAN
+            //STAF
+            [
+                'name' => __('general.staff'),
+                'icon' => '<i class="nav-icon fa fa-book"></i>',
+                'title' => __('general.staff'),
+                'active' => [
+                    'admin.staff.',
+
+                ],
+                'type' => 2,
+                'data' => [
+                    [
+                        'name' => __('general.perancang'),
+                        'title' => __('general.perancang'),
+                        'active' => ['admin.perancang.'],
+                        'route' => 'admin.perancang.index',
+                        'key' => 'perancang',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.atasan'),
+                        'title' => __('general.atasan'),
+                        'active' => ['admin.atasan.'],
+                        'route' => 'admin.atasan.index',
+                        'key' => 'atasan',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.seketariat'),
+                        'title' => __('general.seketariat'),
+                        'active' => ['admin.seketariat.'],
+                        'route' => 'admin.seketariat.index',
+                        'key' => 'seketariat',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.tim_penilai'),
+                        'title' => __('general.tim_penilai'),
+                        'active' => ['admin.tim_penilai.'],
+                        'route' => 'admin.tim_penilai.index',
+                        'key' => 'tim_penilai',
+                        'type' => 1
+                    ],
+
+                ]
+            ],
+
+            //KEGIATAN
             [
                 'name' => __('general.kegiatan'),
                 'icon' => '<i class="nav-icon fa fa-book"></i>',
@@ -423,6 +470,10 @@ if ( ! function_exists('listAvailablePermission'))
             'ms-kegiatan',
             'kegiatan',
             'create_kegiatan',
+            'perancang',
+            'atasan',
+            'seketariat',
+            'tim_penilai',
             //'kegiatan',
             //'surat-pernyataan',
             //'dupak',
