@@ -64,7 +64,7 @@ class AdminController extends _CrudController
         ];
 
         parent::__construct(
-            $request, 'general.admin', 'admin', 'Admin', 'admin',
+            $request, 'general.admin', 'admin', 'Users', 'admin',
             $passingData
         );
 
@@ -74,6 +74,7 @@ class AdminController extends _CrudController
         ];
 
     }
+
 
     public function destroy($id)
     {

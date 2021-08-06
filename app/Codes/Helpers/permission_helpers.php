@@ -307,6 +307,14 @@ if ( ! function_exists('listAllMenu')) {
                         'route' => 'admin.ms-kegiatan.index',
                         'key' => 'ms-kegiatan',
                         'type' => 1
+                    ],
+                    [
+                        'name' => __('general.user'),
+                        'title' => __('general.user'),
+                        'active' => ['admin.admin.'],
+                        'route' => 'admin.admin.index',
+                        'key' => 'admin',
+                        'type' => 1
                     ]
                 ]
             ],
@@ -330,6 +338,14 @@ if ( ! function_exists('listAllMenu')) {
                         'active' => ['admin.role.'],
                         'route' => 'admin.role.index',
                         'key' => 'role',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.user'),
+                        'title' => __('general.user'),
+                        'active' => ['admin.admin.'],
+                        'route' => 'admin.admin.index',
+                        'key' => 'admin',
                         'type' => 1
                     ],
                     [
@@ -399,7 +415,8 @@ if ( ! function_exists('listAvailablePermission'))
             //'ms-kegiatan',
             'pendidikan',
             'unit-kerja',
-            'role'
+            'role',
+            'admin'
                  ] as $keyPermission) {
             $listPermission[$keyPermission] = [
                 'list' => [
