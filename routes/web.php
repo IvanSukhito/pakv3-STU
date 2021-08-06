@@ -55,6 +55,8 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\KegiatanController' => 'kegiatan',
                 'Admin\PermenController' => 'permen',
                 'Admin\MsKegiatanController' => 'ms-kegiatan',
+                'Admin\SuratPernyataanController' => 'surat-pernyataan',
+
 
             ];
             foreach ($listRouter as $controller => $linkName) {

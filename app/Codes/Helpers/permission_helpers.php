@@ -345,7 +345,8 @@ if ( ! function_exists('listAllMenu')) {
                 'icon' => '<i class="nav-icon fa fa-book"></i>',
                 'title' => __('general.kegiatan'),
                 'active' => [
-                    'admin.kegiatan.',
+                    'admin.kegiatan.index',
+                    'admin.kegiatan.create'
 
                 ],
                 'type' => 2,
@@ -368,7 +369,36 @@ if ( ! function_exists('listAllMenu')) {
                     ]
                 ]
             ],
+            //Surat Pernyataan
+            [
+                'name' => __('general.surat_pernyataan'),
+                'icon' => '<i class="nav-icon fa fa-envelope"></i>',
+                'title' => __('general.surat_pernyataan'),
+                'active' => [
+                    'admin.surat-pernyataan.index',
+                    'admin.surat-pernyataan.create'
+                ],
+                'type' => 2,
+                'data' => [
+                    [
+                        'name' => __('general.surat_pernyataan'),
+                        'title' => __('general.surat_pernyataan'),
+                        'active' => ['admin.surat-pernyataan.'],
+                        'route' => 'admin.surat-pernyataan.index',
+                        'key' => 'surat-pernyataan',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.create_surat_pernyataan'),
+                        'title' => __('general.create_surat_pernyataan'),
+                        'active' => ['admin.surat-pernyataan.create'],
+                        'route' => 'admin.surat-pernyataan.create',
+                        'key' => 'surat-pernyataan',
+                        'type' => 1
+                    ]
 
+                ]
+            ],
             //PERMEN
             [
                 'name' => __('general.permen'),
@@ -489,7 +519,7 @@ if ( ! function_exists('listAvailablePermission'))
             'seketariat',
             'tim_penilai',
             //'kegiatan',
-            //'surat-pernyataan',
+            'surat-pernyataan',
             //'dupak',
             //'bapak',
             //'staff',

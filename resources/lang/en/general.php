@@ -91,6 +91,7 @@ return [
     'jabatan-perancang' => 'Jabatan Perancang',
     'jenjang-perancang' => 'Jenjang Perancang',
     'pangkat' => 'pangkat',
+    'submit_per_tanggal' => 'Submit Per Tanggal',
     'key' => 'Key',
     'latitude' => 'Latitude',
     'link' => 'Link',

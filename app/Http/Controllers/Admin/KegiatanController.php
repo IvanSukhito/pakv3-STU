@@ -84,6 +84,7 @@ class KegiatanController extends _CrudController
             $passingData
         );
 
+        $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.list';
         $this->listView['create'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms';
         $this->listView['show'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms';
         $this->listView['edit'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms';
@@ -241,7 +242,7 @@ class KegiatanController extends _CrudController
         $getStaff = Users::where('id', $userId)->first();
         $getUser = Users::where('id', $userId)->first();
         $user_nip = $getUser->username;
-        
+
         $list_ms_kegiatan = [];
         $ms_kegiatan = MsKegiatan::where('status', 1)->get();
         foreach ($ms_kegiatan as $list) {
