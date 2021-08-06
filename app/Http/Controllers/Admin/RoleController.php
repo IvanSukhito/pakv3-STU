@@ -108,6 +108,7 @@ class RoleController extends _CrudController
         $data = $this->getCollectedData($getListCollectData, $view_type, $data, $getData);
 
         $permission = getValidatePermissionMenu($this->request->get('permission'));
+        var_dump($permission); die();
 
 
         $data['permission_data'] = json_encode($permission);

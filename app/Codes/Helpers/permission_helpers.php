@@ -134,6 +134,18 @@ if ( ! function_exists('getValidatePermissionMenu')) {
                 if ($key == 'super_admin') {
                     $listMenu['super_admin'] = 1;
                 }
+                else if ($key == 'role_perancang') {
+                    $listMenu['role_perancang'] = 1;
+                }
+                else if ($key == 'role_atasan') {
+                    $listMenu['role_atasan'] = 1;
+                }
+                else if ($key == 'role_seketariat') {
+                    $listMenu['role_seketariat'] = 1;
+                }
+                else if ($key == 'role_tim_penilai') {
+                    $listMenu['role_tim_penilai'] = 1;
+                }
                 else {
                     if (is_array($route)) {
                         foreach ($route as $key2 => $route2) {
@@ -156,31 +168,31 @@ if ( ! function_exists('generateListPermission')) {
                     Super Admin
                 </label><br/><br/>';
 
-        $value = isset($data['perancang']) ? 'checked' : '';
-        $html .= '<label for="perancang">
-                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="checkThis perancang"
-                    data-name="perancang" name="permission[perancang]" value="1" id="perancang"/>
+        $value = isset($data['role_perancang']) ? 'checked' : '';
+        $html .= '<label for="role_perancang">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_perancang"
+                    data-name="role_perancang" name="permission[role_perancang]" value="1" id="role_perancang"/>
                     Perancang
                 </label><br/><br/>';
 
-        $value = isset($data['atasan']) ? 'checked' : '';
-        $html .= '<label for="atasan">
-                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="checkThis atasan"
-                    data-name="atasan" name="permission[atasan]" value="1" id="atasan"/>
+        $value = isset($data['role_atasan']) ? 'checked' : '';
+        $html .= '<label for="role_atasan">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_atasan"
+                    data-name="role_atasan" name="permission[role_atasan]" value="1" id="role_atasan"/>
                     Atasan
                 </label><br/><br/>';
 
-        $value = isset($data['seketariat']) ? 'checked' : '';
-        $html .= '<label for="seketariat">
-                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="checkThis seketariat"
-                    data-name="seketariat" name="permission[seketariat]" value="1" id="seketariat"/>
+        $value = isset($data['role_seketariat']) ? 'checked' : '';
+        $html .= '<label for="role_seketariat">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_seketariat"
+                    data-name="role_seketariat" name="permission[role_seketariat]" value="1" id="role_seketariat"/>
                     Seketariat
                 </label><br/><br/>';
 
-        $value = isset($data['tim_penilai']) ? 'checked' : '';
-        $html .= '<label for="tim_penilai">
-                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="checkThis tim_penilai"
-                    data-name="tim_penilai" name="permission[tim_penilai]" value="1" id="tim_penilai"/>
+        $value = isset($data['role_tim_penilai']) ? 'checked' : '';
+        $html .= '<label for="role_tim_penilai">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_tim_penilai"
+                    data-name="role_tim_penilai" name="permission[role_tim_penilai]" value="1" id="role_tim_penilai"/>
                     Time Penilai
                 </label><br/><br/>';
 
@@ -237,7 +249,7 @@ if ( ! function_exists('getPermissionRouteList')) {
         $listAllowed = [];
         $listPermission = listAvailablePermission();
         foreach ($listPermission as $key => $list) {
-            if ($key == 'super_admin')
+            if (in_array($key, ['super_admin', 'super_admin', 'super_admin', 'super_admin', 'super_admin']))
                 continue;
             foreach ($list as $key2 => $listRoute) {
                 if (isset($listMenu[$key][$key2])) {
