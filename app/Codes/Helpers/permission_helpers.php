@@ -387,19 +387,22 @@ if ( ! function_exists('listAllMenu')) {
 
                 ]
             ],
-
+            //SETTING
             [
                 'name' => __('general.setting'),
                 'icon' => '<i class="nav-icon fa fa-gear"></i>',
                 'title' => __('general.setting'),
                 'active' => [
-
-                    'admin.role.'],
-
+                    'admin.role.',
+                    'admin.admin.',
+                    'admin.golongan.',
+                    'admin.unit_kerja.',
+                    'admin.pendidikan.',
+                    'admin.jejang_perancang.'
+                ],
 
                 'type' => 2,
                 'data' => [
-
                     [
                         'name' => __('general.role'),
                         'title' => __('general.role'),
@@ -443,7 +446,6 @@ if ( ! function_exists('listAllMenu')) {
                         'key' => 'pendidikan',
                         'type' => 1
                     ],
-
                     [
                         'name' => __('general.jenjang-perancang'),
                         'icon' => '<i class="nav-icon fa fa-server"></i>',
