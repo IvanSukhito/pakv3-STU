@@ -307,18 +307,11 @@ if ( ! function_exists('listAllMenu')) {
                                        'key' => 'pendidikan',
                                        'type' => 1
                                    ],
-                                   [
-                                    'name' => __('general.jabatan-perancang'),
-                                    'icon' => '<i class="nav-icon fa fa-server"></i>',
-                                    'title' => __('general.jabatan-perancang'),
-                                    'active' => ['admin.jabatan-perancang.'],
-                                    'route' => 'admin.jabatan-perancang.index',
-                                    'key' => 'jabatan-perancang',
-                                    'type' => 1
-                                ],
+                                   
+                                 
                                 [
                                     'name' => __('general.jenjang-perancang'),
-                                    'icon' => '<i class="nav-icon fa fa-database"></i>',
+                                    'icon' => '<i class="nav-icon fa fa-server"></i>',
                                     'title' => __('general.jenjang-perancang'),
                                     'active' => ['admin.jenjang-perancang.'],
                                     'route' => 'admin.jenjang-perancang.index',
