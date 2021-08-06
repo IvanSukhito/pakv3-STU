@@ -308,7 +308,7 @@ if ( ! function_exists('listAllMenu')) {
                         'key' => 'ms-kegiatan',
                         'type' => 1
                     ]
-                  
+
                 ]
             ],
 
@@ -318,8 +318,7 @@ if ( ! function_exists('listAllMenu')) {
                 'title' => __('general.setting'),
                 'active' => [
 
-                    'admin.role.'
-                ],
+                    'admin.role.'],
 
 
                 'type' => 2,
@@ -334,8 +333,8 @@ if ( ! function_exists('listAllMenu')) {
                         'type' => 1
                     ],
                     [
-                        'name' => __('general.user'),
-                        'title' => __('general.user'),
+                        'name' => __('general.admin'),
+                        'title' => __('general.admin'),
                         'active' => ['admin.admin.'],
                         'route' => 'admin.admin.index',
                         'key' => 'admin',

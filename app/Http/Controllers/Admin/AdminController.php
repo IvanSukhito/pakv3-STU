@@ -16,14 +16,6 @@ class AdminController extends _CrudController
                 'edit' => 0,
                 'show' => 0
             ],
-            'role_id' => [
-                'validate' => [
-                    'create' => 'required',
-                    'edit' => 'required'
-                ],
-                'type' => 'select',
-                'lang' => 'general.role'
-            ],
             'name' => [
                 'validate' => [
                     'create' => 'required',
@@ -50,6 +42,14 @@ class AdminController extends _CrudController
                     'edit' => 'required'
                 ],
                 'type' => 'select'
+            ],
+            'role_id' => [
+                'validate' => [
+                    'create' => 'required',
+                    'edit' => 'required'
+                ],
+                'type' => 'select',
+                'lang' => 'general.role'
             ],
             'created_at' => [
                 'create' => 0,
