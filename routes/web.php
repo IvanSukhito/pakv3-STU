@@ -17,20 +17,30 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
     $router->get('login', ['uses'=>'Admin\AccessAdminController@getLogin', 'middleware'=>['have_login_admin']])->name('admin.login');
     $router->post('login', ['uses'=>'Admin\AccessAdminController@postLogin', 'middleware'=>['have_login_admin']])->name('admin.login.post');
     $router->get('logout', ['uses'=>'Admin\AccessAdminController@doLogout'])->name('admin.logout');
+
     $router->get('data-perancang', ['uses'=>'Admin\HomeController@dataPerancang'])->name('admin.dataPerancang');
     $router->get('register', ['uses'=>'Admin\HomeController@register'])->name('admin.get.register');
     $router->post('register', ['uses'=>'Admin\HomeController@postRegister'])->name('admin.post.register');
     $router->get('/', ['uses'=>'Admin\HomeController@checkData'])->name('admin.checkData');
 
     $router->group(['middleware' => ['admin_login', 'preventBackHistory']], function () use ($router) {
+
         $router->group(['prefix' => 'profile'], function () use ($router) {
-            $router->get('edit', ['uses'=>'Admin\ProfileController@getProfile'])->name('admin.getProfile');
-            $router->post('edit', ['uses'=>'Admin\ProfileController@postProfile'])->name('admin.postProfile');
-            $router->get('password', ['uses'=>'Admin\ProfileController@getPassword'])->name('admin.getPassword');
-            $router->post('password', ['uses'=>'Admin\ProfileController@postPassword'])->name('admin.postPassword');
-        //    $router->get('dashboard', ['uses'=>'Admin\ProfileController@dashboard'])->name('admin.dashboard');
+            $router->get('edit', ['uses'=>'Admin\ProfileController@getProfile'])->name('admin.get_profile');
+            $router->post('edit', ['uses'=>'Admin\ProfileController@postProfile'])->name('admin.post_profile');
+            $router->get('password', ['uses'=>'Admin\ProfileController@getPassword'])->name('admin.get_password');
+            $router->post('password', ['uses'=>'Admin\ProfileController@postPassword'])->name('admin.post_password');
             $router->get('/', ['uses'=>'Admin\ProfileController@profile'])->name('admin.profile');
         });
+
+//        $router->group(['prefix' => 'profile'], function () use ($router) {
+//            $router->get('edit', ['uses'=>'Admin\ProfileController@getProfile'])->name('admin.getProfile');
+//            $router->post('edit', ['uses'=>'Admin\ProfileController@postProfile'])->name('admin.postProfile');
+//            $router->get('password', ['uses'=>'Admin\ProfileController@getPassword'])->name('admin.getPassword');
+//            $router->post('password', ['uses'=>'Admin\ProfileController@postPassword'])->name('admin.postPassword');
+//        //    $router->get('dashboard', ['uses'=>'Admin\ProfileController@dashboard'])->name('admin.dashboard');
+//            $router->get('/', ['uses'=>'Admin\ProfileController@profile'])->name('admin.profile');
+//        });
 
         $router->group(['middleware' => ['admin_access_permission']], function () use ($router) {
             $listRouter = [
@@ -62,10 +72,10 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
             $router->get('report', 'Admin\ReportController@index')->name('admin.report');
             $router->get('/', ['uses' => 'Admin\DashboardController@dashboard'])->name('admin');
 
-           
+
            // $router->get('portal', ['uses'=>'Admin\HomeController@portal'])->name('admin.portal');
             $router->get('data-informasi', ['uses' => 'Admin\HomeController@dataInformasi'])->name('admin.dataInformasi');
-       
+
 
     });
 
