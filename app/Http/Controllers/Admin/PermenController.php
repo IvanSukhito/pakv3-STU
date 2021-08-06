@@ -43,6 +43,15 @@ class PermenController extends _CrudController
                 'list' => 0,
                 'type' => 'datepicker',
             ],
+            'orders' => [
+                'validate' => [
+                    'create' => 'required',
+                    'update' => 'required',
+                ],
+                'list' => 1,
+                'edit' => 1 ,
+                'type' => 'select2',
+            ],
             'status' => [
                 'validate' => [
                     'create' => 'required',
@@ -50,19 +59,8 @@ class PermenController extends _CrudController
                 ],
                 'list' => 1,
                 'edit' => 1 ,
-                'lang' => 'Status',
                 'type' => 'select2',
             ],
-//            'ms_kegiatan_id' => [
-//                'validate' => [
-//                    'create' => 'required',
-//                ],
-//                'edit' => 0,
-//                'list' => 0,
-//                'type' => 'select',
-//                'lang' => 'Peraturan Mentri',
-//            ],
-
             'action' => [
                 'create' => 0,
                 'edit' => 0,
