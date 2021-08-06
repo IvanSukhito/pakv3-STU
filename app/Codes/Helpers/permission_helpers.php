@@ -307,15 +307,8 @@ if ( ! function_exists('listAllMenu')) {
                         'route' => 'admin.ms-kegiatan.index',
                         'key' => 'ms-kegiatan',
                         'type' => 1
-                    ],
-                    [
-                        'name' => __('general.user'),
-                        'title' => __('general.user'),
-                        'active' => ['admin.admin.'],
-                        'route' => 'admin.admin.index',
-                        'key' => 'admin',
-                        'type' => 1
                     ]
+                  
                 ]
             ],
 
