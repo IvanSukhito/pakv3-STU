@@ -25,7 +25,10 @@ if ( ! function_exists('render_kegiatan_v3')) {
         $html = '<table class="table table-kegiatan table-bordered table-striped">
                     <thead>
                     <tr>
-                    <th colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
+                    <th width="80%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
+                    <th width="5%">AK</th>
+                    <th width="10%">Satuan</th>
+                    <th width="15%">Pelaksana</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -68,6 +71,9 @@ if ( ! function_exists('render_kegiatan_html_v3')) {
 
             $name = $getMsKegiatan ? $getMsKegiatan->name : '&nbsp;';
             $newClass = $class.'kegiatan-'.$getMsKegiatan->id.' ';
+            $ak = '&nbsp;';
+            $satuan = '&nbsp;';
+            $pelaksana = $getJenjangPerancang;
 
             if ($getMsKegiatan && $getMsKegiatan->ak > 0) {
 
@@ -103,13 +109,22 @@ if ( ! function_exists('render_kegiatan_html_v3')) {
                 ];
 
                 $name = view(env('ADMIN_TEMPLATE').'.page.kegiatan.form_kegiatan_view2', $data)->render();
+                $ak = $kredit;
 
             }
+            else {
+                $ak = calculate_jenjang($jejangPerancangId, $getMsKegiatan->jenjang_perancang_id, $listJenjangPerancang, $getMsKegiatan->ak);
+            }
+
+            $satuan = $getMsKegiatan ? $getMsKegiatan->satuan : '&nbsp;';
 
             $html .= '<tr class="all-row '.$class.'" id="kegiatan-'.$getMsKegiatan->id.'" style="display: none;">';
 
             for($i=1; $i<=$deep; $i++) {
-                $html .= '<td width="1%">&nbsp;</td>';
+                $html .= '<td width="1%">&nbsp;</td>
+                <td width="5%">'.$ak.'</td>
+                <td width="10%">'.$satuan.'</td>
+                <td width="15%">'.$pelaksana.'</td>';
             }
 
             $html .= '
