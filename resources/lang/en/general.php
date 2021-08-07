@@ -521,7 +521,6 @@ return [
     'unggah' => 'Unggah File',
     'kirim' =>'Kirim',
 
-
     'ask_save' => 'Do you want to save this? ',
     'ask_delete' => 'Do you want to delete this? ',
     'ask_void' => 'Do you want to void this? ',
@@ -557,6 +556,7 @@ return [
     'customer_service' => 'Customer Service',
     'resolution_image_fb' => 'Resolution 1200 x 630',
     'resolution_image_twitter' => 'Resolution 1200 x 630',
-    'date_has_passed'          => 'Maaf Tanggal Kegiatan telah lewat dari tanggal berakhir nya PERMEN, Dimohon cek kembali',
+    'date_has_passed' => 'Maaf Tanggal Kegiatan telah lewat dari tanggal berakhir nya PERMEN, Dimohon cek kembali',
+    'error_no_upline' => 'Maaf, Perancang tidak memiliki atasan',
 
 ];

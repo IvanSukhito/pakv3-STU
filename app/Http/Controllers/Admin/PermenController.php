@@ -18,20 +18,18 @@ class PermenController extends _CrudController
                 'create' => 0,
                 'edit' => 0,
                 'show' => 0,
-                'lang' => 'ID',
+                'lang' => 'general.id',
             ],
             'name' => [
                 'validate' => [
                     'create' => 'required',
                 ],
-                'edit' => 1,
                 'lang' => 'Nama',
             ],
             'tanggal_start' => [
                 'validate' => [
                     'create' => 'required',
                 ],
-                'edit' => 1,
                 'list' => 0,
                 'type' => 'datepicker',
             ],
@@ -39,7 +37,6 @@ class PermenController extends _CrudController
                 'validate' => [
                     'create' => 'required',
                 ],
-                'edit' => 1,
                 'list' => 0,
                 'type' => 'datepicker',
             ],
@@ -48,17 +45,13 @@ class PermenController extends _CrudController
                     'create' => 'required',
                     'update' => 'required',
                 ],
-                'list' => 1,
-                'edit' => 1 ,
-                'type' => 'select2',
+                'type' => 'number',
             ],
             'status' => [
                 'validate' => [
                     'create' => 'required',
                     'update' => 'required',
                 ],
-                'list' => 1,
-                'edit' => 1 ,
                 'type' => 'select2',
             ],
             'action' => [
@@ -74,9 +67,7 @@ class PermenController extends _CrudController
             $passingData
         );
 
-        // $this->listView['edit'] = env('ADMIN_TEMPLATE') . '.page.permen.edit';
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.permen.list';
-//        $this->listView['show'] = env('ADMIN_TEMPLATE') . '.page.permen.ms_kegiatan';
         $this->listView['dataTable'] = env('ADMIN_TEMPLATE') . '.page.permen.list_button';
 
         $this->data['listSet']['status'] = get_list_active_inactive();

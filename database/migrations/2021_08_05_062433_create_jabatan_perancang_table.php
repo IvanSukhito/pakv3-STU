@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePermenTable extends Migration
+class CreateJabatanPerancangTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreatePermenTable extends Migration
      */
     public function up()
     {
-        Schema::create('permen', function (Blueprint $table) {
+        Schema::create('jabatan_perancang', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->nullable();
-            $table->date('tanggal_start')->nullable();
-            $table->date('tanggal_end')->nullable();
-            $table->integer('orders')->default(1);
+            $table->string('name');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
@@ -31,6 +28,6 @@ class CreatePermenTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('permen');
+        Schema::dropIfExists('jabatan_perancang');
     }
 }

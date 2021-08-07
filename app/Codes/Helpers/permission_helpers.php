@@ -406,7 +406,7 @@ if ( ! function_exists('listAllMenu')) {
                 'title' => __('general.permen'),
                 'active' => [
                     'admin.permen.',
-                    'admin.mskegiatan.'
+                    'admin.ms-kegiatan.'
                 ],
                 'type' => 2,
                 'data' => [
@@ -438,9 +438,9 @@ if ( ! function_exists('listAllMenu')) {
                     'admin.role.',
                     'admin.admin.',
                     'admin.golongan.',
-                    'admin.unit_kerja.',
+                    'admin.unit-kerja.',
                     'admin.pendidikan.',
-                    'admin.jejang_perancang.'
+                    'admin.jenjang-perancang.'
                 ],
 
                 'type' => 2,
@@ -474,7 +474,7 @@ if ( ! function_exists('listAllMenu')) {
                         'name' => __('general.unit_kerja'),
                         'icon' => '<i class="nav-icon fa fa-university"></i>',
                         'title' => __('general.unit_kerja'),
-                        'active' => ['admin.unit_kerja.'],
+                        'active' => ['admin.unit-kerja.'],
                         'route' => 'admin.unit-kerja.index',
                         'key' => 'unit-kerja',
                         'type' => 1

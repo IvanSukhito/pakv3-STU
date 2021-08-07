@@ -19,6 +19,26 @@ class SetupSeeder extends Seeder
 
         DB::table('golongan')->insert(
             array(
+                array('name' => 'III/a'),
+                array('name' => 'III/b'),
+                array('name' => 'III/c'),
+                array('name' => 'III/d'),
+                array('name' => 'IV/a'),
+                array('name' => 'IV/b'),
+                array('name' => 'IV/c'),
+                array('name' => 'IV/d'),
+                array('name' => 'IV/e'),
+            )
+        );
+
+        DB::table('jabatan_perancang')->truncate();
+
+        DB::table('jabatan_perancang')->insert(
+            array(
+                array('name' => 'Juru Muda'),
+                array('name' => 'Juru Muda Tingkat I'),
+                array('name' => 'Juru'),
+                array('name' => 'Juru Tingkat I'),
                 array('name' => 'Penata Muda'),
                 array('name' => 'Penata Muda Tingkat I'),
                 array('name' => 'Penata'),
@@ -144,7 +164,6 @@ class SetupSeeder extends Seeder
                 array('name' => 'Kementerian Pemberdayaan Perempuan dan Perlindungan Anak Indonesia')
             )
         );
-
 
 
         DB::table('pendidikan')->truncate();

@@ -7,7 +7,6 @@ use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
 use App\Codes\Models\Permen;
-use App\Codes\Models\Staffs;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
@@ -86,9 +85,6 @@ class KegiatanController extends _CrudController
 
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.list';
         $this->listView['create'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms';
-        $this->listView['show'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms';
-        $this->listView['edit'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms';
-        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.kegiatan.list_button';
 
         $this->data['listSet']['status'] = get_list_status();
         $this->data['listSet']['ms_kegiatan_id'] = MsKegiatan::pluck('name', 'id')->toArray();
@@ -164,9 +160,18 @@ class KegiatanController extends _CrudController
         $userId = session()->get('admin_id');
 
         $getStaff = Users::where('id', $userId)->first();
+        if ($getStaff->upline_id <= 0) {
+            session()->flash('message', __('general.error_no_upline'));
+            session()->flash('message_alert', 1);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
 
         $getFilterPermen = Permen::where('status', 1)->pluck('name', 'id')->toArray();
-        $getKegiatan = MsKegiatan::where('status', 1)->where('permen_id', '>', 0)->get();
+        $getListPermen = [];
+        foreach ($getFilterPermen as $key => $val) {
+            $getListPermen[] = $val;
+        }
+        $getKegiatan = MsKegiatan::where('status', 1)->whereIn('permen_id', $getListPermen)->get();
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getFilterKegiatan = [];
