@@ -67,10 +67,7 @@ if ( ! function_exists('render_kegiatan_html_v3')) {
             }
 
             $name = $getMsKegiatan ? $getMsKegiatan->name : '&nbsp;';
-
-            if ($deep == 0) {
-                $class = ' kegiatan-'.$getMsKegiatan->id.' ';
-            }
+            $newClass = $class.'kegiatan-'.$getMsKegiatan->id.' ';
 
             if ($getMsKegiatan && $getMsKegiatan->ak > 0) {
 
@@ -84,8 +81,8 @@ if ( ! function_exists('render_kegiatan_html_v3')) {
 
                 if($getDataKegiatan) {
                     foreach($getDataKegiatan as $list2) {
-                        $get_dokument = json_decode($list2->dokument, true);
-                        $get_dokument_fisik = json_decode($list2->dokumen_fisik, true);
+                        $get_dokument = json_decode($list2->dokument_pendukung, true);
+                        $get_dokument_fisik = json_decode($list2->dokument_fisik, true);
                         $tanggal[] = $list2->tanggal;
                         $judul[] = $list2->judul;
                         $deskripsi[] = $list2->deskripsi;
@@ -105,11 +102,11 @@ if ( ! function_exists('render_kegiatan_html_v3')) {
                     'document_physical' => $document_physical,
                 ];
 
-                $name = view(env('ADMIN_TEMPLATE').'.page.kegiatan.form_kegiatan_view', $data)->render();
+                $name = view(env('ADMIN_TEMPLATE').'.page.kegiatan.form_kegiatan_view2', $data)->render();
 
             }
 
-            $html .= '<tr class="all-row permen-'.$getMsKegiatan->permen_id.' '.$class.'">';
+            $html .= '<tr class="all-row '.$class.'" id="kegiatan-'.$getMsKegiatan->id.'" style="display: none;">';
 
             for($i=1; $i<=$deep; $i++) {
                 $html .= '<td width="1%">&nbsp;</td>';
@@ -120,7 +117,7 @@ if ( ! function_exists('render_kegiatan_html_v3')) {
                 </tr>';
 
             if (isset($getPathMaster[$list])) {
-                $html .= render_kegiatan_html_v3($getPathMaster[$list], $getPathMaster, $msKegiatan, $jejangPerancangId, $listJenjangPerancang, $listJenjangPerancangData, $deep+1, $totalDeep, $listDataKegiatan, $class);
+                $html .= render_kegiatan_html_v3($getPathMaster[$list], $getPathMaster, $msKegiatan, $jejangPerancangId, $listJenjangPerancang, $listJenjangPerancangData, $deep+1, $totalDeep, $listDataKegiatan, $newClass);
             }
         }
 

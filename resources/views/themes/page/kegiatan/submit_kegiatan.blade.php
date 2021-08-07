@@ -51,29 +51,14 @@ else {
                 </div>
                 <!-- /.card-header -->
 
-                @if(in_array($viewType, ['create']))
-                    {{ Form::open(['route' => ['admin.' . $thisRoute . '.store'], 'files' => true, 'id'=>'form', 'role' => 'form', 'method' => 'post'])  }}
-                @elseif(in_array($viewType, ['edit']))
-                    {{ Form::open(['route' => ['admin.' . $thisRoute . '.update', $data->{$masterId}], 'method' => 'PUT', 'files' => true, 'id'=>'form', 'role' => 'form'])  }}
-                @else
-                    {{ Form::open(['id'=>'form', 'role' => 'form'])  }}
-                @endif
+                {{ Form::open(['route' => ['admin.' . $thisRoute . '.storeSubmitKegiatan'], 'files' => true, 'id'=>'form', 'role' => 'form', 'method' => 'post'])  }}
+                <input type="hidden" value="{!! $getDateRange !!}" name="daterange1">
 
                 <div class="card-footer">
-                    @if(in_array($viewType, ['create']))
-                        <button type="submit" class="mb-2 mr-2 btn btn-success" title="@lang('general.save')">
-                            <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
-                        </button>
-                    @elseif (in_array($viewType, ['edit']))
-                        <button type="submit" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')">
-                            <i class="fa fa-save"></i><span class=""> @lang('general.update')</span>
-                        </button>
-                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true)
-                        <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
-                           class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
-                            <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
-                        </a>
-                    @endif
+                    <button type="submit" class="mb-2 mr-2 btn btn-success" title="@lang('general.send')">
+                        <i class="fa fa-paper-plane"></i><span class=""> @lang('general.send')</span>
+                    </button>
+
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
                         <i class="fa fa-arrow-circle-o-left"></i><span class=""> {{ __('general.back') }}</span>
@@ -89,20 +74,9 @@ else {
 
                 <div class="card-footer">
 
-                    @if(in_array($viewType, ['create']))
-                        <button type="submit" class="mb-2 mr-2 btn btn-success" title="@lang('general.save')">
-                            <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
-                        </button>
-                    @elseif (in_array($viewType, ['edit']))
-                        <button type="submit" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')">
-                            <i class="fa fa-save"></i><span class=""> @lang('general.update')</span>
-                        </button>
-                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true)
-                        <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
-                           class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
-                            <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
-                        </a>
-                    @endif
+                    <button type="submit" class="mb-2 mr-2 btn btn-success" title="@lang('general.send')">
+                        <i class="fa fa-paper-plane"></i><span class=""> @lang('general.send')</span>
+                    </button>
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
                         <i class="fa fa-arrow-circle-o-left"></i><span class=""> {{ __('general.back') }}</span>
@@ -119,74 +93,16 @@ else {
     @include(env('ADMIN_TEMPLATE').'._component.generate_forms_script')
     <script type="text/javascript">
         'use strict';
+        let getClassList;
 
-        let filterKegiatan = JSON.parse('{!! json_encode($dataFilterKegiatan ?? '') !!}');
-
-        jQuery('.show_checkbox_kegiatan').on('change', function(e) {
-            var get_id = jQuery(this).data('id');
-
-            if(jQuery(this).prop('checked') === true) {
-                jQuery('#show_detail'+get_id).show();
-            }
-            else {
-                jQuery('#show_detail'+get_id).hide();
-            }
-        });
-        jQuery('.add_more').on('click', function(e) {
-            e.preventDefault();
-            var get_id = jQuery(this).data('id');
-            var html = '<input name="dokument['+get_id+'][]" type="file">';
-            jQuery('#dokument_pendukung'+get_id).append(html);
-        });
-
-        jQuery('.add_more_dokumen_fisik').on('click', function(e) {
-            e.preventDefault();
-            var get_id = jQuery(this).data('id');
-            var dokumenFisik = '<input name="dokument_fisik['+get_id+'][]" type="file">';
-            jQuery('#dokument_fisik'+get_id).append(dokumenFisik);
-        });
-
-        function show_filter_kegiatan() {
-            let valuePermen = parseInt(jQuery('#filter_permen').val());
-            let valueKegiatan = parseInt(jQuery('#filter_kegiatan').val());
-
-            jQuery('.all-row').hide();
-            jQuery('.permen-' + valuePermen + '.kegiatan-' + valueKegiatan).show();
-        }
-
-        function load_all() {
-            jQuery('.show_checkbox_kegiatan').each(function(key, item) {
-                var get_id = jQuery(this).data('id');
-                if(jQuery(item).prop('checked') === true) {
-                    jQuery('#show_detail'+get_id).show();
+        @foreach($listKegiatanIds as $list)
+            getClassList = $('#kegiatan-{!! $list !!}').show().attr('class').split(' ');
+            $.each(getClassList, function(index, item) {
+                if (item !== 'all-row' && item.length > 0) {
+                    $('#' + item).show();
                 }
             });
-        }
-
-        function removeFile(curr) {
-            $(curr).parent().remove();
-        }
-
-        $(document).ready(function() {
-            $('#filter_permen').on('change', function() {
-                let permenID = parseInt($(this).val());
-                $('#filter_kegiatan').empty();
-                $.each(filterKegiatan, function(index, item) {
-                    if(parseInt(item.id) === permenID) {
-                        $.each(item.data, function(indexKegiatan, itemKegiatan) {
-                            $('#filter_kegiatan').append('<option value="'+ itemKegiatan.id +'">'+ itemKegiatan.name +'</option>');
-                        });
-                    }
-                });
-
-                show_filter_kegiatan();
-                load_all();
-
-            });
-
-            $('#filter_permen').change();
-
-        });
+        @endforeach
 
     </script>
 @stop

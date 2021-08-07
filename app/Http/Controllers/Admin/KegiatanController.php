@@ -489,7 +489,7 @@ class KegiatanController extends _CrudController
         $temp = [];
         foreach ($getKegiatan as $list) {
             $permenId[] = $list->permen_id;
-            $kegiatanId[] = $list->id;
+            $kegiatanId[] = $list->ms_kegiatan_id;
             $temp[$list->ms_kegiatan_id][] = $list;
         }
         $getKegiatan = $temp;
@@ -506,6 +506,8 @@ class KegiatanController extends _CrudController
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataKegiatan'] = $getMsKegiatan;
         $data['listKegiatan'] = $getKegiatan;
+        $data['listKegiatanIds'] = count($kegiatanId) > 0 ? array_unique($kegiatanId) : [];
+        $data['getDateRange'] = $getDateRange;
 
         return view($this->listView['submit_kegiatan'], $data);
 
@@ -513,7 +515,20 @@ class KegiatanController extends _CrudController
 
     public function storeSubmitKegiatan()
     {
+        $this->callPermission();
 
+        $userId = session()->get('admin_id');
+
+        $getStaff = Users::where('id', $userId)->first();
+
+        $getDateRange = $this->request->get('daterange1');
+        $getSplitDate = explode(' | ', $getDateRange);
+        $getDateStart = date('Y-m-d', strtotime($getSplitDate[0]));
+        $getDateEnd = isset($getSplitDate[1]) ? date('Y-m-d', strtotime($getSplitDate[1])) : date('Y-m-d', strtotime($getSplitDate[0]));
+
+        Kegiatan::where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)->update([
+            'status' => 2
+        ]);
     }
 
     protected function check_surat_pernyataan($kegiatan = null, $user_id = null) {
