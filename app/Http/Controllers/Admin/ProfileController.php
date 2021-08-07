@@ -294,21 +294,54 @@ class ProfileController extends _GlobalFunctionController
     public function postProfile()
     {
         $adminId = session()->get('admin_id');
+        $getData = Users::where('id', $adminId)->first();
+        $roleId = $getData->role_id;
+        $role = Cache::remember('role'.$roleId, env('SESSION_LIFETIME'), function () use ($roleId) {
+            return Role::where('id', '=', $roleId)->first();
+        });
+        $getRoleType = json_decode($role->permission_data, true);
+        $getPerancang = isset($getRoleType['role_perancang']) ?? 0;
+        $getAtasan = isset($getRoleType['role_atasan']) ?? 0;
+        $getSeketariat = isset($getRoleType['role_seketariat']) ?? 0;
+        $getTim = isset($getRoleType['role_tim_penilai']) ?? 0;
+        if ($getPerancang == 1) {
+            $getPassing = $this->passingPerancang;
+            $data['listSet']['upline_id'] = Users::where('id', '!=', $adminId)->where('atasan', 1)->pluck('name', 'id')->toArray();
+        }
+        elseif ($getAtasan == 1) {
+            $getPassing = $this->passingAtasan;
+        }
+        elseif ($getSeketariat == 1) {
+            $getPassing = $this->passingSeketariat;
+        }
+        elseif ($getTim == 1) {
+            $getPassing = $this->passingTimPerancang;
+        }
+        else {
+            $getPassing = $this->passing;
+        }
 
-        $validator = [
-            'username' => 'required|unique:admin,username,'.$adminId,
-            'name' => 'required'
-        ];
+        $viewType = 'edit';
+        $getListCollectData = collectPassingData($getPassing, $viewType);
+        $validate = $this->setValidateData($getListCollectData, $viewType, $adminId);
+        if (count($validate) > 0)
+        {
+            $data = $this->validate($this->request, $validate);
+        }
+        else {
+            $data = [];
+            foreach ($getListCollectData as $key => $val) {
+                $data[$key] = $this->request->get($key);
+            }
+        }
 
-        $data = $this->validate($this->request, $validator);
+        if ($getPerancang != 1) {
+            $data['upline_id'] = 0;
+        }
+
+        Users::where('id', $adminId)->update($data);
 
         session()->put('admin_name', $data['name']);
-
-        $getDate = Users::where('id', $adminId)->first();
-        foreach ($validator as $key => $value) {
-            $getDate->$key = $this->request->get($key);
-        }
-        $getDate->save();
 
         session()->flash('message', __('general.success_update'));
         session()->flash('message_alert', 2);

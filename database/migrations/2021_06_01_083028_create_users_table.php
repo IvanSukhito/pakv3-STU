@@ -27,7 +27,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->nullable();
             $table->string('kartu_pegawai')->nullable();
             $table->string('alamat_kantor')->nullable();
-            $table->integer('jenis_kelamin')->default(1);
+            $table->integer('gender')->default(1);
             $table->string('tempat_lahir')->nullable();
             $table->date('tmt_kenaikan_jenjang_terakhir')->nullable();
             $table->date('kenaikan_jenjang_terakhir')->nullable();

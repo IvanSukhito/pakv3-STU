@@ -23,7 +23,7 @@ class Users extends Model
         'email',
         'kartu_pegawai',
         'alamat_kantor',
-        'jenis_kelamin',
+        'gender',
         'tempat_lahir',
         'tmt_kenaikan_jenjang_terakhir',
         'kenaikan_jenjang_terakhir',

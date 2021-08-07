@@ -227,30 +227,11 @@ class AdminController extends _CrudController
         $getRoleId = $data['role_id'];
         $getRole = Role::where('id', $getRoleId)->first();
         $getRoleType = json_decode($getRole->permission_data, true);
-        if ($getRoleType['role_perancang']) {
-            $data['perancang'] = 1;
-        }
-        else {
-            $data['perancang'] = 0;
-        }
-        if ($getRoleType['role_atasan']) {
-            $data['atasan'] = 1;
-        }
-        else {
-            $data['atasan'] = 0;
-        }
-        if ($getRoleType['role_sekretariat']) {
-            $data['sekretariat'] = 1;
-        }
-        else {
-            $data['sekretariat'] = 0;
-        }
-        if ($getRoleType['role_tim_penilai']) {
-            $data['tim_penilai'] = 1;
-        }
-        else {
-            $data['tim_penilai'] = 0;
-        }
+
+        $data['perancang'] = $getRoleType['role_perancang'] ?? 0;
+        $data['atasan'] = $getRoleType['role_atasan'] ?? 0;
+        $data['sekretariat'] = $getRoleType['role_sekretariat'] ?? 0;
+        $data['tim_penilai'] = $getRoleType['role_tim_penilai'] ?? 0;
 
         $getData = $this->crud->update($data, $id);
 
