@@ -21,6 +21,17 @@ if ( ! function_exists('get_list_status')) {
         ];
     }
 }
+if ( ! function_exists('get_list_status_pak')) {
+    function get_list_status_pak()
+    {
+        return [
+            0 => __('Tertunda'),
+            1 => __('Di Proses'),
+            2 => __('Disetujui'),
+            9 => __('Ditolak'),
+        ];
+    }
+}
 if ( ! function_exists('get_list_bulan')) {
     function get_list_bulan($bulan)
     {

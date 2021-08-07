@@ -97,7 +97,7 @@ class KegiatanController extends _CrudController
 
         $builder = $this->model::query()->selectRaw('tx_kegiatan.id, tx_kegiatan.tanggal, tx_kegiatan.judul, tx_kegiatan.kredit,
         tx_kegiatan.satuan, B.name AS ms_kegiatan_name, C.nomor AS sp_nomor, D.nomor AS dupak_nomor')
-            ->where('tx_kegiatan.user_id', '=', $userId)
+            ->where('tx_kegiatan.status', '=', 1)->where('tx_kegiatan.user_id', '=', $userId)
             ->leftJoin('ms_kegiatan AS B', 'B.id', '=', 'tx_kegiatan.ms_kegiatan_id')
             ->leftJoin('tx_surat_pernyataan AS C', 'C.id', '=', 'tx_kegiatan.surat_pernyataan_id')
             ->leftJoin('dupak AS D', 'D.id', '=', 'tx_kegiatan.dupak_id');
@@ -483,7 +483,7 @@ class KegiatanController extends _CrudController
         $getSplitDate = explode(' | ', $getDateRange);
         $getDateStart = date('Y-m-d', strtotime($getSplitDate[0]));
         $getDateEnd = isset($getSplitDate[1]) ? date('Y-m-d', strtotime($getSplitDate[1])) : date('Y-m-d', strtotime($getSplitDate[0]));
-        $getKegiatan = Kegiatan::where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)->get();
+        $getKegiatan = Kegiatan::where('user_id', $userId)->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)->get();
         $permenId = [];
         $kegiatanId = [];
         $temp = [];
@@ -526,9 +526,18 @@ class KegiatanController extends _CrudController
         $getDateStart = date('Y-m-d', strtotime($getSplitDate[0]));
         $getDateEnd = isset($getSplitDate[1]) ? date('Y-m-d', strtotime($getSplitDate[1])) : date('Y-m-d', strtotime($getSplitDate[0]));
 
-        Kegiatan::where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)->update([
+        Kegiatan::where('user_id', $userId)->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)->update([
             'status' => 2
         ]);
+
+        if ($this->request->ajax()) {
+            return response()->json(['result' => 1, 'message' => __('Kegiatan berhasil di ajukan')]);
+        } else {
+            session()->flash('message', __('Kegiatan berhasil di ajukan'));
+            session()->flash('message_alert', 2);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
+
     }
 
     protected function check_surat_pernyataan($kegiatan = null, $user_id = null) {
