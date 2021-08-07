@@ -371,6 +371,17 @@ if ( ! function_exists('listAllMenu')) {
             ],
             //Surat Pernyataan
             [
+                'name' => __('general.persetujuan_surat_pernyataan'),
+                'icon' => '<i class="nav-icon fa fa-envelope"></i>',
+                'title' => __('general.persetujuan_surat_pernyataan'),
+                'active' => [
+                    'admin.persetujuan-surat-pernyataan.index'
+                ],
+                'route' => 'admin.persetujuan-surat-pernyataan.index',
+                'key' => 'persetujuan-surat-pernyataan',
+                'type' => 1,
+            ],
+            [
                 'name' => __('general.surat_pernyataan'),
                 'icon' => '<i class="nav-icon fa fa-envelope"></i>',
                 'title' => __('general.surat_pernyataan'),
@@ -518,6 +529,7 @@ if ( ! function_exists('listAvailablePermission'))
             'seketariat',
             'tim_penilai',
             //'kegiatan',
+            'persetujuan-surat-pernyataan',
             'surat-pernyataan',
             //'dupak',
             //'bapak',

@@ -493,6 +493,7 @@ return [
     'kegiatan' => 'Kegiatan',
     'create_kegiatan' => 'Buat Kegiatan',
     'surat_pernyataan' => 'Surat Pernyataan',
+    'persetujuan_surat_pernyataan' => 'Persetujuan Surat Pernyataan',
     'create_surat_pernyataan' => 'Buat Surat Pernyataan',
     'dupak' => 'Dupak',
     'create_dupak' => 'Buat Dupak',
