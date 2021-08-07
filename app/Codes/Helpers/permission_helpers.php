@@ -513,7 +513,6 @@ if ( ! function_exists('listAvailablePermission'))
             'mskegiatan',
             'ms-kegiatan',
             'kegiatan',
-            'create_kegiatan',
             'perancang',
             'atasan',
             'seketariat',
@@ -554,9 +553,11 @@ if ( ! function_exists('listAvailablePermission'))
                 ]
             ];
         }
+        $listPermission['admin']['edit'][] = 'admin.admin.password';
+        $listPermission['admin']['edit'][] = 'admin.admin.updatePassword';
+
         $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
         $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';
-
         $listPermission['permen']['edit'][] = 'admin.mskegiatan.edit';
         $listPermission['permen']['edit'][] = 'admin.mskegiatan.update';
         $listPermission['permen']['create'][] = 'admin.mskegiatan.create';

@@ -534,9 +534,13 @@ return [
 
     'success_flush' => 'Berhasil Flush Data',
     'success_add' => 'Berhasil Masukan Data',
+    'success_add_' => 'Berhasil Masukan :field',
     'success_edit' => 'Berhasil Rubah Data',
+    'success_edit_' => 'Berhasil Rubah :field',
     'success_update' => 'Berhasil Rubah Data',
+    'success_update_' => 'Berhasil Rubah :field',
     'success_delete' => 'Berhasil Hapus Data',
+    'success_delete_' => 'Berhasil Hapus :field',
     'success_approve' => ':field di setujui',
     'success_reject' => ':field di tolak',
 

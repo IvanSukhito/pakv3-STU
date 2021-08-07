@@ -61,21 +61,30 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
             ];
             foreach ($listRouter as $controller => $linkName) {
 
+                switch ($linkName) {
+                    case 'admin':
+                        $router->get($linkName . '/{id}/password', $controller . '@password')->name('admin.' . $linkName . '.password');
+                        $router->put($linkName . '/{id}/password', $controller . '@updatePassword')->name('admin.' . $linkName . '.updatePassword');
+                        break;
+                }
+
                 $router->get($linkName . '/data', $controller . '@dataTable')->name('admin.' . $linkName . '.dataTable');
                 $router->resource($linkName, $controller, ['as' => 'admin']);
             }
 
-         $router->group(['prefix' => 'permen/{parent_id}'], function () use ($router) {
-             $router->get('mskegiatan/data', 'Admin\PermenMsKegiatanController@dataTable')->name('admin.mskegiatan.dataTable');
-             $router->resource('mskegiatan', 'Admin\PermenMsKegiatanController', ['as' => 'admin']);
-             });
+            $router->group(['prefix' => 'permen/{parent_id}'], function () use ($router) {
+                $router->get('mskegiatan/data', 'Admin\PermenMsKegiatanController@dataTable')->name('admin.mskegiatan.dataTable');
+                $router->resource('mskegiatan', 'Admin\PermenMsKegiatanController', ['as' => 'admin']);
             });
-            $router->get('report', 'Admin\ReportController@index')->name('admin.report');
-            $router->get('/', ['uses' => 'Admin\DashboardController@dashboard'])->name('admin');
+
+        });
+
+        $router->get('report', 'Admin\ReportController@index')->name('admin.report');
+        $router->get('/', ['uses' => 'Admin\DashboardController@dashboard'])->name('admin');
 
 
-           // $router->get('portal', ['uses'=>'Admin\HomeController@portal'])->name('admin.portal');
-            $router->get('data-informasi', ['uses' => 'Admin\HomeController@dataInformasi'])->name('admin.dataInformasi');
+        // $router->get('portal', ['uses'=>'Admin\HomeController@portal'])->name('admin.portal');
+        $router->get('data-informasi', ['uses' => 'Admin\HomeController@dataInformasi'])->name('admin.dataInformasi');
 
 
     });

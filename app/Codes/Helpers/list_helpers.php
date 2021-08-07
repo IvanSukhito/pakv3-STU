@@ -41,102 +41,6 @@ if ( ! function_exists('get_list_bulan')) {
         return isset($list_bulan[$bulan]) ? $list_bulan[$bulan] : '';
     }
 }
-if ( ! function_exists('get_list_status_pak')) {
-    function get_list_status_pak()
-    {
-        return [
-            0 => __('Tertunda'),
-            1 => __('Di Proses'),
-            2 => __('Disetujui'),
-            9 => __('Ditolak'),
-        ];
-    }
-}
-
-if ( ! function_exists('get_list_status_send_dupak')) {
-    function get_list_status_send_dupak()
-    {
-        return [
-            0 => __('general.has_not_been_sent'),
-            1 => __('general.already_sent'),
-        ];
-    }
-}
-
-if ( ! function_exists('get_list_status_diangkat')) {
-    function get_list_status_diangkat()
-    {
-        return [
-            'Kosong' => 'Kosong',
-            'Menolak' => 'Menolak',
-            'Menunda' => 'Menunda',
-        ];
-    }
-}
-
-
-if ( ! function_exists('get_list_status_register')) {
-    function get_list_status_register()
-    {
-        return [
-            0 => __('Tertunda'),
-            1 => __('Disetujui'),
-            2 => __('Ditolak')
-        ];
-    }
-}
-
-if ( ! function_exists('status_staff')) {
-    function status_staff()
-    {
-        return [
-            0 => __('Non-Staff'),
-            1 => __('Staff'),
-        ];
-    }
-}
-
-if ( ! function_exists('get_list_status_qrcode')) {
-    function get_list_status_qrcode()
-    {
-        return [
-            0 => __('general.active'),
-            1 => __('general.used')
-        ];
-    }
-}
-
-if ( ! function_exists('get_list_status_redeem')) {
-    function get_list_status_redeem()
-    {
-        return [
-            0 => __('Pending'),
-            1 => __('Approved'),
-            9 => __('Reject')
-        ];
-    }
-}
-if ( ! function_exists('get_list_type_member')) {
-    function get_list_type_member()
-    {
-        return [
-            1 => __('general.recruiter'),
-            2 => __('general.igniter'),
-            3 => __('general.fueler')
-        ];
-    }
-}
-if ( ! function_exists('get_list_type_question')) {
-    function get_list_type_question()
-    {
-        return [
-            1 => __('general.multiple_choice'),
-            2 => __('general.text'),
-            3 => __('general.rate'),
-            4 => __('general.multiple_choice').' With Free Text',
-        ];
-    }
-}
 
 if ( ! function_exists('get_list_show_hide')) {
     function get_list_show_hide()
@@ -144,26 +48,6 @@ if ( ! function_exists('get_list_show_hide')) {
         return [
             0 => __('general.show'),
             1 => __('general.hide')
-        ];
-    }
-}
-if ( ! function_exists('get_list_type_news_and_events')) {
-    function get_list_type_news_and_events()
-    {
-        return [
-            1 => __('News'),
-            2 => __('Events')
-        ];
-    }
-}
-
-
-if ( ! function_exists('get_list_stock')) {
-    function get_list_stock()
-    {
-        return [
-            1 => __('general.limited'),
-            2 => __('general.unlimited')
         ];
     }
 }
@@ -801,58 +685,11 @@ if ( ! function_exists('get_list_gender')) {
     function get_list_gender()
     {
         return [
-            'Pria' => __('Male'),
-            'Wanita' => __('Female')
+            1 => __('Pria'),
+            2 => __('Wanita')
         ];
     }
 }
-
-if ( ! function_exists('get_list_target')) {
-    function get_list_target()
-    {
-        return [
-            'product' => __('Product'),
-            'news' => __('News'),
-            'event' => __('Event'),
-            'how_to_velo' => __('How To Velo'),
-            'mission' => __('Mission'),
-            'reward' => __('Reward')
-        ];
-    }
-}
-
-if ( ! function_exists('get_list_payment')) {
-    function get_list_payment()
-    {
-        return [
-            1 => __('Bank Transfer'),
-            2 => __('BCA Virtual Account'),
-            3 => __('Permata Virtual Account'),
-            4 => __('Credit Card')
-        ];
-    }
-}
-
-if ( ! function_exists('get_list_transaction')) {
-    function get_list_transaction()
-    {
-        return [
-            1 => __('Success'),
-            9 => __('Decline')
-        ];
-    }
-}
-
-if ( ! function_exists('get_list_transactiion_redeem')) {
-    function get_list_transactiion_redeem()
-    {
-        return [
-            1 => __('Not Redeem'),
-            2 => __('Redeemed')
-        ];
-    }
-}
-
 
 if ( ! function_exists('get_list_month')) {
     function get_list_month()

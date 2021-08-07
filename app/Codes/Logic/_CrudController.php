@@ -56,6 +56,7 @@ class _CrudController extends _GlobalFunctionController
             'permission' => $this->permission,
             'listSet' => []
         ];
+
     }
 
     public function index()

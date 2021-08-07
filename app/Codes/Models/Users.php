@@ -14,6 +14,7 @@ class Users extends Model
         'pangkat_id',
         'golongan_id',
         'jenjang_perancang_id',
+        'jabatan_perancang_id',
         'pendidikan_id',
         'unit_kerja_id',
         'name',

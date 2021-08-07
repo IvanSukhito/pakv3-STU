@@ -33,5 +33,46 @@ class InstallingSeeder extends Seeder
             'updated_at' => Carbon::now(),
         ]);
 
+        DB::table('users')->insertGetId([
+            'name' => 'Tim Penilai',
+            'username' => 'timpenilai',
+            'password' => bcrypt('123456'),
+            'role_id' => 1,
+            'status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        DB::table('users')->insertGetId([
+            'name' => 'Seketariat',
+            'username' => 'seketariat',
+            'password' => bcrypt('123456'),
+            'role_id' => 1,
+            'status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        DB::table('users')->insertGetId([
+            'name' => 'Atasan',
+            'username' => 'atasan',
+            'password' => bcrypt('123456'),
+            'role_id' => 1,
+            'status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        DB::table('users')->insertGetId([
+            'name' => 'Perancang',
+            'username' => 'perancang',
+            'upline_id' => 'perancang',
+            'password' => bcrypt('123456'),
+            'role_id' => 1,
+            'status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
     }
 }
