@@ -35,47 +35,15 @@
                            title="@lang('general.create')">
                             <i class="fa fa-plus-square"></i> @lang('general.create')
                         </a>
-                   
-                   
+
+
                         <a href="#" onclick="showPerDate()" class="mb-2 mr-2 btn btn-primary"
                            title="@lang('general.create')">
-                            <i class="fa fa-plus-square"></i> @lang('general.submit_per_tanggal')
+                            <i class="fa fa-plus-square"></i> @lang('general.submit_kegiatan')
                         </a>
                     </div>
             @endif
-            <div id="perDateModal" class="modal fade" role="dialog">
-	<div class="modal-dialog">
 
-		<!-- Modal content-->
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">×</button>
-			</div>
-			<form method="get" action="#">
-				<div class="modal-body">
-					<div class="form-group">
-						<label for="daterange1">Estimate Date</label>
-                        
-						<div class="input-group daterange">
-							<div class="input-group-prepend datepicker-trigger">
-                            <div class="input-group-text">
-								<i class="fa fa-calendar"></i>
-							</div>
-                            </div>
-							<input type="text" name="daterange1" value="" id="daterange1" class="form-control daterange" autocomplete="off" required="1">
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-success">Submit</button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-				</div>
-			</form>
-		</div>
-
-	</div>
-</div>
-         
             <!-- /.card-header -->
                 <div class="card-body">
                     <table class="table table-bordered table-striped" id="data1">
@@ -86,6 +54,40 @@
             </div>
         </div>
     </section>
+
+
+    <div id="perDateModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <form method="get" action="{{ route('admin.kegiatan.submitKegiatan') }}">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="daterange1">Estimate Date</label>
+
+                            <div class="input-group daterange">
+                                <div class="input-group-prepend datepicker-trigger">
+                                    <div class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div>
+                                <input type="text" name="daterange1" value="" id="daterange1" class="form-control daterange" autocomplete="off" required="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
 @stop
 
 @section('script-bottom')
@@ -138,22 +140,19 @@
             }
         }
 
-       
+        function showPerDate() {
+            $("#perDateModal").modal();
+        }
 
-	function showPerDate() {
-		$("#perDateModal").modal();
-	}
-
-	$('.daterange').daterangepicker({
-		// timePicker: true,
-		// timePicker24Hour: true,
-		// timePickerIncrement: 15,
-		locale: {
-			"format": "YYYY-MM-DD",
-			"separator": " | "
-		}
-	});
-
+        $('#daterange1').daterangepicker({
+            // timePicker: true,
+            // timePicker24Hour: true,
+            // timePickerIncrement: 15,
+            locale: {
+                "format": "YYYY-MM-DD",
+                "separator": " | "
+            }
+        });
 
     </script>
 @stop

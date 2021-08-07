@@ -1,4 +1,133 @@
 <?php
+if ( ! function_exists('render_kegiatan_v3')) {
+    /**
+     * @param $ms_kegiatan
+     * @param $jenjang_perancang_id
+     * @param $listJenjangPerancang
+     * @param bool $disabled
+     * @param array $listDataKegiatan
+     * @return string
+     */
+    function render_kegiatan_v3($ms_kegiatan, $jenjang_perancang_id, $listJenjangPerancang, $listDataKegiatan = []) {
+
+        $getResult = set_deep_ms_kegiatan($ms_kegiatan);
+
+        $listJenjangPerancangData = [];
+        foreach ($listJenjangPerancang as $list) {
+            $listJenjangPerancangData[$list->id] = $list->name;
+        }
+
+        $getDeep = $getResult['deep'];
+        $getPath = $getResult['path'];
+        $getKegiatan = $getResult['data'];
+        $deep = 0;
+
+        $html = '<table class="table table-kegiatan table-bordered table-striped">
+                    <thead>
+                    <tr>
+                    <th colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ';
+
+        if (isset($getPath[0])) {
+            $html .= render_kegiatan_html_v3($getPath[0], $getPath, $getKegiatan, $jenjang_perancang_id, $listJenjangPerancang, $listJenjangPerancangData, $deep, $getDeep, $listDataKegiatan);
+        }
+
+        $html .= '</tbody></table>';
+
+        return $html;
+    }
+}
+
+if ( ! function_exists('render_kegiatan_html_v3')) {
+
+    /**
+     * @param $dataPath
+     * @param $getPathMaster
+     * @param $msKegiatan
+     * @param $jejangPerancangId
+     * @param $listJenjangPerancang
+     * @param $listJenjangPerancangData
+     * @param $deep
+     * @param $totalDeep
+     * @param array $listDataKegiatan
+     * @param string $class
+     * @return string
+     * @throws Throwable
+     */
+    function render_kegiatan_html_v3($dataPath, $getPathMaster, $msKegiatan, $jejangPerancangId, $listJenjangPerancang, $listJenjangPerancangData, $deep, $totalDeep, $listDataKegiatan = [], $class = '') {
+        $html = '';
+
+        foreach ($dataPath as $list) {
+            $getMsKegiatan = isset($msKegiatan[$list]) ? $msKegiatan[$list] : false;
+            if (!$getMsKegiatan) {
+                continue;
+            }
+
+            $name = $getMsKegiatan ? $getMsKegiatan->name : '&nbsp;';
+
+            if ($deep == 0) {
+                $class = ' kegiatan-'.$getMsKegiatan->id.' ';
+            }
+
+            if ($getMsKegiatan && $getMsKegiatan->ak > 0) {
+
+                $tanggal = [];
+                $judul = [];
+                $deskripsi = [];
+                $document = [];
+                $document_physical = [];
+                $kredit = 0;
+                $getDataKegiatan = isset($listDataKegiatan[$getMsKegiatan->id]) ? $listDataKegiatan[$getMsKegiatan->id] : [];
+
+                if($getDataKegiatan) {
+                    foreach($getDataKegiatan as $list2) {
+                        $get_dokument = json_decode($list2->dokument, true);
+                        $get_dokument_fisik = json_decode($list2->dokumen_fisik, true);
+                        $tanggal[] = $list2->tanggal;
+                        $judul[] = $list2->judul;
+                        $deskripsi[] = $list2->deskripsi;
+                        $document[] = $get_dokument;
+                        $document_physical[] = $get_dokument_fisik;
+                        $kredit += $list2->kredit;
+                    }
+                }
+
+                $data = [
+                    'id' => $getMsKegiatan->id,
+                    'name' => $getMsKegiatan->name,
+                    'tanggal' => $tanggal,
+                    'judul' => $judul,
+                    'deskripsi' => $deskripsi,
+                    'document' => $document,
+                    'document_physical' => $document_physical,
+                ];
+
+                $name = view(env('ADMIN_TEMPLATE').'.page.kegiatan.form_kegiatan_view', $data)->render();
+
+            }
+
+            $html .= '<tr class="all-row permen-'.$getMsKegiatan->permen_id.' '.$class.'">';
+
+            for($i=1; $i<=$deep; $i++) {
+                $html .= '<td width="1%">&nbsp;</td>';
+            }
+
+            $html .= '
+                <td colspan="'.($totalDeep - $deep).'">'.$name.'</td>
+                </tr>';
+
+            if (isset($getPathMaster[$list])) {
+                $html .= render_kegiatan_html_v3($getPathMaster[$list], $getPathMaster, $msKegiatan, $jejangPerancangId, $listJenjangPerancang, $listJenjangPerancangData, $deep+1, $totalDeep, $listDataKegiatan, $class);
+            }
+        }
+
+        return $html;
+    }
+}
+
 if ( ! function_exists('render_kegiatan')) {
     /**
      * @param $ms_kegiatan

@@ -66,6 +66,11 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                         $router->get($linkName . '/{id}/password', $controller . '@password')->name('admin.' . $linkName . '.password');
                         $router->put($linkName . '/{id}/password', $controller . '@updatePassword')->name('admin.' . $linkName . '.updatePassword');
                         break;
+
+                    case 'kegiatan':
+                        $router->get($linkName . '/submit-kegiatan', $controller . '@submitKegiatan')->name('admin.' . $linkName . '.submitKegiatan');
+                        $router->post($linkName . '/submit-kegiatan', $controller . '@storeSubmitKegiatan')->name('admin.' . $linkName . '.storeSubmitKegiatan');
+                        break;
                 }
 
                 $router->get($linkName . '/data', $controller . '@dataTable')->name('admin.' . $linkName . '.dataTable');

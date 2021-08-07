@@ -553,8 +553,12 @@ if ( ! function_exists('listAvailablePermission'))
                 ]
             ];
         }
+
         $listPermission['admin']['edit'][] = 'admin.admin.password';
         $listPermission['admin']['edit'][] = 'admin.admin.updatePassword';
+
+        $listPermission['kegiatan']['create'][] = 'admin.kegiatan.submitKegiatan';
+        $listPermission['kegiatan']['create'][] = 'admin.kegiatan.storeSubmitKegiatan';
 
         $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
         $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';

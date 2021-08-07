@@ -29,47 +29,42 @@ class KegiatanController extends _CrudController
                 'lang' => 'Judul'
             ],
             'ms_kegiatan_name' => [
-                'show' => 0,
-                'edit' => 0,
+                'extra' => [
+                    'edit' => ['disabled' => true]
+                ],
                 'custom' => ', name:"B.name"',
                 'lang' => 'general.ms_kegiatan'
             ],
             'ms_kegiatan_id' => [
                 'list' => 0,
+                'show' => 0,
                 'edit' => 0,
                 'type' => 'select2',
                 'lang' => 'general.ms_kegiatan',
             ],
             'kredit' => [
-                'edit' => 1,
+                'extra' => [
+                    'edit' => ['disabled' => true]
+                ],
                 'lang' => 'Kredit'
             ],
             'satuan' => [
-                'edit' => 1,
+                'extra' => [
+                    'edit' => ['disabled' => true]
+                ],
             ],
-            'sp_nomor' => [
-                'edit' => 0,
-                'custom' => ', name:"C.nomor"',
-                'lang' => 'SP'
-            ],
-            'dupak_nomor' => [
-                'edit' => 0,
-                'custom' => ', name:"D.nomor"',
-                'lang' => 'general.dupak'
-            ],
-            'dokument' => [
+            'dokument_pendukung' => [
                 'list' => 0,
                 'edit' => 1,
                 'type' => 'file2',
                 'lang' => 'general.dokument'
             ],
-            'dokumen_fisik' => [
+            'dokument_fisik' => [
                 'list' => 0,
                 'edit' => 1,
                 'type' => 'file2',
                 'lang' => 'general.dokumen_fisik'
             ],
-
             'action' => [
                 'create' => 0,
                 'edit' => 0,
@@ -85,6 +80,7 @@ class KegiatanController extends _CrudController
 
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.list';
         $this->listView['create'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms';
+        $this->listView['submit_kegiatan'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.submit_kegiatan';
 
         $this->data['listSet']['status'] = get_list_status();
         $this->data['listSet']['ms_kegiatan_id'] = MsKegiatan::pluck('name', 'id')->toArray();
@@ -169,7 +165,7 @@ class KegiatanController extends _CrudController
         $getFilterPermen = Permen::where('status', 1)->pluck('name', 'id')->toArray();
         $getListPermen = [];
         foreach ($getFilterPermen as $key => $val) {
-            $getListPermen[] = $val;
+            $getListPermen[] = $key;
         }
         $getKegiatan = MsKegiatan::where('status', 1)->whereIn('permen_id', $getListPermen)->get();
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
@@ -211,26 +207,6 @@ class KegiatanController extends _CrudController
         $data['dataKegiatan'] = $getKegiatan;
         $data['dataFilterPermen'] = $getFilterPermen;
         $data['dataFilterKegiatan'] = $getFilterKegiatan;
-//            dd($data['dataKegiatan'] );
-
-        return view($this->listView[$data['viewType']], $data);
-    }
-
-    public function show($id)
-    {
-        $this->callPermission();
-
-        $getData = $this->crud->show($id);
-        if (!$getData) {
-            return redirect()->route('admin.' . $this->route . '.index');
-        }
-
-        $data = $this->data;
-
-        $data['viewType'] = 'show';
-        $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
-        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getData;
 
         return view($this->listView[$data['viewType']], $data);
     }
@@ -244,7 +220,6 @@ class KegiatanController extends _CrudController
         $viewType = 'create';
 
         $userId = session()->get('admin_id');
-        $getStaff = Users::where('id', $userId)->first();
         $getUser = Users::where('id', $userId)->first();
         $user_nip = $getUser->username;
 
@@ -253,8 +228,6 @@ class KegiatanController extends _CrudController
         foreach ($ms_kegiatan as $list) {
             $list_ms_kegiatan[$list->id] = $list;
         }
-
-        $list_surat_pernyataan_ids = [];
 
         $user_folder = 'user_' . preg_replace("/[^A-Za-z0-9?!]/", '', $user_nip);
         $today_date = date('Y-m-d');
@@ -420,13 +393,13 @@ class KegiatanController extends _CrudController
 
             $data = [
                 'user_id' => $userId,
+                'upline_id' => $getUser->upline_id,
+                'ms_kegiatan_name' => $get_ms_kegiatan_name,
                 'ms_kegiatan_id' => $key,
                 'permen_id' => $permen,
                 'tanggal' => $tanggal[$key],
-                'judul' => $judul[$key],
-//                'deskripsi' => $deskripsi[$key],
-                'deskripsi' => isset($deskripsi[$key]) ? count($deskripsi[$key]) : 0,
-                'kredit' => number_format(calculate_jenjang($getStaff->jenjang_perancang_id, $list_ms_kegiatan[$key]->jenjang_perancang_id, $list_jenjang_perancang, $list_ms_kegiatan[$key]->ak), 3, '.', ''),
+                'judul' => substr($judul[$key], 0, 190),
+                'kredit' => number_format(calculate_jenjang($getUser->jenjang_perancang_id, $list_ms_kegiatan[$key]->jenjang_perancang_id, $list_jenjang_perancang, $list_ms_kegiatan[$key]->ak), 3, '.', ''),
                 'satuan' => $list_ms_kegiatan[$key]->satuan,
                 'pelaksana' => isset($list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id]) ? $list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id] : $list_ms_kegiatan[$key]->jenjang_perancang_id,
                 'pelaksana_id' => $list_ms_kegiatan[$key]->jenjang_perancang_id,
@@ -490,6 +463,57 @@ class KegiatanController extends _CrudController
             session()->flash('message_alert', 2);
             return redirect()->route('admin.' . $this->route . '.show', $id);
         }
+    }
+
+    public function submitKegiatan()
+    {
+        $this->callPermission();
+
+        $getDateRange = $this->request->get('daterange1');
+
+        $userId = session()->get('admin_id');
+
+        $getStaff = Users::where('id', $userId)->first();
+        if ($getStaff->upline_id <= 0) {
+            session()->flash('message', __('general.error_no_upline'));
+            session()->flash('message_alert', 1);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
+
+        $getSplitDate = explode(' | ', $getDateRange);
+        $getDateStart = date('Y-m-d', strtotime($getSplitDate[0]));
+        $getDateEnd = isset($getSplitDate[1]) ? date('Y-m-d', strtotime($getSplitDate[1])) : date('Y-m-d', strtotime($getSplitDate[0]));
+        $getKegiatan = Kegiatan::where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)->get();
+        $permenId = [];
+        $kegiatanId = [];
+        $temp = [];
+        foreach ($getKegiatan as $list) {
+            $permenId[] = $list->permen_id;
+            $kegiatanId[] = $list->id;
+            $temp[$list->ms_kegiatan_id][] = $list;
+        }
+        $getKegiatan = $temp;
+
+        $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenId)->get();
+
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+
+        $data = $this->data;
+
+        $data['viewType'] = 'create';
+        $data['formsTitle'] = __('general.title_create', ['field' => $data['thisLabel']]);
+        $data['dataUser'] = $getStaff;
+        $data['dataJenjangPerancang'] = $getJenjangPerancang;
+        $data['dataKegiatan'] = $getMsKegiatan;
+        $data['listKegiatan'] = $getKegiatan;
+
+        return view($this->listView['submit_kegiatan'], $data);
+
+    }
+
+    public function storeSubmitKegiatan()
+    {
+
     }
 
     protected function check_surat_pernyataan($kegiatan = null, $user_id = null) {

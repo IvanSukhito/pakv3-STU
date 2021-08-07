@@ -48,8 +48,4 @@ class Kegiatan extends Model
         return $this->belongsTo(SuratPernyataan::class, 'surat_pernyataan_id', 'id');
     }
 
-    public function getDupak() {
-        return $this->belongsTo(Dupak::class, 'dupak_id', 'id');
-    }
-
 }
