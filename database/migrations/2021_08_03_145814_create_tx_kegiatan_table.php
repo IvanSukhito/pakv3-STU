@@ -15,11 +15,11 @@ class CreateTxKegiatanTable extends Migration
     {
         Schema::create('tx_kegiatan', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->default(0);
-            $table->bigInteger('upline_id')->default(0);
-            $table->bigInteger('ms_kegiatan_id')->default(0);
-            $table->bigInteger('permen_id')->default(0);
-            $table->bigInteger('pelaksana_id')->default(0);
+            $table->unsignedBigInteger('user_id')->default(0);
+            $table->unsignedBigInteger('upline_id')->default(0);
+            $table->unsignedBigInteger('ms_kegiatan_id')->default(0);
+            $table->unsignedBigInteger('permen_id')->default(0);
+            $table->unsignedBigInteger('pelaksana_id')->default(0);
             $table->date('tanggal')->nullable();
             $table->string('judul')->nullable();
             $table->text('deskripsi')->nullable();

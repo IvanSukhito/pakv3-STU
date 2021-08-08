@@ -15,10 +15,10 @@ class CreateTxSuratPernyataanTable extends Migration
     {
         Schema::create('tx_surat_pernyataan', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->default(0);
-            $table->bigInteger('upline_id')->default(0);
-            $table->bigInteger('supervisor_id')->default(0);
-            $table->bigInteger('dupak_id')->default(0);
+            $table->unsignedBigInteger('user_id')->default(0);
+            $table->unsignedBigInteger('upline_id')->default(0);
+            $table->unsignedBigInteger('supervisor_id')->default(0);
+            $table->unsignedBigInteger('dupak_id')->default(0);
             $table->date('tanggal')->nullable();
             $table->string('nomor')->nullable();
             $table->date('tanggal_mulai')->nullable();

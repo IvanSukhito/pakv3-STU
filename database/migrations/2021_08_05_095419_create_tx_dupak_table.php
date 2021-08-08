@@ -15,10 +15,10 @@ class CreateTxDupakTable extends Migration
     {
         Schema::create('tx_dupak', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id');
-            $table->bigInteger('verifikasi_sekretariat_id')->default(0);
-            $table->bigInteger('verifikasi_tim_penilai_id')->default(0);
-            $table->bigInteger('surat_pernyataan_id')->default(0)->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('verifikasi_sekretariat_id')->default(0);
+            $table->unsignedBigInteger('verifikasi_tim_penilai_id')->default(0);
+            $table->unsignedBigInteger('surat_pernyataan_id')->default(0)->nullable();
             $table->text('surat_pernyataan')->nullable();
             $table->text('jabatan_pengusul')->nullable();
             $table->text('jabatan_pengusul_nip')->nullable();

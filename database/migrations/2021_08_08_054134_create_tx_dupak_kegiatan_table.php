@@ -15,8 +15,8 @@ class CreateTxDupakKegiatanTable extends Migration
     {
         Schema::create('tx_dupak_kegiatan', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('dupak_id')->default(0);
-            $table->bigInteger('kegiatan_id')->default(0);
+            $table->unsignedBigInteger('dupak_id')->default(0);
+            $table->unsignedBigInteger('kegiatan_id')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->index(['id', 'dupak_id', 'kegiatan_id']);

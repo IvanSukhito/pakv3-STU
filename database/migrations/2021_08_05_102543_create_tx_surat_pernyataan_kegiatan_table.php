@@ -15,8 +15,8 @@ class CreateTxSuratPernyataanKegiatanTable extends Migration
     {
         Schema::create('tx_surat_pernyataan_kegiatan', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('surat_pernyataan_id')->default(0);
-            $table->bigInteger('kegiatan_id')->default(0);
+            $table->unsignedBigInteger('surat_pernyataan_id')->default(0);
+            $table->unsignedBigInteger('kegiatan_id')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->index(['id', 'surat_pernyataan_id', 'kegiatan_id']);

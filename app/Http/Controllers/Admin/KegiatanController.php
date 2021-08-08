@@ -87,6 +87,24 @@ class KegiatanController extends _CrudController
 
     }
 
+    public function index()
+    {
+        $userId = session()->get('admin_id');
+        $this->callPermission();
+
+        $data = $this->data;
+
+        $getKegiatan = Kegiatan::where('user_id', $userId)->get();
+        $getKegiatanIds = [];
+        foreach ($getKegiatan as $list) {
+            $getKegiatanIds[] = $list->ms_kegiatan_id;
+        }
+
+        dd($getKegiatan->toArray()); die();
+
+        return view($this->listView['index'], $data);
+    }
+
     public function dataTable()
     {
         $this->callPermission();
@@ -248,7 +266,6 @@ class KegiatanController extends _CrudController
         $tanggalEnd = $list;
 
 
-        $deskripsi = $this->request->get('deskripsi');
         $judul = $this->request->get('judul');
         $rules = [];
         $message = [];
@@ -262,10 +279,10 @@ class KegiatanController extends _CrudController
 
         foreach ($checkbox as $key => $value) {
             if($tanggal[$key] > $tanggalEnd->tanggal_end) {
-            session()->flash('message', __('general.date_has_passed'));
-            session()->flash('message_alert', 1);
-            return back();
-        }
+                session()->flash('message', __('general.date_has_passed'));
+                session()->flash('message_alert', 1);
+                return back();
+            }
 
             $get_ms_kegiatan_name = '';
             $get_ms_kegiatan = isset($list_ms_kegiatan[$key]) ? $list_ms_kegiatan[$key] : null;
