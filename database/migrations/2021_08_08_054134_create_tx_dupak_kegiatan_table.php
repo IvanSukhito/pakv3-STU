@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTxSuratPernyataanKegiatanTable extends Migration
+class CreateTxDupakKegiatanTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateTxSuratPernyataanKegiatanTable extends Migration
      */
     public function up()
     {
-        Schema::create('tx_surat_pernyataan_kegiatan', function (Blueprint $table) {
+        Schema::create('tx_dupak_kegiatan', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('surat_pernyataan_id')->default(0);
+            $table->bigInteger('dupak_id')->default(0);
             $table->bigInteger('kegiatan_id')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
-            $table->index(['id', 'surat_pernyataan_id', 'kegiatan_id']);
-            $table->foreign('surat_pernyataan_id')
-                ->references('id')->on('tx_surat_pernyataan')
+            $table->index(['id', 'dupak_id', 'kegiatan_id']);
+            $table->foreign('dupak_id')
+                ->references('id')->on('tx_dupak')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
@@ -34,6 +34,6 @@ class CreateTxSuratPernyataanKegiatanTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tx_surat_pernyataan_kegiatan');
+        Schema::dropIfExists('tx_dupak_kegiatan');
     }
 }
