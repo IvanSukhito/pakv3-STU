@@ -21,7 +21,7 @@ class PakLogic
             $msPermenIds[] = $list->permen_id;
         }
         if (count($msKegiatanIds) > 0) {
-            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $msPermenIds);
+            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $msPermenIds)->get();
         }
     }
 
