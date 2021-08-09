@@ -53,6 +53,8 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\JenjangPerancangController' => 'jenjang-perancang',
                 'Admin\PermenController' => 'permen',
                 'Admin\MsKegiatanController' => 'ms-kegiatan',
+                'Admin\PerancangController' => 'perancang',
+
 
                 'Admin\KegiatanController' => 'kegiatan',
                 'Admin\PersetujuanSuratPernyataanController' => 'persetujuan-surat-pernyataan',

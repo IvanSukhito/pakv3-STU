@@ -473,6 +473,14 @@ if ( ! function_exists('listAllMenu')) {
                         'type' => 1
                     ],
                     [
+                        'name' => __('general.perancang'),
+                        'title' => __('general.perancang'),
+                        'active' => ['admin.perancang.'],
+                        'route' => 'admin.perancang.index',
+                        'key' => 'admin',
+                        'type' => 1
+                    ],
+                    [
                         'name' => __('general.golongan'),
                         'icon' => '<i class="nav-icon fa fa-users"></i>',
                         'title' => __('general.golongan'),
