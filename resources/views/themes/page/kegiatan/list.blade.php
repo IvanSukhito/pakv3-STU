@@ -44,14 +44,29 @@
 
             <!-- /.card-header -->
                 <div class="card-body">
-                    @if(isset($data))
-                        @foreach($data as $list)
-                            <div class="card">
-                                <div class="card-header"><h4>{!! $list->judul !!}</h4></div>
-                            </div>
+                    <div class="form-group">
+                        <label for="permen">{{ __('general.permen') }} *</label>
+                        {{ Form::select('permen', $dataPermen, old('permen'), ['id' => 'permen', 'class' => 'form-control', 'onchange' => 'changePermen()']) }}
+                    </div>
+                    <div class="form-group">
+                        <label for="filter">{{ __('general.filter') }} *</label>
+                        {{ Form::select('filter', [], old('filter'), ['id' => 'filter', 'class' => 'form-control', 'onchange' => 'changeFilter()']) }}
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if(isset($dataKegiatan))
+                        @foreach($dataKegiatan as $getPermen => $listJudul)
+                            @foreach($listJudul as $getJudul => $listKegiatan)
+
+                                <div class="card">
+                                    <div class="card-header"><h3>{!! $getJudul !!}</h3></div>
+                                    <div class="card-body">
+                                        {!! view_kegiatan_v3($listKegiatan, $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
+                                    </div>
+                                </div>
+
+                            @endforeach
                         @endforeach
-                    @else
-                        <h3>@lang('Tidak ada Butir Kegiatan')</h3>
                     @endif
                 </div>
                 <!-- /.card-body -->
@@ -96,6 +111,32 @@
 @section('script-bottom')
     @parent
     <script type="text/javascript">
+
+        let dataFilter = {!! json_encode($dataFilterKegiatan) !!};
+
+        $(document).ready(function() {
+            // $('.all-row').hide();
+            // changePermen();
+        });
+
+        function changePermen() {
+            let getPermen = $('#permen').val();
+            $('#filter').empty();
+            $.each(dataFilter, function(index, item) {
+                if (parseInt(index) === parseInt(getPermen)) {
+                    $.each(item, function(index2, item2) {
+                        $('#filter').append(new Option(item2, index2));
+                    });
+                    changeFilter();
+                }
+            });
+        }
+
+        function changeFilter() {
+            let getKegiatanPoint = $('#filter').val();
+            $('.all-row').hide();
+            $('.kegiatan-' + getKegiatanPoint).show();
+        }
 
         function showPerDate() {
             $("#perDateModal").modal();

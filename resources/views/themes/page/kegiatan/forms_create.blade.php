@@ -77,7 +77,7 @@ else {
                     </div>
                 </div>
                 <div class="card-body">
-                    {!!  create_kegiatan_v3($dataKegiatan, $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
+                    {!! create_kegiatan_v3($dataKegiatan, $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
                 </div>
                 <!-- /.card-body -->
 

@@ -103,7 +103,7 @@ class PakLogic
             foreach ($getKegiatan as $list) {
                 $permenIds[] = $list->permen_id;
                 $getKegiatanIds[] = $list->ms_kegiatan_id;
-                $getJudul[$list->judul][] = $list->ms_kegiatan_id;
+                $getJudul[$list->permen_id][$list->judul][] = $list->ms_kegiatan_id;
             }
 
             $getKegiatanIds = array_unique($getKegiatanIds);
@@ -116,7 +116,7 @@ class PakLogic
 
             $getMsKegiatan = $temp;
 
-            $getPermen = Permen::where('status', 1)->get();
+            $getPermen = Permen::whereIn('id', $permenIds)->get();
             $permenIds = [];
             $listPermen = [];
             foreach ($getPermen as $list) {
@@ -124,19 +124,14 @@ class PakLogic
                 $permenIds[] = $list->id;
             }
 
-            $getListKegiatanIds = $this->getParentTreeKegiatan($getMsKegiatan, $getKegiatanIds);
-
-            $getMsKegiatan = MsKegiatan::whereIn('id', $getListKegiatanIds)->get();
-
-            $getMasterFilter = [];
             foreach ($getMsKegiatan as $list) {
-                if ($list->parent_id <= 0) {
-                    $getMasterFilter[$list->id] = $list->name;
+                if ($list['parent_id'] <= 0) {
+                    $getMasterFilter[$list['id']] = $list['name'];
                 }
             }
 
             return [
-                'data' => $this->getCreateListTreeKegiatan($getMsKegiatan->toArray()),
+                'data' => $this->getParentTreeKegiatan($getMsKegiatan, $getKegiatanIds, $getJudul),
                 'permen' => $listPermen,
                 'filter' => $getMasterFilter
             ];
@@ -150,9 +145,10 @@ class PakLogic
     /**
      * @param $msKegiatan
      * @param $childIds
+     * @param $getJudul
      * @return array
      */
-    protected function getParentTreeKegiatan($msKegiatan, $childIds)
+    protected function getParentTreeKegiatan($msKegiatan, $childIds, $getJudul)
     {
         $result = [];
 
@@ -160,27 +156,35 @@ class PakLogic
             if (isset($msKegiatan[$childId])) {
                 $getMsKegiatan = $msKegiatan[$childId];
                 if ($getMsKegiatan['parent_id'] > 0) {
-                    $getParent = $this->checkParentTreeKegiatan($msKegiatan, $getMsKegiatan['parent_id'], [$childId]);
+                    $getParent = $this->checkParentTreeKegiatan($msKegiatan, $getMsKegiatan['parent_id']);
                     if (count($getParent) > 0) {
-                        $result = array_merge($result, $getParent);
+                        $getListResult = $getParent;
+                        $result[$childId] = $getListResult;
+                        $result[$childId][] = $childId;
                     }
                 }
-                $result[] = $getMsKegiatan;
             }
         }
 
-        $listKegiatanIds = [];
-        foreach ($result as $list) {
-            if (isset($list['from_id'])) {
-                $listKegiatanIds = array_merge($listKegiatanIds, $list['from_id']);
+        $tempResult = [];
+        foreach ($getJudul as $getPermen => $listPermen) {
+            $getListKegiatanIds = [];
+            foreach($listPermen as $getJudul => $listJudul) {
+                foreach ($listJudul as $listKegiatan) {
+                    $getListKegiatanIds = array_merge($getListKegiatanIds, $result[$listKegiatan]);
+                }
+                $getListKegiatanPerJudul = array_unique($getListKegiatanIds);
+                $tempJudul = [];
+                foreach ($msKegiatan as $key => $list) {
+                    if (in_array($key, $getListKegiatanPerJudul)) {
+                        $tempJudul[] = $list;
+                    }
+                }
+                $tempResult[$getPermen][$getJudul] = $this->getCreateListTreeKegiatan($tempJudul);;
             }
         }
 
-        if (count($listKegiatanIds) > 0) {
-            return array_unique($listKegiatanIds);
-        }
-
-        return [];
+        return $tempResult;
 
     }
 
@@ -190,17 +194,16 @@ class PakLogic
      * @param $fromId
      * @return array
      */
-    protected function checkParentTreeKegiatan($msKegiatan, $childId, $fromId)
+    protected function checkParentTreeKegiatan($msKegiatan, $childId)
     {
         $result = [];
         if (isset($msKegiatan[$childId])) {
             $getMsKegiatan = $msKegiatan[$childId];
             if ($getMsKegiatan['parent_id'] > 0) {
-                $getParent = $this->checkParentTreeKegiatan($msKegiatan, $getMsKegiatan['parent_id'], array_merge($fromId, [$childId]));
+                $getParent = $this->checkParentTreeKegiatan($msKegiatan, $getMsKegiatan['parent_id']);
                 $result = $getParent;
             }
-            $getMsKegiatan['from_id'] = array_merge($fromId, [$getMsKegiatan['id']]);
-            $result[] = $getMsKegiatan;
+            $result[] = $getMsKegiatan['id'];
         }
         return $result;
     }

@@ -105,6 +105,111 @@ if ( ! function_exists('render_create_kegiatan_v3')) {
     }
 }
 
+if ( ! function_exists('view_kegiatan_v3')) {
+    /**
+     * @param $ms_kegiatan
+     * @param $listJenjangPerancang
+     * @param $jenjangPerancangId
+     * @return string
+     * @throws Throwable
+     */
+    function view_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $jenjangPerancangId) {
+
+        $getDeep = set_deep_ms_kegiatan($ms_kegiatan);
+
+        $listJenjangPerancangData = [];
+        foreach ($listJenjangPerancang as $list) {
+            $listJenjangPerancangData[$list->id] = $list;
+        }
+
+        $deep = 0;
+
+        $html = '<table class="table table-kegiatan table-bordered table-striped">
+                    <thead>
+                    <tr>
+                    <th width="60%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
+                    <th width="15%" colspan="3" class="text-center">AK</th>
+                    <th width="10%" class="text-center">Satuan</th>
+                    <th width="15%" class="text-center">Pelaksana</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ';
+
+        $html .= render_view_kegiatan_v3($ms_kegiatan, $listJenjangPerancangData, $deep, $getDeep, $jenjangPerancangId);
+
+        $html .= '</tbody></table>';
+
+        return $html;
+    }
+}
+
+if ( ! function_exists('render_view_kegiatan_v3')) {
+    /**
+     * @param $ms_kegiatan
+     * @param $listJenjangPerancang
+     * @param $deep
+     * @param $getDeep
+     * @param $jenjangPerancangId
+     * @param string $parentClass
+     * @return string
+     */
+    function render_view_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $parentClass = '') {
+        $html = '';
+
+        foreach ($ms_kegiatan as $list) {
+
+            $getId = $list['id'];
+            $getName = $list['name'];
+            $getAk = $list['ak'] > 0 ? $list['ak'] : '';
+            $getJenjangKegiatan = $list['jenjang_perancang_id'];
+            $getSatuan = strlen($list['satuan']) > 0 ? $list['satuan'] : '';
+            $getPelaksana = isset($listJenjangPerancang[$list['jenjang_perancang_id']]) ? $listJenjangPerancang[$list['jenjang_perancang_id']]->name : '';
+            $getChilds = $list['have_child'] == 1 ? $list['childs'] : [];
+            $addClass = $parentClass.' kegiatan-'.$getId;
+
+            $addHtmlAk = '<td width="15%" colspan="3">&nbsp;</td>';
+            if ($getAk > 0) {
+
+                $getName = '<a href="#" class="click-kegiatan" data-id="'.$getId.'">'.$getName.'</a>';
+
+                $getNewAk = calculate_jenjang($jenjangPerancangId, $getJenjangKegiatan, $listJenjangPerancang, $getAk);
+                if ($getAk != $getNewAk) {
+                    $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                        '<td width="5%" class="text-center">80%</td>'.
+                        '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                }
+                else {
+                    $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                        '<td width="5%" class="text-center">100%</td>'.
+                        '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                }
+            }
+
+            $addHtmlTd = '';
+            if ($deep > 0) {
+                $addHtmlTd = str_repeat('<td width="1%">&nbsp;</td>', $deep);
+            }
+            $newDeep = $getDeep - $deep;
+
+            $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
+                    <td colspan="'.$newDeep.'">'.$getName.'</td>
+                    '.$addHtmlAk.'
+                    <td width="10%" class="text-center">'.$getSatuan.'</td>
+                    <td width="15%" class="text-center">'.$getPelaksana.'</td>
+                    </tr>';
+
+            if ($getChilds) {
+                $html .= render_view_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass);
+            }
+
+        }
+
+        return $html;
+
+    }
+}
+
 
 
 if ( ! function_exists('render_kegiatan_v3')) {
