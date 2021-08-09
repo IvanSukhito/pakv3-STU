@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Codes\Models\Users;
 use App\Codes\Models\Golongan;
@@ -11,7 +12,8 @@ use App\Codes\Models\UnitKerja;
 use App\Codes\Models\JenjangPerancang;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
-class PerancangController extends _CrudController
+
+class TimPenilaiController extends _CrudController
 {
     public function __construct(Request $request)
     {
@@ -43,48 +45,16 @@ class PerancangController extends _CrudController
                 'create' => false,
                 'edit' => false
             ],
-            'upline_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'lang' => 'Atasan',
-                'type' => 'select2'
-            ],
-            'pangkat_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2'
-            ],
-            'golongan_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2'
-            ],
-            'jenjang_perancang_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2'
-            ],
             'unit_kerja_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
                 'type' => 'select2'
             ],
-            'jenis_kelamin' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select'
-            ],
-
         ];
 
         parent::__construct(
-            $request, 'general.perancang', 'perancang', 'Users', 'perancang',
+            $request, 'general.tim_penilai', 'tim_penilai', 'Users', 'tim_penilai',
             $passingData
         );
         $getGolongan = Golongan::get();
@@ -102,7 +72,6 @@ class PerancangController extends _CrudController
                 $listJenjangPerancang[$list->id] = $list->name;
             }
         }
-
 
         $getPangkat = Pangkat::get();
         $listPangkat = [0 => 'Kosong'];
@@ -125,26 +94,9 @@ class PerancangController extends _CrudController
         $this->data['listSet']['pangkat'] = $listPangkat;
         $this->data['listSet']['unit_kerja'] = $listUnitKerja;
         $this->data['listSet']['status'] = get_list_status();
-        $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.perancang.list';
+        $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.tim_penilai.list';
         //$this->passingData = Users::where('role_id',3);
     }
-
-    //public function index(){
-    //      $this->callPermission();
-//
-    //
-    //    $data = $this->data;
-    //    $data['perancang'] = Users::where('role_id',3)->get();
-//
-    //    $data['passing'] = collectPassingData($this->passingAtasan);
-    //    $data['thisLabel'] = 'Index';
-    //    $data['permission'] = $this->permission;
-    //    $data['thisRoute'] = $this->route;
-    //
-//
-    //    return view($this->listView['index'], $data);
-    //}
-
 
     public function dataTable()
     {
@@ -155,7 +107,7 @@ class PerancangController extends _CrudController
         $dataTables = new DataTables();
 
         $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat, D.name as golongan, E.name as jenjang_perancang, F.name as unit_kerja, B.name AS role, users.status')
-            ->where('users.role_id', '=', 3)
+            ->where('users.role_id', '=', 5)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
             ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
             ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
@@ -230,20 +182,18 @@ class PerancangController extends _CrudController
         $getUnitKerja = $this->request->get('unit_kerja');
         $getStatus = $this->request->get('status');
 
-
-
-        $perancang = new Users();
-        $perancang->name = $getName;
-        $perancang->username = $getUsername;
-        $perancang->email = $getEmail;
-        $perancang->password = Hash::make('123');
-        $perancang->pangkat_id = $getPangkat;
-        $perancang->golongan_id = $getGolongan;
-        $perancang->jenjang_perancang_id = $getJenjangPerancang;
-        $perancang->unit_kerja_id = $getUnitKerja;
-        $perancang->status = $getStatus;
-        $perancang->role_id = 3;
-        $perancang->save();
+        $timpenilai = new Users();
+        $timpenilai->name = $getName;
+        $timpenilai->username = $getUsername;
+        $timpenilai->email = $getEmail;
+        $timpenilai->password = Hash::make('123');
+        $timpenilai->pangkat_id = $getPangkat;
+        $timpenilai->golongan_id = $getGolongan;
+        $timpenilai->jenjang_perancang_id = $getJenjangPerancang;
+        $timpenilai->unit_kerja_id = $getUnitKerja;
+        $timpenilai->status = $getStatus;
+        $timpenilai->role_id = 3;
+        $timpenilai->save();
 
         if($this->request->ajax()){
             return response()->json(['result' => 1, 'message' => __('general.success_add')]);

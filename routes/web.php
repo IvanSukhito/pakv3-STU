@@ -54,8 +54,9 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\PermenController' => 'permen',
                 'Admin\MsKegiatanController' => 'ms-kegiatan',
                 'Admin\PerancangController' => 'perancang',
-
-
+                'Admin\AtasanController' => 'atasan',
+                'Admin\SeketariatController' => 'seketariat',
+                'Admin\TimPenilaiController' => 'tim_penilai',
                 'Admin\KegiatanController' => 'kegiatan',
                 'Admin\PersetujuanSuratPernyataanController' => 'persetujuan-surat-pernyataan',
                 'Admin\SuratPernyataanController' => 'surat-pernyataan',
