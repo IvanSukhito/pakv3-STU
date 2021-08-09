@@ -1,10 +1,57 @@
 <?php
+
+if ( ! function_exists('create_kegiatan_v3')) {
+    /**
+     * @param $ms_kegiatan
+     * @param $listJenjangPerancang
+     * @param $jenjang_perancang_id
+     * @param array $listDataKegiatan
+     * @return string
+     * @throws Throwable
+     */
+    function render_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $jenjang_perancang_id, $listDataKegiatan = []) {
+
+        $getResult = set_deep_ms_kegiatan($ms_kegiatan);
+
+        $listJenjangPerancangData = [];
+        foreach ($listJenjangPerancang as $list) {
+            $listJenjangPerancangData[$list->id] = $list->name;
+        }
+
+        $getDeep = $getResult['deep'];
+        $getPath = $getResult['path'];
+        $getKegiatan = $getResult['data'];
+        $deep = 0;
+
+        $html = '<table class="table table-kegiatan table-bordered table-striped">
+                    <thead>
+                    <tr>
+                    <th width="80%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
+                    <th width="5%">AK</th>
+                    <th width="10%">Satuan</th>
+                    <th width="15%">Pelaksana</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ';
+
+        if (isset($getPath[0])) {
+            $html .= render_kegiatan_html_v3($getPath[0], $getPath, $getKegiatan, $jenjang_perancang_id, $listJenjangPerancang, $listJenjangPerancangData, $deep, $getDeep, $listDataKegiatan);
+        }
+
+        $html .= '</tbody></table>';
+
+        return $html;
+    }
+}
+
+
+
 if ( ! function_exists('render_kegiatan_v3')) {
     /**
      * @param $ms_kegiatan
      * @param $jenjang_perancang_id
      * @param $listJenjangPerancang
-     * @param bool $disabled
      * @param array $listDataKegiatan
      * @return string
      */

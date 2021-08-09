@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
+use App\Codes\Logic\PakLogic;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
@@ -83,23 +84,21 @@ class KegiatanController extends _CrudController
 
     }
 
-//    public function index()
-//    {
-//        $userId = session()->get('admin_id');
-//        $this->callPermission();
-//
-//        $data = $this->data;
-//
-//        $getKegiatan = Kegiatan::where('user_id', $userId)->get();
-//        $getKegiatanIds = [];
-//        foreach ($getKegiatan as $list) {
-//            $getKegiatanIds[] = $list->ms_kegiatan_id;
-//        }
-//
-//        dd($getKegiatan->toArray()); die();
-//
-//        return view($this->listView['index'], $data);
-//    }
+    public function index()
+    {
+        $userId = session()->get('admin_id');
+        $this->callPermission();
+
+        $data = $this->data;
+
+        $getKegiatan = Kegiatan::where('user_id', $userId)->get();
+        $getKegiatanIds = [];
+        foreach ($getKegiatan as $list) {
+            $getKegiatanIds[] = $list->ms_kegiatan_id;
+        }
+
+        return view($this->listView['index'], $data);
+    }
 
     public function dataTable()
     {
@@ -176,41 +175,14 @@ class KegiatanController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
-        $getFilterPermen = Permen::where('status', 1)->pluck('name', 'id')->toArray();
-        $getListPermen = [];
-        foreach ($getFilterPermen as $key => $val) {
-            $getListPermen[] = $key;
-        }
-        $getKegiatan = MsKegiatan::where('status', 1)->whereIn('permen_id', $getListPermen)->get();
-        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
-
+        $getNewLogic = new PakLogic();
+        $getData = $getNewLogic->createKegiatan();
         $getFilterKegiatan = [];
-        foreach ($getKegiatan as $list) {
-            if ($list->parent_id > 0) {
-                continue;
-            }
-
-            $getFilterKegiatan[$list->permen_id][$list->id] = $list->name;
-
+        foreach ($getData as $list) {
+            $getFilterKegiatan[$list['permen_id']][$list['id']] = $list['name'];
         }
 
-        $temp = [];
-        foreach ($getFilterKegiatan as $indexPermen => $listKegiatan) {
-            $temp2 = [];
-            foreach ($listKegiatan as $kegiatanId => $kegiatanName) {
-                $temp2[] = [
-                    'id' => $kegiatanId,
-                    'name' => $kegiatanName
-                ];
-            }
-
-            $temp[] = [
-                'id' => $indexPermen,
-                'data' => $temp2
-            ];
-
-        }
-        $getFilterKegiatan = $temp;
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $data = $this->data;
 
@@ -218,9 +190,8 @@ class KegiatanController extends _CrudController
         $data['formsTitle'] = __('general.title_create', ['field' => $data['thisLabel']]);
         $data['dataUser'] = $getStaff;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
-        $data['dataKegiatan'] = $getKegiatan;
-        $data['dataFilterPermen'] = $getFilterPermen;
         $data['dataFilterKegiatan'] = $getFilterKegiatan;
+        $data['dataKegiatan'] = $getData;
 
         return view($this->listView[$data['viewType']], $data);
     }
