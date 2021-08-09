@@ -31,7 +31,7 @@ class CreateUsersTable extends Migration
             $table->date('tgl_lahir')->nullable();
             $table->integer('gender')->default(1);
             $table->string('alamat_kantor')->nullable();
-            $table->date('tmt_kenaikan_jenjang_terakhir')->nullable();
+            $table->date('tmt_pangkat_golongan')->nullable();
             $table->date('kenaikan_jenjang_terakhir')->nullable();
             $table->date('masa_penilaian_terakhir_awal')->nullable();
             $table->date('masa_penilaian_terakhir_akhir')->nullable();
