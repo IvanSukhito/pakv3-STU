@@ -5,11 +5,10 @@ if ( ! function_exists('create_kegiatan_v3')) {
      * @param $ms_kegiatan
      * @param $listJenjangPerancang
      * @param $jenjangPerancangId
-     * @param array $listDataKegiatan
      * @return string
      * @throws Throwable
      */
-    function create_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $jenjangPerancangId, array $listDataKegiatan = []) {
+    function create_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $jenjangPerancangId) {
 
         $getDeep = set_deep_ms_kegiatan($ms_kegiatan);
 
@@ -32,7 +31,7 @@ if ( ! function_exists('create_kegiatan_v3')) {
                     <tbody>
                     ';
 
-        $html .= render_create_kegiatan_v3($ms_kegiatan, $listJenjangPerancangData, $deep, $getDeep, $jenjangPerancangId, $listDataKegiatan);
+        $html .= render_create_kegiatan_v3($ms_kegiatan, $listJenjangPerancangData, $deep, $getDeep, $jenjangPerancangId);
 
         $html .= '</tbody></table>';
 
@@ -41,7 +40,16 @@ if ( ! function_exists('create_kegiatan_v3')) {
 }
 
 if ( ! function_exists('render_create_kegiatan_v3')) {
-    function render_create_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, array $listDataKegiatan = [], $parentClass = '') {
+    /**
+     * @param $ms_kegiatan
+     * @param $listJenjangPerancang
+     * @param $deep
+     * @param $getDeep
+     * @param $jenjangPerancangId
+     * @param string $parentClass
+     * @return string
+     */
+    function render_create_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $parentClass = '') {
         $html = '';
 
         foreach ($ms_kegiatan as $list) {
@@ -87,7 +95,7 @@ if ( ! function_exists('render_create_kegiatan_v3')) {
                     </tr>';
 
             if ($getChilds) {
-                $html .= render_create_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $listDataKegiatan, $addClass);
+                $html .= render_create_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass);
             }
 
         }

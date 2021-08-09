@@ -44,12 +44,15 @@
 
             <!-- /.card-header -->
                 <div class="card-body">
-                    @foreach($data as $list)
-                        <div class="card">
-                            <div class="card-header"><h4>{!! $list->judul !!}</h4></div>
-                            <div class="card-body">A</div>
-                        </div>
-                    @endforeach
+                    @if(isset($data))
+                        @foreach($data as $list)
+                            <div class="card">
+                                <div class="card-header"><h4>{!! $list->judul !!}</h4></div>
+                            </div>
+                        @endforeach
+                    @else
+                        <h3>@lang('Tidak ada Butir Kegiatan')</h3>
+                    @endif
                 </div>
                 <!-- /.card-body -->
             </div>

@@ -90,7 +90,6 @@ class PakLogic
      */
     public function getKegiatanUser($userId, array $status = [])
     {
-        $result = [];
         if (count($status) <= 0) {
             $status = [1];
         }
@@ -115,26 +114,36 @@ class PakLogic
                 $temp[$list['id']] = $list;
             }
 
-            $result = $this->getParentTreeKegiatan($temp, $getKegiatanIds);
+            $getMsKegiatan = $temp;
 
-            $temp = [];
-            foreach ($result as $list) {
-                $temp[$list['id']] = $list;
+            $getPermen = Permen::where('status', 1)->get();
+            $permenIds = [];
+            $listPermen = [];
+            foreach ($getPermen as $list) {
+                $listPermen[$list->id] = $list->name;
+                $permenIds[] = $list->id;
             }
-            $result = $temp;
 
-            $temp = [];
-            foreach ($result as $list) {
-                $temp[$list['parent_id']][] = $list;
+            $getListKegiatanIds = $this->getParentTreeKegiatan($getMsKegiatan, $getKegiatanIds);
+
+            $getMsKegiatan = MsKegiatan::whereIn('id', $getListKegiatanIds)->get();
+
+            $getMasterFilter = [];
+            foreach ($getMsKegiatan as $list) {
+                if ($list->parent_id <= 0) {
+                    $getMasterFilter[$list->id] = $list->name;
+                }
             }
-            $result =  $temp;
+
+            return [
+                'data' => $this->getCreateListTreeKegiatan($getMsKegiatan->toArray()),
+                'permen' => $listPermen,
+                'filter' => $getMasterFilter
+            ];
 
         }
 
-        return [
-            'data' => $getKegiatan,
-            'list_kegiatan' => $result
-        ];
+        return [];
 
     }
 
@@ -151,7 +160,7 @@ class PakLogic
             if (isset($msKegiatan[$childId])) {
                 $getMsKegiatan = $msKegiatan[$childId];
                 if ($getMsKegiatan['parent_id'] > 0) {
-                    $getParent = $this->checkParentTreeKegiatan($msKegiatan, $getMsKegiatan['parent_id']);
+                    $getParent = $this->checkParentTreeKegiatan($msKegiatan, $getMsKegiatan['parent_id'], [$childId]);
                     if (count($getParent) > 0) {
                         $result = array_merge($result, $getParent);
                     }
@@ -160,23 +169,37 @@ class PakLogic
             }
         }
 
-        return $result;
+        $listKegiatanIds = [];
+        foreach ($result as $list) {
+            if (isset($list['from_id'])) {
+                $listKegiatanIds = array_merge($listKegiatanIds, $list['from_id']);
+            }
+        }
+
+        if (count($listKegiatanIds) > 0) {
+            return array_unique($listKegiatanIds);
+        }
+
+        return [];
+
     }
 
     /**
      * @param $msKegiatan
      * @param $childId
+     * @param $fromId
      * @return array
      */
-    protected function checkParentTreeKegiatan($msKegiatan, $childId)
+    protected function checkParentTreeKegiatan($msKegiatan, $childId, $fromId)
     {
         $result = [];
         if (isset($msKegiatan[$childId])) {
             $getMsKegiatan = $msKegiatan[$childId];
             if ($getMsKegiatan['parent_id'] > 0) {
-                $getParent = $this->checkParentTreeKegiatan($msKegiatan, $getMsKegiatan['parent_id']);
+                $getParent = $this->checkParentTreeKegiatan($msKegiatan, $getMsKegiatan['parent_id'], array_merge($fromId, [$childId]));
                 $result = $getParent;
             }
+            $getMsKegiatan['from_id'] = array_merge($fromId, [$getMsKegiatan['id']]);
             $result[] = $getMsKegiatan;
         }
         return $result;

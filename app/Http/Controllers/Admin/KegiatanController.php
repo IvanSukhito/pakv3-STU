@@ -97,12 +97,29 @@ class KegiatanController extends _CrudController
         $userId = session()->get('admin_id');
         $this->callPermission();
 
-        $data = $this->data;
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();
         $getData = $getNewLogic->getKegiatanUser($userId);
+        $dataPermen = [];
+        $dataKegiatan = [];
+        $getFilterKegiatan = [];
+        if (count($getData['data']) > 0) {
+            $dataPermen = $getData['permen'];
+            $dataKegiatan = $getData['data'];
 
-        $data['data'] = $getData['data'];
+            $getFilterKegiatan = [];
+            foreach ($getData['data'] as $list) {
+                $getFilterKegiatan[$list['permen_id']][$list['id']] = $list['name'];
+            }
+        }
+
+        $data = $this->data;
+
+        $data['dataJenjangPerancang'] = $getJenjangPerancang;
+        $data['dataPermen'] = $dataPermen;
+        $data['dataFilterKegiatan'] = $getFilterKegiatan;
+        $data['dataKegiatan'] = $dataKegiatan;
 
         return view($this->listView['index'], $data);
     }
