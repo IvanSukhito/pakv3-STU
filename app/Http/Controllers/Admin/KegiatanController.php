@@ -129,7 +129,7 @@ class KegiatanController extends _CrudController
         $data['dataUser'] = $getStaff;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $getData['permen'];
-        $data['dataFilterKegiatan'] = $getData['filter'];
+        $data['dataFilterKegiatan'] = $getFilterKegiatan;
         $data['dataKegiatan'] = $getData['data'];
 
         return view($this->listView[$data['viewType']], $data);

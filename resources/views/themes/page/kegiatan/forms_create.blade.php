@@ -67,7 +67,14 @@ else {
                 @endif
 
                 <div class="card-body">
-                    {{ Form::select('') }}
+                    <div class="form-group">
+                        <label for="permen">{{ __('general.permen') }} *</label>
+                        {{ Form::select('permen', $dataPermen, old('permen'), ['id' => 'permen', 'class' => 'form-control', 'onchange' => 'changePermen()']) }}
+                    </div>
+                    <div class="form-group">
+                        <label for="filter">{{ __('general.filter') }} *</label>
+                        {{ Form::select('filter', [], old('filter'), ['id' => 'filter', 'class' => 'form-control', 'onchange' => 'changeFilter()']) }}
+                    </div>
                 </div>
                 <div class="card-body">
                     {!!  create_kegiatan_v3($dataKegiatan, $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
@@ -103,9 +110,76 @@ else {
         </div>
     </section>
 
+    <div id="kegiatanModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <form method="post" action="#">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="daterange1">Estimate Date</label>
+
+                            <div class="input-group daterange">
+                                <div class="input-group-prepend datepicker-trigger">
+                                    <div class="input-group-text">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                </div>
+                                <input type="text" name="daterange1" value="" id="daterange1" class="form-control daterange" autocomplete="off" required="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
 @stop
 
 @section('script-bottom')
     @parent
     @include(env('ADMIN_TEMPLATE').'._component.generate_forms_script')
+    <script type="text/javascript">
+        'use strict';
+
+        let dataFilter = {!! json_encode($dataFilterKegiatan) !!};
+
+        $(document).ready(function() {
+            $('.all-row').hide();
+            changePermen();
+        });
+
+        $('.click-kegiatan').click(function () {
+            $('#kegiatanModal').modal('show');
+            return false;
+        });
+
+        function changePermen() {
+            let getPermen = $('#permen').val();
+            $('#filter').empty();
+            $.each(dataFilter, function(index, item) {
+                if (parseInt(index) === parseInt(getPermen)) {
+                    $.each(item, function(index2, item2) {
+                        $('#filter').append(new Option(item2, index2));
+                    });
+                    changeFilter();
+                }
+            });
+        }
+
+        function changeFilter() {
+            let getKegiatanPoint = $('#filter').val();
+            $('.all-row').hide();
+            $('.kegiatan-' + getKegiatanPoint).show();
+        }
+    </script>
 @stop

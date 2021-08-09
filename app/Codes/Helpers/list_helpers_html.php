@@ -73,7 +73,7 @@ if ( ! function_exists('render_create_kegiatan_v3')) {
 
             $addHtmlTd = '';
             if ($deep > 0) {
-                $addHtmlTd = str_repeat('<td>&nbsp;</td>', $deep);
+                $addHtmlTd = str_repeat('<td width="1%">&nbsp;</td>', $deep);
             }
             $newDeep = $getDeep - $deep;
 
