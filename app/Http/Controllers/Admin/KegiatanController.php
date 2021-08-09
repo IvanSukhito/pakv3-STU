@@ -23,10 +23,8 @@ class KegiatanController extends _CrudController
                 'show' => 0
             ],
             'tanggal' => [
-                'lang' => 'Tanggal'
             ],
             'judul' => [
-                'lang' => 'Judul'
             ],
             'ms_kegiatan_name' => [
                 'extra' => [
@@ -46,7 +44,6 @@ class KegiatanController extends _CrudController
                 'extra' => [
                     'edit' => ['disabled' => true]
                 ],
-                'lang' => 'Kredit'
             ],
             'satuan' => [
                 'extra' => [
@@ -69,7 +66,6 @@ class KegiatanController extends _CrudController
                 'create' => 0,
                 'edit' => 0,
                 'show' => 0,
-                'lang' => 'Aksi',
             ]
         ];
 
