@@ -163,6 +163,10 @@ else {
             return false;
         });
 
+        $('#submitForm').click(function(e) {
+            e.preventDefault();
+        });
+
         function changePermen() {
             let getPermen = $('#permen').val();
             $('#filter').empty();
