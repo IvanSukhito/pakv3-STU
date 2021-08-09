@@ -19,7 +19,7 @@ class CreateTxSuratPernyataanKegiatanTable extends Migration
             $table->unsignedBigInteger('kegiatan_id')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
-            $table->index(['id', 'surat_pernyataan_id', 'kegiatan_id']);
+            $table->index(['id', 'surat_pernyataan_id', 'kegiatan_id'], 'sp_kegiatan_index');
             $table->foreign('surat_pernyataan_id', 'sp_kegiatan')
                 ->references('id')->on('tx_surat_pernyataan')
                 ->onUpdate('cascade')
