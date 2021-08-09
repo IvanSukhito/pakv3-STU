@@ -94,7 +94,7 @@ class ProfileController extends _GlobalFunctionController
                 ],
                 'type' => 'select2'
             ],
-            'gender' => [
+            'jenis_kelamin' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
@@ -143,7 +143,7 @@ class ProfileController extends _GlobalFunctionController
                 ],
                 'type' => 'select2'
             ],
-            'gender' => [
+            'jenis_kelamin' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
@@ -203,7 +203,7 @@ class ProfileController extends _GlobalFunctionController
                 'golongan_id' => Golongan::where('status', 1)->pluck('name', 'id')->toArray(),
                 'jenjang_perancang_id' => JenjangPerancang::where('status', 1)->pluck('name', 'id')->toArray(),
                 'unit_kerja_id' => UnitKerja::where('status', 1)->pluck('name', 'id')->toArray(),
-                'gender' => get_list_gender(),
+                'jenis_kelamin' => get_list_gender(),
             ]
         ];
 
