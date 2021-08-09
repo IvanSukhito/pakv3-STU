@@ -19,7 +19,7 @@ class CreateTxDupakKegiatanTable extends Migration
             $table->unsignedBigInteger('kegiatan_id')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
-            $table->index(['id', 'dupak_id', 'kegiatan_id', 'dupak_kegiatan_index']);
+            $table->index(['id', 'dupak_id', 'kegiatan_id'], 'dupak_kegiatan_index');
             $table->foreign('dupak_id', 'dupak_kegiatan')
                 ->references('id')->on('tx_dupak')
                 ->onUpdate('cascade')
