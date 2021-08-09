@@ -35,26 +35,26 @@
                            title="@lang('general.create')">
                             <i class="fa fa-plus-square"></i> @lang('general.create')
                         </a>
-
-
                         <a href="#" onclick="showPerDate()" class="mb-2 mr-2 btn btn-primary"
                            title="@lang('general.create')">
-                            <i class="fa fa-plus-square"></i> @lang('general.submit_kegiatan')
+                            <i class="fa fa-send"></i> @lang('general.submit_kegiatan')
                         </a>
                     </div>
-            @endif
+                @endif
 
             <!-- /.card-header -->
                 <div class="card-body">
-                    <table class="table table-bordered table-striped" id="data1">
-
-                    </table>
+                    @foreach($data as $list)
+                        <div class="card">
+                            <div class="card-header"><h4>{!! $list->judul !!}</h4></div>
+                            <div class="card-body">A</div>
+                        </div>
+                    @endforeach
                 </div>
                 <!-- /.card-body -->
             </div>
         </div>
     </section>
-
 
     <div id="perDateModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -69,7 +69,7 @@
                         <div class="form-group">
                             <label for="daterange1">Estimate Date</label>
 
-                            <div class="input-group daterange">
+                            <div class="input-group">
                                 <div class="input-group-prepend datepicker-trigger">
                                     <div class="input-group-text">
                                         <i class="fa fa-calendar"></i>
@@ -93,52 +93,6 @@
 @section('script-bottom')
     @parent
     <script type="text/javascript">
-        'use strict';
-        let table;
-        table = jQuery('#data1').DataTable({
-            serverSide: true,
-            processing: true,
-            autoWidth: false,
-            scrollX: true,
-            // pageLength: 25,
-            // lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
-            ajax: '{{ route('admin.' . $thisRoute . '.dataTable') }}',
-            aaSorting: [ {!! isset($listAttribute['aaSorting']) ? $listAttribute['aaSorting'] : "[0,'desc']" !!}],
-            columns: [
-                    @foreach($passing as $fieldName => $fieldData)
-                {data: '{{ $fieldName }}', title: "{{ __($fieldData['lang']) }}" <?php echo strlen($fieldData['custom']) > 0 ? $fieldData['custom'] : ''; ?> },
-                @endforeach
-            ],
-            fnDrawCallback: function( oSettings ) {
-                // $('a[data-rel^=lightcase]').lightcase();
-            }
-        });
-
-        function actionData(link, method) {
-
-            if(confirm('{{ __('general.ask_delete') }}')) {
-                let test_split = link.split('/');
-                let url = '';
-                for(let i=3; i<test_split.length; i++) {
-                    url += '/'+test_split[i];
-                }
-
-                jQuery.ajax({
-                    url: url,
-                    type: method,
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(result) {
-
-                    },
-                    complete: function(){
-                        table.ajax.reload();
-                    }
-                });
-            }
-        }
 
         function showPerDate() {
             $("#perDateModal").modal();

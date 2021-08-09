@@ -97,13 +97,17 @@ class PakLogic
 
         $getKegiatan = Kegiatan::where('user_id', $userId)->whereIn('status', $status)->get();
         if ($getKegiatan) {
+            $getJudul = [];
             $permenIds = [];
             $getKegiatanIds = [];
 
             foreach ($getKegiatan as $list) {
                 $permenIds[] = $list->permen_id;
                 $getKegiatanIds[] = $list->ms_kegiatan_id;
+                $getJudul[$list->judul][] = $list->ms_kegiatan_id;
             }
+
+            $getKegiatanIds = array_unique($getKegiatanIds);
 
             $getMsKegiatan = MsKegiatan::where('permen_id', $permenIds)->get();
             $temp = [];
@@ -127,7 +131,10 @@ class PakLogic
 
         }
 
-        return $result;
+        return [
+            'data' => $getKegiatan,
+            'list_kegiatan' => $result
+        ];
 
     }
 

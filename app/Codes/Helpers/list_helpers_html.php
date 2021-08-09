@@ -67,7 +67,9 @@ if ( ! function_exists('render_create_kegiatan_v3')) {
                         '<td width="5%" class="text-center">'.$getNewAk.'</td>';
                 }
                 else {
-                    $addHtmlAk = '<td width="15%" colspan="3" class="text-center">'.$getNewAk.'</td>';
+                    $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                        '<td width="5%" class="text-center">100%</td>'.
+                        '<td width="5%" class="text-center">'.$getNewAk.'</td>';
                 }
             }
 

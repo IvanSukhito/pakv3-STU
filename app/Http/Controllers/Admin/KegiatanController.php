@@ -11,7 +11,6 @@ use App\Codes\Models\Permen;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 
 class KegiatanController extends _CrudController
 {
@@ -24,10 +23,19 @@ class KegiatanController extends _CrudController
                 'show' => 0
             ],
             'tanggal' => [
+                'validate' => [
+                    'create' => 'required',
+                    'edit' => 'required'
+                ]
             ],
             'judul' => [
+                'validate' => [
+                    'create' => 'required',
+                    'edit' => 'required'
+                ]
             ],
             'ms_kegiatan_name' => [
+                'create' => 0,
                 'extra' => [
                     'edit' => ['disabled' => true]
                 ],
@@ -42,24 +50,24 @@ class KegiatanController extends _CrudController
                 'lang' => 'general.ms_kegiatan',
             ],
             'kredit' => [
+                'create' => 0,
                 'extra' => [
                     'edit' => ['disabled' => true]
                 ],
             ],
             'satuan' => [
+                'create' => 0,
                 'extra' => [
                     'edit' => ['disabled' => true]
                 ],
             ],
             'dokument_pendukung' => [
                 'list' => 0,
-                'edit' => 1,
                 'type' => 'file2',
                 'lang' => 'general.dokument'
             ],
             'dokument_fisik' => [
                 'list' => 0,
-                'edit' => 1,
                 'type' => 'file2',
                 'lang' => 'general.dokumen_fisik'
             ],
@@ -91,11 +99,10 @@ class KegiatanController extends _CrudController
 
         $data = $this->data;
 
-        $getKegiatan = Kegiatan::where('user_id', $userId)->get();
-        $getKegiatanIds = [];
-        foreach ($getKegiatan as $list) {
-            $getKegiatanIds[] = $list->ms_kegiatan_id;
-        }
+        $getNewLogic = new PakLogic();
+        $getData = $getNewLogic->getKegiatanUser($userId);
+
+        $data['data'] = $getData['data'];
 
         return view($this->listView['index'], $data);
     }
@@ -139,9 +146,26 @@ class KegiatanController extends _CrudController
     {
         $this->callPermission();
 
-        $kegiatan = $this->request->get('filter_kegiatan');
-
         $viewType = 'create';
+
+        var_dump($this->request->all());
+        die("submit stop");
+
+        $getListCollectData = collectPassingData($this->passingData, $viewType);
+        $validate = $this->setValidateData($getListCollectData, $viewType);
+        if (count($validate) > 0)
+        {
+            $data = $this->validate($this->request, $validate);
+        }
+        else {
+            $data = [];
+            foreach ($getListCollectData as $key => $val) {
+                $data[$key] = $this->request->get($key);
+            }
+        }
+
+        $data = $this->getCollectedData($getListCollectData, $viewType, $data);
+        $getData = $this->crud->store($data);
 
         $userId = session()->get('admin_id');
         $getUser = Users::where('id', $userId)->first();
