@@ -1,0 +1,11 @@
+.click-kegiatan {
+    display: block;
+    font-weight: bold;
+    color: black;
+}
+
+.click-kegiatan:hover,
+.click-kegiatan:active
+{
+    color: #444444;
+}

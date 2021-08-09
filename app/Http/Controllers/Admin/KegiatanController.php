@@ -76,7 +76,7 @@ class KegiatanController extends _CrudController
         );
 
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.list';
-        $this->listView['create'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms';
+        $this->listView['create'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms_create';
         $this->listView['submit_kegiatan'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.submit_kegiatan';
 
         $this->data['listSet']['status'] = get_list_status();
@@ -100,68 +100,6 @@ class KegiatanController extends _CrudController
         return view($this->listView['index'], $data);
     }
 
-    public function dataTable()
-    {
-        $this->callPermission();
-
-        $userId = session()->get('admin_id');
-
-        $dataTables = new DataTables();
-
-        $builder = $this->model::query()->selectRaw('tx_kegiatan.id, tx_kegiatan.tanggal, tx_kegiatan.judul, tx_kegiatan.kredit,
-        tx_kegiatan.satuan, B.name AS ms_kegiatan_name, C.nomor AS sp_nomor, D.nomor AS dupak_nomor')
-            ->where('tx_kegiatan.status', '=', 1)->where('tx_kegiatan.user_id', '=', $userId)
-            ->leftJoin('ms_kegiatan AS B', 'B.id', '=', 'tx_kegiatan.ms_kegiatan_id')
-            ->leftJoin('tx_surat_pernyataan AS C', 'C.id', '=', 'tx_kegiatan.surat_pernyataan_id')
-            ->leftJoin('dupak AS D', 'D.id', '=', 'tx_kegiatan.dupak_id');
-
-        $dataTables = $dataTables->eloquent($builder)
-            ->addColumn('action', function ($query) {
-                return view($this->listView['dataTable'], [
-                    'query' => $query,
-                    'thisRoute' => $this->route,
-                    'permission' => $this->permission,
-                    'masterId' => $this->masterId
-                ]);
-            });
-
-        $listRaw = [];
-        $listRaw[] = 'action';
-        foreach (collectPassingData($this->passingData) as $fieldName => $list) {
-            if (in_array($list['type'], ['select', 'select2'])) {
-                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName) {
-                    $getList = isset($this->data['listSet'][$fieldName]) ? $this->data['listSet'][$fieldName] : [];
-                    return isset($getList[$query->$fieldName]) ? $getList[$query->$fieldName] : $query->$fieldName;
-                });
-            } else if (in_array($list['type'], ['money'])) {
-                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
-                    return number_format($query->$fieldName, 0);
-                });
-            } else if (in_array($list['type'], ['image'])) {
-                $listRaw[] = $fieldName;
-                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
-                    return '<img src="' . asset($list['path'] . $query->$fieldName) . '" class="img-responsive max-image-preview"/>';
-                });
-            } else if (in_array($list['type'], ['image_preview'])) {
-                $listRaw[] = $fieldName;
-                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
-                    return '<img src="' . $query->$fieldName . '" class="img-responsive max-image-preview"/>';
-                });
-            } else if (in_array($list['type'], ['code'])) {
-                $listRaw[] = $fieldName;
-                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
-                    return '<pre>' . json_encode(json_decode($query->$fieldName, true), JSON_PRETTY_PRINT) . '"</pre>';
-                });
-            } else if (in_array($list['type'], ['texteditor'])) {
-                $listRaw[] = $fieldName;
-            }
-        }
-
-        return $dataTables
-            ->rawColumns($listRaw)
-            ->make(true);
-    }
-
     public function create()
     {
         $this->callPermission();
@@ -178,7 +116,7 @@ class KegiatanController extends _CrudController
         $getNewLogic = new PakLogic();
         $getData = $getNewLogic->createKegiatan();
         $getFilterKegiatan = [];
-        foreach ($getData as $list) {
+        foreach ($getData['data'] as $list) {
             $getFilterKegiatan[$list['permen_id']][$list['id']] = $list['name'];
         }
 
@@ -190,8 +128,9 @@ class KegiatanController extends _CrudController
         $data['formsTitle'] = __('general.title_create', ['field' => $data['thisLabel']]);
         $data['dataUser'] = $getStaff;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
-        $data['dataFilterKegiatan'] = $getFilterKegiatan;
-        $data['dataKegiatan'] = $getData;
+        $data['dataPermen'] = $getData['permen'];
+        $data['dataFilterKegiatan'] = $getData['filter'];
+        $data['dataKegiatan'] = $getData['data'];
 
         return view($this->listView[$data['viewType']], $data);
     }

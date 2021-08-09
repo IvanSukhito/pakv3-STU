@@ -19,7 +19,9 @@ class PakLogic
     {
         $getPermen = Permen::where('status', 1)->get();
         $permenIds = [];
+        $listPermen = [];
         foreach ($getPermen as $list) {
+            $listPermen[$list->id] = $list->name;
             $permenIds[] = $list->id;
         }
 
@@ -27,11 +29,15 @@ class PakLogic
         $getMasterFilter = [];
         foreach ($getMsKegiatan as $list) {
             if ($list->parent_id <= 0) {
-                $getMasterFilter[] = $list;
+                $getMasterFilter[$list->id] = $list->name;
             }
         }
 
-        return $this->getCreateListTreeKegiatan($getMsKegiatan->toArray());
+        return [
+            'data' => $this->getCreateListTreeKegiatan($getMsKegiatan->toArray()),
+            'permen' => $listPermen,
+            'filter' => $getMasterFilter
+        ];
 
     }
 

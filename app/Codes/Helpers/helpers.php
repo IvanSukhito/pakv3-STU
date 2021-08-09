@@ -183,10 +183,10 @@ if ( ! function_exists('calculate_jenjang')) {
         $getJenjang = 0;
         if($list_jenjang_perancang) {
             foreach($list_jenjang_perancang as $list) {
-                if(isset($list->d) == $jenjang_perancang_id) {
-                    $getOwner = isset($list->order_high) ? $list->order_high : ' ';
+                if($list->id == $jenjang_perancang_id) {
+                    $getOwner = $list->order_high;
                 }
-                if(isset($list->id) == $get_jenjang_id) {
+                if($list->id == $get_jenjang_id) {
                     $getJenjang = $list->order_high;
                 }
             }
@@ -204,32 +204,21 @@ if ( ! function_exists('calculate_jenjang')) {
 }
 
 if ( ! function_exists('set_deep_ms_kegiatan')) {
-    function set_deep_ms_kegiatan($data)
+    function set_deep_ms_kegiatan($data, $getDeep = 1)
     {
-        $master = [];
-        $masterData = [];
+        $getChildDeep = 0;
         foreach ($data as $list) {
-            $master[$list->parent_id][] = $list->id;
-            $masterData[$list->id] = $list;
-        }
-
-        $getDeep = 0;
-        foreach ($master as $index => $listMaster) {
-            foreach ($listMaster as $list) {
-                if (isset($master[$list])) {
-                    $tempDeep = check_deep_ms_kegiatan($master[$list], $master, 1);
-                    if ($getDeep < $tempDeep) {
-                        $getDeep = $tempDeep;
-                    }
+            if ($list['have_child'] == 1) {
+                $tempDeep = set_deep_ms_kegiatan($list['childs'], $getDeep + 1);
+                if ($getChildDeep < $tempDeep) {
+                    $getChildDeep = $tempDeep;
                 }
             }
         }
-
-        return [
-            'deep' => $getDeep + 1,
-            'path' => $master,
-            'data' => $masterData
-        ];
+        if ($getDeep < $getChildDeep) {
+            $getDeep = $getChildDeep;
+        }
+        return $getDeep;
 
     }
 }

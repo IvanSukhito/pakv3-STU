@@ -11,6 +11,7 @@
 
     @section('css')
     <link rel="stylesheet" href="{{ asset('assets/cms/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/cms/css/custom.css') }}">
     @show
     @section('script-top')
     @show
