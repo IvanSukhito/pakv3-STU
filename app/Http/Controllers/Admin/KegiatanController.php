@@ -87,23 +87,23 @@ class KegiatanController extends _CrudController
 
     }
 
-    public function index()
-    {
-        $userId = session()->get('admin_id');
-        $this->callPermission();
-
-        $data = $this->data;
-
-        $getKegiatan = Kegiatan::where('user_id', $userId)->get();
-        $getKegiatanIds = [];
-        foreach ($getKegiatan as $list) {
-            $getKegiatanIds[] = $list->ms_kegiatan_id;
-        }
-
-        dd($getKegiatan->toArray()); die();
-
-        return view($this->listView['index'], $data);
-    }
+//    public function index()
+//    {
+//        $userId = session()->get('admin_id');
+//        $this->callPermission();
+//
+//        $data = $this->data;
+//
+//        $getKegiatan = Kegiatan::where('user_id', $userId)->get();
+//        $getKegiatanIds = [];
+//        foreach ($getKegiatan as $list) {
+//            $getKegiatanIds[] = $list->ms_kegiatan_id;
+//        }
+//
+//        dd($getKegiatan->toArray()); die();
+//
+//        return view($this->listView['index'], $data);
+//    }
 
     public function dataTable()
     {

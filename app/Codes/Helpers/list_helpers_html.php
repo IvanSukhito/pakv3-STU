@@ -69,6 +69,8 @@ if ( ! function_exists('render_kegiatan_html_v3')) {
                 continue;
             }
 
+            $getJenjangPerancang = isset($listJenjangPerancangData[$getMsKegiatan->jenjang_perancang_id]) ? $listJenjangPerancangData[$getMsKegiatan->jenjang_perancang_id] : '&nbsp;';
+
             $name = $getMsKegiatan ? $getMsKegiatan->name : '&nbsp;';
             $newClass = $class.'kegiatan-'.$getMsKegiatan->id.' ';
             $ak = '&nbsp;';
@@ -121,14 +123,14 @@ if ( ! function_exists('render_kegiatan_html_v3')) {
             $html .= '<tr class="all-row '.$class.'" id="kegiatan-'.$getMsKegiatan->id.'" style="display: none;">';
 
             for($i=1; $i<=$deep; $i++) {
-                $html .= '<td width="1%">&nbsp;</td>
-                <td width="5%">'.$ak.'</td>
-                <td width="10%">'.$satuan.'</td>
-                <td width="15%">'.$pelaksana.'</td>';
+                $html .= '<td width="1%">&nbsp;</td>';
             }
 
             $html .= '
                 <td colspan="'.($totalDeep - $deep).'">'.$name.'</td>
+                <td width="5%">'.$ak.'</td>
+                <td width="10%">'.$satuan.'</td>
+                <td width="15%">'.$pelaksana.'</td>
                 </tr>';
 
             if (isset($getPathMaster[$list])) {
