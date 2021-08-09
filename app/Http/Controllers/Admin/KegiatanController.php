@@ -11,6 +11,8 @@ use App\Codes\Models\Permen;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
+use DB;
+use Yajra\DataTables\DataTables;
 
 class KegiatanController extends _CrudController
 {
@@ -140,6 +142,14 @@ class KegiatanController extends _CrudController
 
         $getNewLogic = new PakLogic();
         $getData = $getNewLogic->createKegiatan();
+
+        //$judul = Kegiatan::where('user_id',$userId)->where('status',1)->groupBy('judul')->get();
+        $judul = DB::table('tx_kegiatan')
+             ->select(DB::raw('judul'))
+             ->where('status', '=', 1)
+             ->groupBy('judul')
+             ->get();
+
         $getFilterKegiatan = [];
         foreach ($getData['data'] as $list) {
             $getFilterKegiatan[$list['permen_id']][$list['id']] = $list['name'];
@@ -151,6 +161,7 @@ class KegiatanController extends _CrudController
 
         $data['viewType'] = 'create';
         $data['formsTitle'] = __('general.title_create', ['field' => $data['thisLabel']]);
+        $data['judul'] = $judul;
         $data['dataUser'] = $getStaff;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $getData['permen'];

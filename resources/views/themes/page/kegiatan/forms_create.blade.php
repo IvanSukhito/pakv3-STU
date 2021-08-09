@@ -1,4 +1,5 @@
 <?php
+$id = isset($id) ? $id : null;
 switch ($viewType) {
     case 'create': $printCard = 'card-success'; break;
     case 'edit': $printCard = 'card-primary'; break;
@@ -110,29 +111,56 @@ else {
         </div>
     </section>
 
-    <div id="kegiatanModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div id="kegiatanModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
 
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1>Judul Butir Kegiatan</h1>
                     <button type="button" class="close" data-dismiss="modal">×</button>
                 </div>
-                <form method="post" action="#">
+                <form method="post" action="{{ route('admin.kegiatan.store') }}">
+                    @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="date">@lang('general.date')</label>
+                            <label for="tanggal">Tanggal</label>
+
                             <div class="input-group">
-                                <div class="input-group-prepend datepicker-trigger">
-                                    <div class="input-group-text">
-                                        <i class="fa fa-calendar"></i>
-                                    </div>
+
+                                <input type="date" name="tanggal" value="" id="tanggal" class="form-control" autocomplete="off" required="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="judul">Judul</label>
+
+                            <div class="input-group">
+                            <select class="form-control" data-width="100%" name="judul" id="judul">
+                              <option selected="selected">insert judul</option>
+                              @foreach($judul as $list)
+                              <option value="{{$list->judul}}">{{$list->judul}}</option>
+                              @endforeach
+                            </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Dokument Pendukung</label>
+                            <div class="controls">
+                                <div id="dokument_pendukung{{ $id }}" class="dokument_pendukung">
+                                    {{ Form::file('dokument['.$id.'][]')  }}
                                 </div>
-                                <input type="text" name="date" value="" id="date" class="form-control datepicker" autocomplete="off" required="1">
+                                <a href="#"  class="add_more" data-id="{{ $id }}">Add More Dokument Pendukung</a>
+                            </div>
+                            <label>Dokument Fisik</label>
+                            <div class="controls">
+                                <div id="dokument_fisik{{ $id }}" class="dokument_fisik">
+                                    {{ Form::file('dokument_fisik['.$id.'][]')  }}
+                                </div>
+                                <a href="#"  class="add_more_dokumen_fisik" data-id="{{ $id }}">Add More Dokument Fisik</a>
                             </div>
                         </div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Submit</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -148,6 +176,7 @@ else {
 @section('script-bottom')
     @parent
     @include(env('ADMIN_TEMPLATE').'._component.generate_forms_script')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script type="text/javascript">
         'use strict';
 
@@ -156,6 +185,10 @@ else {
         $(document).ready(function() {
             $('.all-row').hide();
             changePermen();
+
+            $("#judul").select2({
+            tags: true
+        });
         });
 
         $('.click-kegiatan').click(function () {
@@ -163,8 +196,21 @@ else {
             return false;
         });
 
-        $('#submitForm').click(function(e) {
+
+
+
+        jQuery('.add_more').on('click', function(e) {
             e.preventDefault();
+            var get_id = jQuery(this).data('id');
+            var html = '<input name="dokument['+get_id+'][]" type="file">';
+            jQuery('#dokument_pendukung'+get_id).append(html);
+        });
+
+        jQuery('.add_more_dokumen_fisik').on('click', function(e) {
+            e.preventDefault();
+            var get_id = jQuery(this).data('id');
+            var dokumenFisik = '<input name="dokument_fisik['+get_id+'][]" type="file">';
+            jQuery('#dokument_fisik'+get_id).append(dokumenFisik);
         });
 
         function changePermen() {
