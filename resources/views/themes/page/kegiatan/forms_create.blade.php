@@ -116,20 +116,20 @@ else {
             <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
+                    <h1>Judul Butir Kegiatan</h1>
                     <button type="button" class="close" data-dismiss="modal">×</button>
                 </div>
                 <form method="post" action="#">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="daterange1">Estimate Date</label>
-
-                            <div class="input-group daterange">
+                            <label for="date">@lang('general.date')</label>
+                            <div class="input-group">
                                 <div class="input-group-prepend datepicker-trigger">
                                     <div class="input-group-text">
                                         <i class="fa fa-calendar"></i>
                                     </div>
                                 </div>
-                                <input type="text" name="daterange1" value="" id="daterange1" class="form-control daterange" autocomplete="off" required="1">
+                                <input type="text" name="date" value="" id="date" class="form-control datepicker" autocomplete="off" required="1">
                             </div>
                         </div>
                     </div>
