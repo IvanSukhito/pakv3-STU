@@ -177,7 +177,7 @@ if (! function_exists('collectPassingData')) {
 }
 
 if ( ! function_exists('calculate_jenjang')) {
-    function calculate_jenjang($jenjang_perancang_id, $get_jenjang_id, $list_jenjang_perancang, $ak)
+    function calculate_jenjang($jenjang_perancang_id, $get_jenjang_kegiatan_id, $list_jenjang_perancang, $ak)
     {
         $getOwner = 0;
         $getJenjang = 0;
@@ -186,7 +186,7 @@ if ( ! function_exists('calculate_jenjang')) {
                 if($list->id == $jenjang_perancang_id) {
                     $getOwner = $list->order_high;
                 }
-                if($list->id == $get_jenjang_id) {
+                if($list->id == $get_jenjang_kegiatan_id) {
                     $getJenjang = $list->order_high;
                 }
             }

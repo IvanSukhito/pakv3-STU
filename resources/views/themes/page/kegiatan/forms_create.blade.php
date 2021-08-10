@@ -119,29 +119,25 @@ else {
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">×</button>
                 </div>
-                <form method="post" action="{{ route('admin.kegiatan.store') }}" id="MyModal" >
+                <form method="post" action="{{ route('admin.kegiatan.store') }}" id="storeModal" >
                     @csrf
                     <div class="modal-body">
                     <input type="hidden" name="ms_kegiatan_id" id="msKegiatanId" value=""/>
                         <div class="form-group">
                             <label for="tanggal">Tanggal</label>
-
                             <div class="input-group">
-
                                 <input type="date" name="tanggal" value="" id="tanggal" class="form-control" autocomplete="off" required="1">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="judul">Judul</label>
-
                             <div class="input-group">
-                            <select class="form-control" data-width="100%" name="judul" id="judul">
-                              <option selected="selected">insert judul</option>
-                              @foreach($judul as $list)
-                              <option value="{{$list->judul}}">{{$list->judul}}</option>
-                              @endforeach
-                            </select>
-
+                                <select class="form-control" data-width="100%" name="judul" id="judul" required>
+                                    <option selected="selected">insert judul</option>
+                                    @foreach($judul as $list)
+                                        <option value="{{$list->judul}}">{{$list->judul}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -150,24 +146,24 @@ else {
                             <div id="list_other1">
                                 <div class="d-flex align-items-center">
                                     <div class="p-2">
-                                        <input type="file" name="dokument[]" class="dropify" id="dokument" accept=".pdf"
+                                        <input type="file" name="dokument[]" class="dropify" accept=".pdf"
                                                data-allowed-file-extensions="pdf" data-max-file-size="10M">
                                     </div>
                                 </div>
                             </div>
-                            <a href="#" onclick="return add_other1()" class="btn">Tambah</a>
+                            <a href="#" onclick="return add_other1()" class="btn btn-warning">Tambah</a>
                             <br>
                             <label>Dokumen Fisik</label>
                             <br/>
                             <div id="list_other2">
                                 <div class="d-flex align-items-center">
                                     <div class="p-2">
-                                        <input type="file" name="dokument_fisik[]" id="dokument_fisik" class="dropify" accept=".pdf"
+                                        <input type="file" name="dokument_fisik[]" class="dropify" accept=".pdf"
                                                data-allowed-file-extensions="pdf" data-max-file-size="10M">
                                     </div>
                                 </div>
                             </div>
-                            <a href="#" onclick="return add_other2()" class="btn">Tambah</a>
+                            <a href="#" onclick="return add_other2()" class="btn btn-warning">Tambah</a>
                         </div>
                     </div>
 
@@ -186,12 +182,12 @@ else {
 @section('script-bottom')
     @parent
     @include(env('ADMIN_TEMPLATE').'._component.generate_forms_script')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script type="text/javascript">
         'use strict';
 
         let dataFilter = {!! json_encode($dataFilterKegiatan) !!};
-        let setIndex = 1;
+        let setIndex1 = 1;
+        let setIndex2 = 1;
 
         $(document).ready(function() {
             $('.all-row').hide();
@@ -199,37 +195,17 @@ else {
 
             $('.dropify').dropify();
             $("#judul").select2({
-            tags: true
-        });
+                tags: true
+            });
+
         });
 
         $('.click-kegiatan').click(function () {
-            var myId = $(this).data('id');
+            clearAll();
+            let myId = $(this).data('id');
             $('#kegiatanModal').modal('show');
             $(".modal-body #msKegiatanId").val(myId);
-            console.log(myId);
             return false;
-        });
-
-
-        $(document).ready(function() {
-            $(".modal").on("hidden.bs.modal", function() {
-             window.location.reload();
-            });
-           });
-
-        jQuery('.add_more').on('click', function(e) {
-            e.preventDefault();
-            var get_id = jQuery(this).data('id');
-            var html = '<input name="dokument['+get_id+'][]" type="file">';
-            jQuery('#dokument_pendukung'+get_id).append(html);
-        });
-
-        jQuery('.add_more_dokumen_fisik').on('click', function(e) {
-            e.preventDefault();
-            var get_id = jQuery(this).data('id');
-            var dokumenFisik = '<input name="dokument_fisik['+get_id+'][]" type="file">';
-            jQuery('#dokument_fisik'+get_id).append(dokumenFisik);
         });
 
         function changePermen() {
@@ -253,93 +229,133 @@ else {
 
         function add_other1() {
 
-        let html = '<div class="d-flex align-items-center">' +
-            '<div class="p-2">' +
-            '<input type="file" id="dokument_' + setIndex +'" name="dokument[]" class="dropify" accept=".pdf" ' +
-            'data-allowed-file-extensions="pdf" data-max-file-size="10M">' +
-            '</div>' +
-            '<div class="p-2">' +
-            '<a href="#" onclick="return remove_other(this)">Hapus</a>' +
-            '</div>' +
-            '</div>';
+            let html = '<div class="d-flex align-items-center">' +
+                '<div class="p-2">' +
+                '<input type="file" id="dokument_' + setIndex1 +'" name="dokument[]" class="dropify" accept=".pdf"' +
+                ' data-allowed-file-extensions="pdf" data-max-file-size="10M">' +
+                '</div>' +
+                '<div class="p-2">' +
+                '<a href="#" onclick="return remove_other(this)">{!! __('general.delete') !!}</a>' +
+                '</div>' +
+                '</div>';
 
-        $('#list_other1').append(html);
-        $('#dokument_' + setIndex).dropify();
+            $('#list_other1').append(html);
+            $('#dokument_' + setIndex1).dropify();
 
-        setIndex++;
+            setIndex1++;
 
-        return false;
+            return false;
 
         }
         function add_other2() {
 
-        let html = '<div class="d-flex align-items-center">' +
-            '<div class="p-2">' +
-            '<input type="file" id="dokument_fisik_' + setIndex +'" name="dokument_fisik[]" class="dropify" accept=".pdf" ' +
-            'data-allowed-file-extensions="pdf" data-max-file-size="10M">' +
-            '</div>' +
-            '<div class="p-2">' +
-            '<a href="#" onclick="return remove_other(this)">Hapus</a>' +
-            '</div>' +
-            '</div>';
+            let html = '<div class="d-flex align-items-center">' +
+                '<div class="p-2">' +
+                '<input type="file" id="dokument_fisik_' + setIndex2 +'" name="dokument_fisik[]" class="dropify" accept=".pdf" ' +
+                'data-allowed-file-extensions="pdf" data-max-file-size="10M">' +
+                '</div>' +
+                '<div class="p-2">' +
+                '<a href="#" onclick="return remove_other(this)">{!! __('general.delete') !!}</a>' +
+                '</div>' +
+                '</div>';
 
-        $('#list_other2').append(html);
-        $('#dokument_fisik' + setIndex).dropify();
+            $('#list_other2').append(html);
+            $('#dokument_fisik_' + setIndex2).dropify();
 
-        setIndex++;
+            setIndex2++;
 
-        return false;
+            return false;
 
         }
 
         function remove_other(curr) {
-        $(curr).parent().parent().remove();
-        return false;
+            $(curr).parent().parent().remove();
+            return false;
         }
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+        function clearAll() {
+            $('#msKegiatanId').val('');
+            $('#tanggal').val('');
+            $('#judul').select2("val", " ");
+            setIndex1 = 1;
+            setIndex2 = 1;
 
-   
-    $(document).ready(function() {
-   
-   $('#storememberbtn').on('click', function() {
-     var ms_kegiatan_id = $('#msKegiatanId').val();
-     var tanggal = $('#tanggal').val();
-     var judul = $('#judul').val();
-     var dokument = $('#dokument').val();
-     var dokument_fisik = $('#dokument_fisik').val();
-     if(tanggal!="" && judul!=""){
-       //   $("#storememberbtn").attr("disabled", "disabled");
-         $.ajax({
-             url: "{{ route('admin.kegiatan.store') }}",
-             type: "POST",
-             data: {
-                 _token: $("#csrf").val(),
-                 type: 1,
-                 ms_kegiatan_id: ms_kegiatan_id,
-                 tanggal: tanggal,
-                 judul: judul,
-                 dokument: dokument,
-                 dokument_fisik: dokument_fisik
-             },
-             cache: false,
-             success: function(responseOutput){
-                 console.log(responseOutput);
-                 var responseOutput = JSON.parse(responseOutput);
-                
-                 
-             }
-         });
-     }
-     else{
-         alert('Please fill all the field !');
-     }
- });
-});
+            $('#list_other1').html('<div class="d-flex align-items-center">' +
+                '<div class="p-2">' +
+                '<input type="file" id="dokument_' + setIndex1 +'" name="dokument[]" class="dropify" accept=".pdf"' +
+                ' data-allowed-file-extensions="pdf" data-max-file-size="10M">' +
+                '</div>' +
+                '</div>');
+
+            $('#list_other2').html('<div class="d-flex align-items-center">' +
+                '<div class="p-2">' +
+                '<input type="file" id="dokument_fisik_' + setIndex2 +'" name="dokument_fisik[]" class="dropify" accept=".pdf" ' +
+                'data-allowed-file-extensions="pdf" data-max-file-size="10M">' +
+                '</div>' +
+                '</div>');
+
+            $('#dokument_' + setIndex1).dropify();
+            $('#dokument_fisik_' + setIndex2).dropify();
+
+            setIndex1++;
+            setIndex2++;
+
+        }
+
+        $('#storeModal').on('submit', function(e) {
+            e.preventDefault();
+
+            let tanggal = $('#tanggal').val();
+            let judul = $('#judul').val();
+            let validateOk = 1;
+
+            if (validateOk === 1) {
+                let formData = new FormData();
+                formData.append('ms_kegiatan_id', $('#msKegiatanId').val());
+                formData.append('tanggal', tanggal);
+                formData.append('judul', judul);
+
+                $.each($('input[name="dokument[]"]'), function(index, item) {
+                    formData.append('dokument[]', $(item).prop('files')[0]);
+                });
+                $.each($('input[name="dokument_fisik[]"]'), function(index, item) {
+                    formData.append('dokument_fisik[]', $(item).prop('files')[0]);
+                });
+
+                let link = '{{ route('admin.kegiatan.store') }}';
+                let linkSplit = link.split('/');
+                let url = '';
+                for(let i=3; i<linkSplit.length; i++) {
+                    url += '/'+linkSplit[i];
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'text',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    headers: {
+                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(result) {
+                        console.log(result);
+                    },
+                    complete: function(){
+
+                    }
+                });
+
+            }
+        });
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
     </script>
 @stop

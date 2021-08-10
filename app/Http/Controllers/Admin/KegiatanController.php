@@ -168,10 +168,8 @@ class KegiatanController extends _CrudController
 
     public function store()
     {
-
-        //dd($this->request);
         $this->callPermission();
-       
+
         $viewType = 'create';
 
         $getListCollectData = collectPassingData($this->passingData, $viewType);
@@ -190,10 +188,50 @@ class KegiatanController extends _CrudController
         $userId = session()->get('admin_id');
         $getUser = Users::where('id', $userId)->first();
         if ($getUser->upline_id <= 0) {
-            session()->flash('message', __('general.error_no_upline'));
-            session()->flash('message_alert', 1);
-            return redirect()->route('admin.' . $this->route . '.index');
+            if ($this->request->ajax()) {
+                return response()->json(['result' => 2, 'message' => __('general.error_no_upline')]);
+            }
+            else {
+                return redirect()->back()->withInput()->withErrors(['message' => __('general.error_no_upline')]);
+            }
         }
+
+        $getAtasan = Users::where('id', $getUser->upline_id)->first();
+
+        $msKegiatanId = $data['ms_kegiatan_id'];
+        $getTanggal = date('Y-m-d', strtotime($data['tanggal']));
+        $getMsKegiatan = MsKegiatan::where('id', $msKegiatanId)->first();
+        if (!$getMsKegiatan) {
+            if ($this->request->ajax()) {
+                return response()->json(
+                    ['result' => 2, 'message' => __('general.error_data_empty_', ['field' => __('general.kegiatan')])]
+                );
+            }
+            else {
+                return redirect()->back()->withInput()->withErrors(
+                    ['message' => __('general.error_data_empty_', ['field' => __('general.kegiatan')])]
+                );
+            }
+        }
+
+        $getPermen = Permen::where('id', $getMsKegiatan->permen_id)->where('tanggal_start', '<=', $getTanggal)
+            ->where('tanggal_end', '>=', $getTanggal)->first();
+
+        if (!$getPermen) {
+            if ($this->request->ajax()) {
+                return response()->json(
+                    ['result' => 2, 'message' => __('Tanggal Permen sudah lewat'), 'params' => $getTanggal, 'permen' => $getPermen]
+                );
+            }
+            else {
+                return redirect()->back()->withInput()->withErrors(
+                    ['message' => __('Tanggal Permen sudah lewat')]
+                );
+            }
+        }
+
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+
         $userNip = $getUser->username;
 
         $data = $this->getCollectedData($getListCollectData, $viewType, $data);
@@ -201,12 +239,10 @@ class KegiatanController extends _CrudController
         $userFolder = 'user_' . preg_replace("/[^A-Za-z0-9?!]/", '', $userNip);
         $todayDate = date('Y-m-d');
         $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
-        $msKegiatanId = $data['ms_kegiatan_id'];
 
         $dokument = $this->request->file('dokument');
-      
         $dokumentFisik = $this->request->file('dokument_fisik');
-        //dd($dokumentFisik);
+
         $totalDokument = [];
         $totalDokumentFisik = [];
 
@@ -246,43 +282,23 @@ class KegiatanController extends _CrudController
             }
         }
 
-        var_dump($data); die();
-
         $data['user_id'] = $userId;
+        $data['user_name'] = $getUser->name;
+        $data['user_jenjang_id'] = $getUser->jenjang_perancang_id;
         $data['upline_id'] = $getUser->upline_id;
+        $data['upline_name'] = $getAtasan ? $getAtasan->name : '';
         $data['permen_id'] = $userId;
-        $data['kredit'] = calculate_jenjang($getUser->jenjang_perancang_id, $list_ms_kegiatan[$key]->jenjang_perancang_id, $list_jenjang_perancang, $list_ms_kegiatan[$key]->ak);
+        $data['kredit_ori'] = $getMsKegiatan->ak;
+        $data['kegiatan_jenjang_id'] = $getMsKegiatan->jenjang_perancang_id;
+        $data['satuan'] = $getMsKegiatan->satuan;
+        $data['kredit'] = calculate_jenjang($getUser->jenjang_perancang_id, $getMsKegiatan->jenjang_perancang_id, $getJenjangPerancang, $getMsKegiatan->ak);
         $data['dokument_pendukung'] = json_encode($totalDokument);
         $data['dokument_fisik'] = json_encode($totalDokumentFisik);
+        $data['status'] = 1;
+        $data['approved'] = 0;
+        $data['connect'] = 0;
 
         $getData = $this->crud->store($data);
-
-        $get_jenjang_perancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
-        $list_jenjang_perancang = [];
-        foreach ($get_jenjang_perancang as $list) {
-            $list_jenjang_perancang[$list->order_high] = $list->id;
-        }
-
-        $data = [
-            'user_id' => $userId,
-            'upline_id' => $getUser->upline_id,
-            'ms_kegiatan_name' => $get_ms_kegiatan_name,
-            'ms_kegiatan_id' => $key,
-            'permen_id' => $permen,
-            'tanggal' => $tanggal[$key],
-            'judul' => substr($judul[$key], 0, 190),
-            'kredit' => number_format(calculate_jenjang($getUser->jenjang_perancang_id, $list_ms_kegiatan[$key]->jenjang_perancang_id, $list_jenjang_perancang, $list_ms_kegiatan[$key]->ak), 3, '.', ''),
-            'satuan' => $list_ms_kegiatan[$key]->satuan,
-            'pelaksana' => isset($list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id]) ? $list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id] : $list_ms_kegiatan[$key]->jenjang_perancang_id,
-            'pelaksana_id' => $list_ms_kegiatan[$key]->jenjang_perancang_id,
-            'parent_id' => MsKegiatan::getLastParent($key),
-            'dokument_pendukung' => json_encode($total_dokument),
-            'dokument_fisik' => json_encode($total_dokument_fisik),
-        ];
-
-        $kegiatan = new Kegiatan();
-        $kegiatan->fill($data);
-        $kegiatan->save();
 
         if ($this->request->ajax()) {
             return response()->json(['result' => 1, 'message' => __('general.success_add')]);

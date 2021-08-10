@@ -555,6 +555,7 @@ return [
     'error_login' => 'Username or Password is not match',
     'error_not_found' => 'We can\'t find Data that you looking for',
     'error_data_empty' => 'Cannot Save, List Item Empty',
+    'error_data_empty_' => 'Cannot Save, :field Empty',
     'error_cannot_own_account' => 'Cannot Delete Own Account',
     'error_cannot_delete_last_data' => 'Cannot Delete Last Data',
     'error_debit_credit_not_match' => 'Debit and Credit not Match',
