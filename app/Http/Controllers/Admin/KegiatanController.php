@@ -248,6 +248,8 @@ class KegiatanController extends _CrudController
             }
         }
 
+        var_dump($data); die();
+
         $data['user_id'] = $userId;
         $data['upline_id'] = $getUser->upline_id;
         $data['permen_id'] = $userId;
@@ -257,34 +259,32 @@ class KegiatanController extends _CrudController
 
         $getData = $this->crud->store($data);
 
-            $get_jenjang_perancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
-            $list_jenjang_perancang = [];
-            foreach ($get_jenjang_perancang as $list) {
-                $list_jenjang_perancang[$list->order_high] = $list->id;
-            }
-
-            $data = [
-                'user_id' => $userId,
-                'upline_id' => $getUser->upline_id,
-                'ms_kegiatan_name' => $get_ms_kegiatan_name,
-                'ms_kegiatan_id' => $key,
-                'permen_id' => $permen,
-                'tanggal' => $tanggal[$key],
-                'judul' => substr($judul[$key], 0, 190),
-                'kredit' => number_format(calculate_jenjang($getUser->jenjang_perancang_id, $list_ms_kegiatan[$key]->jenjang_perancang_id, $list_jenjang_perancang, $list_ms_kegiatan[$key]->ak), 3, '.', ''),
-                'satuan' => $list_ms_kegiatan[$key]->satuan,
-                'pelaksana' => isset($list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id]) ? $list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id] : $list_ms_kegiatan[$key]->jenjang_perancang_id,
-                'pelaksana_id' => $list_ms_kegiatan[$key]->jenjang_perancang_id,
-                'parent_id' => MsKegiatan::getLastParent($key),
-                'dokument_pendukung' => json_encode($total_dokument),
-                'dokument_fisik' => json_encode($total_dokument_fisik),
-            ];
-
-            $kegiatan = new Kegiatan();
-            $kegiatan->fill($data);
-            $kegiatan->save();
-
+        $get_jenjang_perancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+        $list_jenjang_perancang = [];
+        foreach ($get_jenjang_perancang as $list) {
+            $list_jenjang_perancang[$list->order_high] = $list->id;
         }
+
+        $data = [
+            'user_id' => $userId,
+            'upline_id' => $getUser->upline_id,
+            'ms_kegiatan_name' => $get_ms_kegiatan_name,
+            'ms_kegiatan_id' => $key,
+            'permen_id' => $permen,
+            'tanggal' => $tanggal[$key],
+            'judul' => substr($judul[$key], 0, 190),
+            'kredit' => number_format(calculate_jenjang($getUser->jenjang_perancang_id, $list_ms_kegiatan[$key]->jenjang_perancang_id, $list_jenjang_perancang, $list_ms_kegiatan[$key]->ak), 3, '.', ''),
+            'satuan' => $list_ms_kegiatan[$key]->satuan,
+            'pelaksana' => isset($list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id]) ? $list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id] : $list_ms_kegiatan[$key]->jenjang_perancang_id,
+            'pelaksana_id' => $list_ms_kegiatan[$key]->jenjang_perancang_id,
+            'parent_id' => MsKegiatan::getLastParent($key),
+            'dokument_pendukung' => json_encode($total_dokument),
+            'dokument_fisik' => json_encode($total_dokument_fisik),
+        ];
+
+        $kegiatan = new Kegiatan();
+        $kegiatan->fill($data);
+        $kegiatan->save();
 
         if ($this->request->ajax()) {
             return response()->json(['result' => 1, 'message' => __('general.success_add')]);
