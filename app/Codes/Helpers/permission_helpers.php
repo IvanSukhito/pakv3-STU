@@ -426,7 +426,8 @@ if ( ! function_exists('listAllMenu')) {
                     'admin.unit-kerja.',
                     'admin.pendidikan.',
                     'admin.jenjang-perancang.',
-                    'admin.instansi.'
+                    'admin.instansi.',
+                    'admin.pangkat  .'
                 ],
 
                 'type' => 2,
@@ -462,6 +463,15 @@ if ( ! function_exists('listAllMenu')) {
                         'active' => ['admin.golongan.'],
                         'route' => 'admin.golongan.index',
                         'key' => 'golongan',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.pangkat'),
+                        'icon' => '<i class="nav-icon fa fa-users"></i>',
+                        'title' => __('general.pangkat'),
+                        'active' => ['admin.pangkat.'],
+                        'route' => 'admin.pangkat.index',
+                        'key' => 'pangkat',
                         'type' => 1
                     ],
                     [
@@ -522,6 +532,7 @@ if ( ! function_exists('listAvailablePermission'))
             'seketariat',
             'tim_penilai',
             'instansi',
+            'pangkat',
             //'kegiatan',
             'persetujuan-surat-pernyataan',
             'surat-pernyataan',

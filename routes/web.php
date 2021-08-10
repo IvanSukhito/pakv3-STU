@@ -50,6 +50,7 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\GolonganController' => 'golongan',
                 'Admin\UnitKerjaController' => 'unit-kerja',
                 'Admin\PendidikanController' => 'pendidikan',
+                'Admin\PangkatController' => 'pangkat',
                 'Admin\JenjangPerancangController' => 'jenjang-perancang',
                 'Admin\InstansiController' => 'instansi',
                 'Admin\PermenController' => 'permen',
