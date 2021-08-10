@@ -48,25 +48,29 @@ class SeketariatController extends _CrudController
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.pangkat'
             ],
             'golongan' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.golongan'
             ],
             'jenjang_perancang' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.jenjang_perancang'
             ],
             'unit_kerja' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
             ],
             'status' => [
                 'validate' => [
@@ -75,6 +79,12 @@ class SeketariatController extends _CrudController
                 ],
                 'type' => 'select'
             ],
+            'action' => [
+                'create' => 0,
+                'edit' => 0,
+                'show' => 0,
+                'lang' => 'Aksi',
+            ]
         ];
 
         parent::__construct(

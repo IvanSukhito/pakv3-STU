@@ -49,8 +49,15 @@ class TimPenilaiController extends _CrudController
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
             ],
+            'action' => [
+                'create' => 0,
+                'edit' => 0,
+                'show' => 0,
+                'lang' => 'Aksi',
+            ]
         ];
 
         parent::__construct(

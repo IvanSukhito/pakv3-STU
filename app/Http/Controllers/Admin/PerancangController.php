@@ -54,33 +54,50 @@ class PerancangController extends _CrudController
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.pangkat'
             ],
             'golongan_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.golongan'
             ],
             'jenjang_perancang_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.jenjang_perancang'
             ],
             'unit_kerja_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
             ],
             'jenis_kelamin' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
+                'type' => 'select',
+                'lang' => 'general.jenis_kelamin'
+            ],
+            'status' => [
+                'validate' => [
+                    'create' => 'required',
+                    'edit' => 'required'
+                ],
                 'type' => 'select'
             ],
-
+            'action' => [
+                'create' => 0,
+                'edit' => 0,
+                'show' => 0,
+                'lang' => 'Aksi',
+            ]
         ];
 
         parent::__construct(
