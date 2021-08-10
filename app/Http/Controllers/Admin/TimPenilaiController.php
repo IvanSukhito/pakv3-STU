@@ -49,8 +49,15 @@ class TimPenilaiController extends _CrudController
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
             ],
+            'action' => [
+                'create' => 0,
+                'edit' => 0,
+                'show' => 0,
+                'lang' => 'Aksi',
+            ]
         ];
 
         parent::__construct(
@@ -89,10 +96,10 @@ class TimPenilaiController extends _CrudController
             }
         }
 
-        $this->data['listSet']['golongan'] = $listGolongan;
-        $this->data['listSet']['jenjang_perancang'] = $listJenjangPerancang;
-        $this->data['listSet']['pangkat'] = $listPangkat;
-        $this->data['listSet']['unit_kerja'] = $listUnitKerja;
+        $this->data['listSet']['golongan_id'] = $listGolongan;
+        $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
+        $this->data['listSet']['pangkat_id'] = $listPangkat;
+        $this->data['listSet']['unit_kerja_id'] = $listUnitKerja;
         $this->data['listSet']['status'] = get_list_status();
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.tim_penilai.list';
         //$this->passingData = Users::where('role_id',3);

@@ -49,32 +49,50 @@ class AtasanController extends _CrudController
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.pangkat'
             ],
             'golongan_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.golongan'
             ],
             'jenjang_perancang_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.jenjang_perancang'
             ],
             'unit_kerja_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
             ],
-            'jenis_kelamin' => [
+            'gender' => [
                 'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'select',
+                'lang' => 'general.jenis_kelamin'
+            ],
+            'status' => [
+                'validate' => [
+                    'create' => 'required',
                     'edit' => 'required'
                 ],
                 'type' => 'select'
             ],
+            'action' => [
+                'create' => 0,
+                'edit' => 0,
+                'show' => 0,
+                'lang' => 'Aksi',
+            ]
         ];
 
         parent::__construct(
@@ -113,11 +131,12 @@ class AtasanController extends _CrudController
             }
         }
 
-        $this->data['listSet']['golongan'] = $listGolongan;
-        $this->data['listSet']['jenjang_perancang'] = $listJenjangPerancang;
-        $this->data['listSet']['pangkat'] = $listPangkat;
-        $this->data['listSet']['unit_kerja'] = $listUnitKerja;
+        $this->data['listSet']['golongan_id'] = $listGolongan;
+        $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
+        $this->data['listSet']['pangkat_id'] = $listPangkat;
+        $this->data['listSet']['unit_kerja_id'] = $listUnitKerja;
         $this->data['listSet']['status'] = get_list_status();
+        $this->data['listSet']['gender'] = get_list_gender();
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.atasan.list';
         //$this->passingData = Users::where('role_id',3);
     }
@@ -200,11 +219,12 @@ class AtasanController extends _CrudController
         $getUsername = $this->request->get('username');
         $getName = $this->request->get('name');
         $getEmail = $this->request->get('email');
-        $getPangkat = $this->request->get('pangkat');
-        $getGolongan = $this->request->get('golongan');
-        $getJenjangPerancang = $this->request->get('jenjang_perancang');
-        $getUnitKerja = $this->request->get('unit_kerja');
+        $getPangkat = $this->request->get('pangkat_id');
+        $getGolongan = $this->request->get('golongan_id');
+        $getJenjangPerancang = $this->request->get('jenjang_perancang_id');
+        $getUnitKerja = $this->request->get('unit_kerja_id');
         $getStatus = $this->request->get('status');
+        $getGender = $this->request->get('gender');
 
         $atasan = new Users();
         $atasan->name = $getName;
@@ -216,6 +236,7 @@ class AtasanController extends _CrudController
         $atasan->jenjang_perancang_id = $getJenjangPerancang;
         $atasan->unit_kerja_id = $getUnitKerja;
         $atasan->status = $getStatus;
+        $atasan->gender = $getGender;
         $atasan->role_id = 3;
         $atasan->save();
 

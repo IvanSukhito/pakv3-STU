@@ -168,8 +168,10 @@ class KegiatanController extends _CrudController
 
     public function store()
     {
-        $this->callPermission();
 
+        //dd($this->request);
+        $this->callPermission();
+       
         $viewType = 'create';
 
         $getListCollectData = collectPassingData($this->passingData, $viewType);
@@ -202,8 +204,9 @@ class KegiatanController extends _CrudController
         $msKegiatanId = $data['ms_kegiatan_id'];
 
         $dokument = $this->request->file('dokument');
+      
         $dokumentFisik = $this->request->file('dokument_fisik');
-
+        //dd($dokumentFisik);
         $totalDokument = [];
         $totalDokumentFisik = [];
 
