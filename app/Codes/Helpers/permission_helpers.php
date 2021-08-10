@@ -381,14 +381,6 @@ if ( ! function_exists('listAllMenu')) {
                 'type' => 2,
                 'data' => [
                     [
-                        'name' => __('general.atasan'),
-                        'title' => __('general.atasan'),
-                        'active' => ['admin.atasan.'],
-                        'route' => 'admin.atasan.index',
-                        'key' => 'atasan',
-                        'type' => 1
-                    ],
-                    [
                         'name' => __('general.perancang'),
                         'title' => __('general.perancang'),
                         'active' => ['admin.perancang.'],
@@ -396,6 +388,15 @@ if ( ! function_exists('listAllMenu')) {
                         'key' => 'perancang',
                         'type' => 1
                     ],
+                    [
+                        'name' => __('general.atasan'),
+                        'title' => __('general.atasan'),
+                        'active' => ['admin.atasan.'],
+                        'route' => 'admin.atasan.index',
+                        'key' => 'atasan',
+                        'type' => 1
+                    ],
+
                     [
                        'name' => __('general.seketariat'),
                         'title' => __('general.seketariat'),
@@ -445,14 +446,6 @@ if ( ! function_exists('listAllMenu')) {
                         'title' => __('general.admin'),
                         'active' => ['admin.admin.'],
                         'route' => 'admin.admin.index',
-                        'key' => 'admin',
-                        'type' => 1
-                    ],
-                    [
-                        'name' => __('general.perancang'),
-                        'title' => __('general.perancang'),
-                        'active' => ['admin.perancang.'],
-                        'route' => 'admin.perancang.index',
                         'key' => 'admin',
                         'type' => 1
                     ],
