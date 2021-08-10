@@ -78,7 +78,7 @@ class PerancangController extends _CrudController
                 'type' => 'select2',
                 'lang' => 'general.unit_kerja'
             ],
-            'jenis_kelamin' => [
+            'gender' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
@@ -120,7 +120,6 @@ class PerancangController extends _CrudController
             }
         }
 
-
         $getPangkat = Pangkat::get();
         $listPangkat = [0 => 'Kosong'];
         if($getPangkat) {
@@ -137,30 +136,16 @@ class PerancangController extends _CrudController
             }
         }
 
-        $this->data['listSet']['golongan'] = $listGolongan;
-        $this->data['listSet']['jenjang_perancang'] = $listJenjangPerancang;
-        $this->data['listSet']['pangkat'] = $listPangkat;
-        $this->data['listSet']['unit_kerja'] = $listUnitKerja;
+        $this->data['listSet']['golongan_id'] = $listGolongan;
+        $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
+        $this->data['listSet']['pangkat_id'] = $listPangkat;
+        $this->data['listSet']['unit_kerja_id'] = $listUnitKerja;
         $this->data['listSet']['status'] = get_list_status();
+        $this->data['listSet']['gender'] = get_list_gender();
+
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.perancang.list';
         //$this->passingData = Users::where('role_id',3);
     }
-
-    //public function index(){
-    //      $this->callPermission();
-//
-    //
-    //    $data = $this->data;
-    //    $data['perancang'] = Users::where('role_id',3)->get();
-//
-    //    $data['passing'] = collectPassingData($this->passingAtasan);
-    //    $data['thisLabel'] = 'Index';
-    //    $data['permission'] = $this->permission;
-    //    $data['thisRoute'] = $this->route;
-    //
-//
-    //    return view($this->listView['index'], $data);
-    //}
 
 
     public function dataTable()
@@ -241,10 +226,10 @@ class PerancangController extends _CrudController
         $getUsername = $this->request->get('username');
         $getName = $this->request->get('name');
         $getEmail = $this->request->get('email');
-        $getPangkat = $this->request->get('pangkat');
-        $getGolongan = $this->request->get('golongan');
-        $getJenjangPerancang = $this->request->get('jenjang_perancang');
-        $getUnitKerja = $this->request->get('unit_kerja');
+        $getPangkat = $this->request->get('pangkat_id');
+        $getGolongan = $this->request->get('golongan_id');
+        $getJenjangPerancang = $this->request->get('jenjang_perancang_id');
+        $getUnitKerja = $this->request->get('unit_kerja_id');
         $getStatus = $this->request->get('status');
 
 
@@ -259,6 +244,7 @@ class PerancangController extends _CrudController
         $perancang->jenjang_perancang_id = $getJenjangPerancang;
         $perancang->unit_kerja_id = $getUnitKerja;
         $perancang->status = $getStatus;
+        $perancang->gender = $getGender;
         $perancang->role_id = 3;
         $perancang->save();
 

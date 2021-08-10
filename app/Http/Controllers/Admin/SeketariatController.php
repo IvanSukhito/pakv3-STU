@@ -123,10 +123,10 @@ class SeketariatController extends _CrudController
             }
         }
 
-        $this->data['listSet']['golongan'] = $listGolongan;
-        $this->data['listSet']['jenjang_perancang'] = $listJenjangPerancang;
-        $this->data['listSet']['pangkat'] = $listPangkat;
-        $this->data['listSet']['unit_kerja'] = $listUnitKerja;
+        $this->data['listSet']['golongan_id'] = $listGolongan;
+        $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
+        $this->data['listSet']['pangkat_id'] = $listPangkat;
+        $this->data['listSet']['unit_kerja_id'] = $listUnitKerja;
         $this->data['listSet']['status'] = get_list_status();
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.seketariat.list';
         //$this->passingData = Users::where('role_id',3);
@@ -210,10 +210,10 @@ class SeketariatController extends _CrudController
         $getUsername = $this->request->get('username');
         $getName = $this->request->get('name');
         $getEmail = $this->request->get('email');
-        $getPangkat = $this->request->get('pangkat');
-        $getGolongan = $this->request->get('golongan');
-        $getJenjangPerancang = $this->request->get('jenjang_perancang');
-        $getUnitKerja = $this->request->get('unit_kerja');
+        $getPangkat = $this->request->get('pangkat_id');
+        $getGolongan = $this->request->get('golongan_id');
+        $getJenjangPerancang = $this->request->get('jenjang_perancang_id');
+        $getUnitKerja = $this->request->get('unit_kerja_id');
         $getStatus = $this->request->get('status');
 
         $seketariat = new Users();
