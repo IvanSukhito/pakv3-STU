@@ -98,15 +98,11 @@ class PakLogic
         if ($getKegiatan) {
             $getJudul = [];
             $permenIds = [];
-            $getKegiatanIds = [];
 
             foreach ($getKegiatan as $list) {
                 $permenIds[] = $list->permen_id;
-                $getKegiatanIds[] = $list->ms_kegiatan_id;
                 $getJudul[$list->permen_id][$list->judul][] = $list->ms_kegiatan_id;
             }
-
-            $getKegiatanIds = array_unique($getKegiatanIds);
 
             $getMsKegiatan = MsKegiatan::where('permen_id', $permenIds)->get();
             $temp = [];
@@ -118,21 +114,13 @@ class PakLogic
 
             $getPermen = Permen::whereIn('id', $permenIds)->get();
             $listPermen = [];
-            $getMasterFilter = [];
             foreach ($getPermen as $list) {
                 $listPermen[$list->id] = $list->name;
             }
 
-            foreach ($getMsKegiatan as $list) {
-                if ($list['parent_id'] <= 0) {
-                    $getMasterFilter[$list['id']] = $list['name'];
-                }
-            }
-
             return [
-                'data' => $this->getParentTreeKegiatan($getMsKegiatan, $getKegiatanIds, $getJudul),
-                'permen' => $listPermen,
-                'filter' => $getMasterFilter
+                'data' => $this->getParentTreeKegiatan($getMsKegiatan, $getJudul),
+                'permen' => $listPermen
             ];
 
         }
@@ -143,47 +131,35 @@ class PakLogic
 
     /**
      * @param $msKegiatan
-     * @param $childIds
-     * @param $getJudul
+     * @param $listJudulKegiatan
      * @return array
      */
-    protected function getParentTreeKegiatan($msKegiatan, $childIds, $getJudul)
+    protected function getParentTreeKegiatan($msKegiatan, $listJudulKegiatan)
     {
         $result = [];
 
-        foreach ($childIds as $childId) {
-            if (isset($msKegiatan[$childId])) {
-                $getMsKegiatan = $msKegiatan[$childId];
-                if ($getMsKegiatan['parent_id'] > 0) {
-                    $getParent = $this->checkParentTreeKegiatan($msKegiatan, $getMsKegiatan['parent_id']);
-                    if (count($getParent) > 0) {
-                        $getListResult = $getParent;
-                        $result[$childId] = $getListResult;
-                        $result[$childId][] = $childId;
+        foreach ($listJudulKegiatan as $getPermen => $listJudul) {
+            foreach ($listJudul as $getJudul => $listKegiatan) {
+                $getAllKegiatanId = [];
+                foreach ($listKegiatan as $kegiatanId) {
+                    $getListParent = $this->checkParentTreeKegiatan($msKegiatan, $kegiatanId);
+                    $getAllKegiatanId = array_merge($getAllKegiatanId, $getListParent);
+                }
+                $getAllKegiatanId = array_unique($getAllKegiatanId);
+                sort($getAllKegiatanId);
+                $tempKegiatan = [];
+                foreach ($getAllKegiatanId as $kegId) {
+                    if (isset($msKegiatan[$kegId])) {
+                        $tempKegiatan[] = $msKegiatan[$kegId];
                     }
                 }
+
+                $result[$getPermen][$getJudul] = $this->getCreateListTreeKegiatan($tempKegiatan);
+
             }
         }
 
-        $tempResult = [];
-        foreach ($getJudul as $getPermen => $listPermen) {
-            $getListKegiatanIds = [];
-            foreach($listPermen as $getJudul => $listJudul) {
-                foreach ($listJudul as $listKegiatan) {
-                    $getListKegiatanIds = array_merge($getListKegiatanIds, $result[$listKegiatan]);
-                }
-                $getListKegiatanPerJudul = array_unique($getListKegiatanIds);
-                $tempJudul = [];
-                foreach ($msKegiatan as $key => $list) {
-                    if (in_array($key, $getListKegiatanPerJudul)) {
-                        $tempJudul[] = $list;
-                    }
-                }
-                $tempResult[$getPermen][$getJudul] = $this->getCreateListTreeKegiatan($tempJudul);;
-            }
-        }
-
-        return $tempResult;
+        return $result;
 
     }
 
