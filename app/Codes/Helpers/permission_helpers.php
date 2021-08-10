@@ -493,15 +493,6 @@ if ( ! function_exists('listAllMenu')) {
                         'type' => 1
                     ],
                     [
-                        'name' => __('general.jenjang-perancang'),
-                        'icon' => '<i class="nav-icon fa fa-server"></i>',
-                        'title' => __('general.jenjang-perancang'),
-                        'active' => ['admin.jenjang-perancang.'],
-                        'route' => 'admin.jenjang-perancang.index',
-                        'key' => 'jenjang-perancang',
-                        'type' => 1
-                    ],
-                    [
                         'name' => __('general.instansi'),
                         'icon' => '<i class="nav-icon fa fa-users"></i>',
                         'title' => __('general.instansi'),
