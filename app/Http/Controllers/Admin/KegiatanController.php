@@ -100,7 +100,7 @@ class KegiatanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getStaff = Users::where('id', $userId)->first();
+        $getUser = Users::where('id', $userId)->first();
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
@@ -118,7 +118,7 @@ class KegiatanController extends _CrudController
 
         $data = $this->data;
 
-        $data['dataUser'] = $getStaff;
+        $data['dataUser'] = $getUser;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;
         $data['dataFilterKegiatan'] = $getFilterKegiatan;
@@ -133,8 +133,8 @@ class KegiatanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getStaff = Users::where('id', $userId)->first();
-        if ($getStaff->upline_id <= 0) {
+        $getUser = Users::where('id', $userId)->first();
+        if ($getUser->upline_id <= 0) {
             session()->flash('message', __('general.error_no_upline'));
             session()->flash('message_alert', 1);
             return redirect()->route('admin.' . $this->route . '.index');
@@ -162,7 +162,7 @@ class KegiatanController extends _CrudController
         $data['viewType'] = 'create';
         $data['formsTitle'] = __('general.title_create', ['field' => $data['thisLabel']]);
         $data['judul'] = $judul;
-        $data['dataUser'] = $getStaff;
+        $data['dataUser'] = $getUser;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $getData['permen'];
         $data['dataFilterKegiatan'] = $getFilterKegiatan;
@@ -177,8 +177,129 @@ class KegiatanController extends _CrudController
 
         $viewType = 'create';
 
-        var_dump($this->request->all());
-        die("submit stop");
+        $getListCollectData = collectPassingData($this->passingData, $viewType);
+        $validate = $this->setValidateData($getListCollectData, $viewType);
+        if (count($validate) > 0)
+        {
+            $data = $this->validate($this->request, $validate);
+        }
+        else {
+            $data = [];
+            foreach ($getListCollectData as $key => $val) {
+                $data[$key] = $this->request->get($key);
+            }
+        }
+
+        $userId = session()->get('admin_id');
+        $getUser = Users::where('id', $userId)->first();
+        if ($getUser->upline_id <= 0) {
+            session()->flash('message', __('general.error_no_upline'));
+            session()->flash('message_alert', 1);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
+        $userNip = $getUser->username;
+
+        $data = $this->getCollectedData($getListCollectData, $viewType, $data);
+
+        $userFolder = 'user_' . preg_replace("/[^A-Za-z0-9?!]/", '', $userNip);
+        $todayDate = date('Y-m-d');
+        $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
+        $msKegiatanId = $data['ms_kegiatan_id'];
+
+        $dokument = $this->request->file('dokument');
+        $dokumentFisik = $this->request->file('dokument_fisik');
+
+        $totalDokument = [];
+        $totalDokumentFisik = [];
+
+        foreach ($dokument as $listDoc) {
+            if ($listDoc->getError() == 0) {
+                $getFileName = $listDoc->getClientOriginalName();
+                $ext = explode('.', $getFileName);
+                $fileName = reset($ext);
+                $ext = end($ext);
+                $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
+                $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
+                $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
+                $listDoc->move($destinationPath, $setFileName);
+
+                $totalDokument[] = [
+                    'name' => $setFileName,
+                    'location' => $destinationLink
+                ];
+            }
+        }
+
+        foreach ($dokumentFisik as $listDoc) {
+            if ($listDoc->getError() == 0) {
+                $getFileName = $listDoc->getClientOriginalName();
+                $ext = explode('.', $getFileName);
+                $fileName = reset($ext);
+                $ext = end($ext);
+                $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
+                $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
+                $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
+                $listDoc->move($destinationPath, $setFileName);
+
+                $totalDokumentFisik[] = [
+                    'name' => $setFileName,
+                    'location' => $destinationLink
+                ];
+            }
+        }
+
+        var_dump($data); die();
+
+        $data['user_id'] = $userId;
+        $data['upline_id'] = $getUser->upline_id;
+        $data['permen_id'] = $userId;
+        $data['kredit'] = calculate_jenjang($getUser->jenjang_perancang_id, $list_ms_kegiatan[$key]->jenjang_perancang_id, $list_jenjang_perancang, $list_ms_kegiatan[$key]->ak);
+        $data['dokument_pendukung'] = json_encode($totalDokument);
+        $data['dokument_fisik'] = json_encode($totalDokumentFisik);
+
+        $getData = $this->crud->store($data);
+
+        $get_jenjang_perancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+        $list_jenjang_perancang = [];
+        foreach ($get_jenjang_perancang as $list) {
+            $list_jenjang_perancang[$list->order_high] = $list->id;
+        }
+
+        $data = [
+            'user_id' => $userId,
+            'upline_id' => $getUser->upline_id,
+            'ms_kegiatan_name' => $get_ms_kegiatan_name,
+            'ms_kegiatan_id' => $key,
+            'permen_id' => $permen,
+            'tanggal' => $tanggal[$key],
+            'judul' => substr($judul[$key], 0, 190),
+            'kredit' => number_format(calculate_jenjang($getUser->jenjang_perancang_id, $list_ms_kegiatan[$key]->jenjang_perancang_id, $list_jenjang_perancang, $list_ms_kegiatan[$key]->ak), 3, '.', ''),
+            'satuan' => $list_ms_kegiatan[$key]->satuan,
+            'pelaksana' => isset($list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id]) ? $list_jenjang_perancang[$list_ms_kegiatan[$key]->jenjang_perancang_id] : $list_ms_kegiatan[$key]->jenjang_perancang_id,
+            'pelaksana_id' => $list_ms_kegiatan[$key]->jenjang_perancang_id,
+            'parent_id' => MsKegiatan::getLastParent($key),
+            'dokument_pendukung' => json_encode($total_dokument),
+            'dokument_fisik' => json_encode($total_dokument_fisik),
+        ];
+
+        $kegiatan = new Kegiatan();
+        $kegiatan->fill($data);
+        $kegiatan->save();
+
+        if ($this->request->ajax()) {
+            return response()->json(['result' => 1, 'message' => __('general.success_add')]);
+        } else {
+            session()->flash('message', __('general.success_add'));
+            session()->flash('message_alert', 2);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
+    }
+
+    public function storeOld()
+    {
+        $this->callPermission();
+
+        $viewType = 'create';
 
         $getListCollectData = collectPassingData($this->passingData, $viewType);
         $validate = $this->setValidateData($getListCollectData, $viewType);
