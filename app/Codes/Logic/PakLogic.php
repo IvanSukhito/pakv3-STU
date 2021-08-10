@@ -94,14 +94,16 @@ class PakLogic
             $status = [1];
         }
 
-        $getKegiatan = Kegiatan::where('user_id', $userId)->whereIn('status', $status)->get();
+        $getKegiatan = Kegiatan::where('user_id', $userId)->whereIn('status', $status)->orderBy('tanggal', 'ASC')->get();
         if ($getKegiatan) {
             $getJudul = [];
+            $getDataKegiatan = [];
             $permenIds = [];
 
             foreach ($getKegiatan as $list) {
                 $permenIds[] = $list->permen_id;
                 $getJudul[$list->permen_id][$list->judul][] = $list->ms_kegiatan_id;
+                $getDataKegiatan[$list->permen_id][$list->judul][$list->ms_kegiatan_id][] = $list->toArray();
             }
 
             $getMsKegiatan = MsKegiatan::where('permen_id', $permenIds)->get();
@@ -119,7 +121,7 @@ class PakLogic
             }
 
             return [
-                'data' => $this->getParentTreeKegiatan($getMsKegiatan, $getJudul),
+                'data' => $this->getParentTreeKegiatan($getMsKegiatan, $getJudul, $getDataKegiatan),
                 'permen' => $listPermen
             ];
 
@@ -132,9 +134,10 @@ class PakLogic
     /**
      * @param $msKegiatan
      * @param $listJudulKegiatan
+     * @param $dataKegiatan
      * @return array
      */
-    protected function getParentTreeKegiatan($msKegiatan, $listJudulKegiatan)
+    protected function getParentTreeKegiatan($msKegiatan, $listJudulKegiatan, $dataKegiatan)
     {
         $result = [];
 
@@ -150,7 +153,13 @@ class PakLogic
                 $tempKegiatan = [];
                 foreach ($getAllKegiatanId as $kegId) {
                     if (isset($msKegiatan[$kegId])) {
-                        $tempKegiatan[] = $msKegiatan[$kegId];
+                        $showDataKegiatan = isset($dataKegiatan[$getPermen][$getJudul][$kegId]) ? $dataKegiatan[$getPermen][$getJudul][$kegId] : false;
+                        $temp = $msKegiatan[$kegId];
+                        if ($showDataKegiatan) {
+                            $temp['data'] = $showDataKegiatan;
+                        }
+
+                        $tempKegiatan[] = $temp;
                     }
                 }
 

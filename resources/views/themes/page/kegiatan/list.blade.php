@@ -48,17 +48,13 @@
                         <label for="permen">{{ __('general.permen') }} *</label>
                         {{ Form::select('permen', $dataPermen, old('permen'), ['id' => 'permen', 'class' => 'form-control', 'onchange' => 'changePermen()']) }}
                     </div>
-                    <div class="form-group">
-                        <label for="filter">{{ __('general.filter') }} *</label>
-                        {{ Form::select('filter', [], old('filter'), ['id' => 'filter', 'class' => 'form-control', 'onchange' => 'changeFilter()']) }}
-                    </div>
                 </div>
                 <div class="card-body">
                     @if(isset($dataKegiatan))
                         @foreach($dataKegiatan as $getPermen => $listJudul)
                             @foreach($listJudul as $getJudul => $listKegiatan)
 
-                                <div class="card">
+                                <div class="card card-permen card-permen-<?php echo $getPermen ?>">
                                     <div class="card-header"><h3>{!! $getJudul !!}</h3></div>
                                     <div class="card-body">
                                         {!! view_kegiatan_v3($listKegiatan, $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
