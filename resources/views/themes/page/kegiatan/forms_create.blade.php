@@ -341,7 +341,37 @@ else {
                         'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(result) {
-                        console.log(result);
+                        if(typeof result !== "object") {
+                            result = JSON.parse(result);
+                        }
+
+                        if (parseInt(result.result) === 1) {
+
+                            $('#kegiatanModal').modal('hide');
+
+                            $.notify({
+                                message: result.message
+                            },{
+                                type: 'success',
+                                placement: {
+                                    from: "bottom",
+                                    align: "right"
+                                },
+                            });
+
+                        }
+                        else {
+                            $.notify({
+                                message: result.message
+                            },{
+                                type: 'danger',
+                                placement: {
+                                    from: "bottom",
+                                    align: "right"
+                                },
+                            });
+                        }
+
                     },
                     complete: function(){
 
