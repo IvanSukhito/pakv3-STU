@@ -168,34 +168,6 @@ if ( ! function_exists('generateListPermission')) {
                     Super Admin
                 </label><br/><br/>';
 
-        $value = isset($data['role_perancang']) ? 'checked' : '';
-        $html .= '<label for="role_perancang">
-                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_perancang"
-                    data-name="role_perancang" name="permission[role_perancang]" value="1" id="role_perancang"/>
-                    Perancang
-                </label><br/><br/>';
-
-        $value = isset($data['role_atasan']) ? 'checked' : '';
-        $html .= '<label for="role_atasan">
-                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_atasan"
-                    data-name="role_atasan" name="permission[role_atasan]" value="1" id="role_atasan"/>
-                    Atasan
-                </label><br/><br/>';
-
-        $value = isset($data['role_seketariat']) ? 'checked' : '';
-        $html .= '<label for="role_seketariat">
-                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_seketariat"
-                    data-name="role_seketariat" name="permission[role_seketariat]" value="1" id="role_seketariat"/>
-                    Seketariat
-                </label><br/><br/>';
-
-        $value = isset($data['role_tim_penilai']) ? 'checked' : '';
-        $html .= '<label for="role_tim_penilai">
-                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_tim_penilai"
-                    data-name="role_tim_penilai" name="permission[role_tim_penilai]" value="1" id="role_tim_penilai"/>
-                    Time Penilai
-                </label><br/><br/>';
-
         $html .= createTreePermission(listAllMenu(), 0, 'checkThis super_admin', $data);
         return $html;
     }
@@ -401,7 +373,10 @@ if ( ! function_exists('listAllMenu')) {
                 'title' => __('general.staff'),
                 'active' => [
                     'admin.staff.',
-
+                    'admin.atasan.',
+                    'admin.perancang.',
+                    'admin.seketariat.',
+                    'admin.tim_penilai.',
                 ],
                 'type' => 2,
                 'data' => [
@@ -450,7 +425,8 @@ if ( ! function_exists('listAllMenu')) {
                     'admin.golongan.',
                     'admin.unit-kerja.',
                     'admin.pendidikan.',
-                    'admin.jenjang-perancang.'
+                    'admin.jenjang-perancang.',
+                    'admin.instansi.'
                 ],
 
                 'type' => 2,
@@ -498,12 +474,12 @@ if ( ! function_exists('listAllMenu')) {
                         'type' => 1
                     ],
                     [
-                        'name' => __('general.pendidikan'),
-                        'icon' => '<i class="nav-icon fa fa-graduation-cap"></i>',
-                        'title' => __('general.pendidikan'),
-                        'active' => ['admin.pendidikan.'],
-                        'route' => 'admin.pendidikan.index',
-                        'key' => 'pendidikan',
+                        'name' => __('general.jenjang-perancang'),
+                        'icon' => '<i class="nav-icon fa fa-server"></i>',
+                        'title' => __('general.jenjang-perancang'),
+                        'active' => ['admin.jenjang-perancang.'],
+                        'route' => 'admin.jenjang-perancang.index',
+                        'key' => 'jenjang-perancang',
                         'type' => 1
                     ],
                     [
@@ -515,6 +491,16 @@ if ( ! function_exists('listAllMenu')) {
                         'key' => 'jenjang-perancang',
                         'type' => 1
                     ],
+                    [
+                        'name' => __('general.instansi'),
+                        'icon' => '<i class="nav-icon fa fa-users"></i>',
+                        'title' => __('general.instansi'),
+                        'active' => ['admin.instansi.'],
+                        'route' => 'admin.instansi.index',
+                        'key' => 'instansi',
+                        'type' => 1
+                    ],
+
                 ]
             ],
         ];
@@ -535,6 +521,7 @@ if ( ! function_exists('listAvailablePermission'))
             'atasan',
             'seketariat',
             'tim_penilai',
+            'instansi',
             //'kegiatan',
             'persetujuan-surat-pernyataan',
             'surat-pernyataan',
