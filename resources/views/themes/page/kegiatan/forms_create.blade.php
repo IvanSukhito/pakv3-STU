@@ -119,9 +119,10 @@ else {
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">×</button>
                 </div>
-                <form method="post" action="{{ route('admin.kegiatan.store') }}">
+                <form method="post" action="{{ route('admin.kegiatan.store') }}" id="MyModal" >
                     @csrf
                     <div class="modal-body">
+                    <input type="hidden" name="ms_kegiatan_id" id="msKegiatanId" value=""/>
                         <div class="form-group">
                             <label for="tanggal">Tanggal</label>
 
@@ -144,25 +145,34 @@ else {
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Dokument Pendukung</label>
-                            <div class="controls">
-                                <div id="dokument_pendukung{{ $id }}" class="dokument_pendukung">
-                                    {{ Form::file('dokument['.$id.'][]')  }}
+                        <label>Dokumen Pendukung</label>
+                            <br/>
+                            <div id="list_other1">
+                                <div class="d-flex align-items-center">
+                                    <div class="p-2">
+                                        <input type="file" name="dokument[]" class="dropify" id="dokument" accept=".pdf"
+                                               data-allowed-file-extensions="pdf" data-max-file-size="10M">
+                                    </div>
                                 </div>
-                                <a href="#"  class="add_more" data-id="{{ $id }}">Add More Dokument Pendukung</a>
                             </div>
-                            <label>Dokument Fisik</label>
-                            <div class="controls">
-                                <div id="dokument_fisik{{ $id }}" class="dokument_fisik">
-                                    {{ Form::file('dokument_fisik['.$id.'][]')  }}
+                            <a href="#" onclick="return add_other1()" class="btn">Tambah</a>
+                            <br>
+                            <label>Dokumen Fisik</label>
+                            <br/>
+                            <div id="list_other2">
+                                <div class="d-flex align-items-center">
+                                    <div class="p-2">
+                                        <input type="file" name="dokument_fisik[]" id="dokument_fisik" class="dropify" accept=".pdf"
+                                               data-allowed-file-extensions="pdf" data-max-file-size="10M">
+                                    </div>
                                 </div>
-                                <a href="#"  class="add_more_dokumen_fisik" data-id="{{ $id }}">Add More Dokument Fisik</a>
                             </div>
+                            <a href="#" onclick="return add_other2()" class="btn">Tambah</a>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="submit" class="btn btn-success" id="submit">Submit</button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -181,23 +191,32 @@ else {
         'use strict';
 
         let dataFilter = {!! json_encode($dataFilterKegiatan) !!};
+        let setIndex = 1;
 
         $(document).ready(function() {
             $('.all-row').hide();
             changePermen();
 
+            $('.dropify').dropify();
             $("#judul").select2({
             tags: true
         });
         });
 
         $('.click-kegiatan').click(function () {
+            var myId = $(this).data('id');
             $('#kegiatanModal').modal('show');
+            $(".modal-body #msKegiatanId").val(myId);
+            console.log(myId);
             return false;
         });
 
 
-
+        $(document).ready(function() {
+            $(".modal").on("hidden.bs.modal", function() {
+             window.location.reload();
+            });
+           });
 
         jQuery('.add_more').on('click', function(e) {
             e.preventDefault();
@@ -231,5 +250,96 @@ else {
             $('.all-row').hide();
             $('.kegiatan-' + getKegiatanPoint).show();
         }
+
+        function add_other1() {
+
+        let html = '<div class="d-flex align-items-center">' +
+            '<div class="p-2">' +
+            '<input type="file" id="dokument_' + setIndex +'" name="dokument[]" class="dropify" accept=".pdf" ' +
+            'data-allowed-file-extensions="pdf" data-max-file-size="10M">' +
+            '</div>' +
+            '<div class="p-2">' +
+            '<a href="#" onclick="return remove_other(this)">Hapus</a>' +
+            '</div>' +
+            '</div>';
+
+        $('#list_other1').append(html);
+        $('#dokument_' + setIndex).dropify();
+
+        setIndex++;
+
+        return false;
+
+        }
+        function add_other2() {
+
+        let html = '<div class="d-flex align-items-center">' +
+            '<div class="p-2">' +
+            '<input type="file" id="dokument_fisik_' + setIndex +'" name="dokument_fisik[]" class="dropify" accept=".pdf" ' +
+            'data-allowed-file-extensions="pdf" data-max-file-size="10M">' +
+            '</div>' +
+            '<div class="p-2">' +
+            '<a href="#" onclick="return remove_other(this)">Hapus</a>' +
+            '</div>' +
+            '</div>';
+
+        $('#list_other2').append(html);
+        $('#dokument_fisik' + setIndex).dropify();
+
+        setIndex++;
+
+        return false;
+
+        }
+
+        function remove_other(curr) {
+        $(curr).parent().parent().remove();
+        return false;
+        }
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+   
+    $(document).ready(function() {
+   
+   $('#storememberbtn').on('click', function() {
+     var ms_kegiatan_id = $('#msKegiatanId').val();
+     var tanggal = $('#tanggal').val();
+     var judul = $('#judul').val();
+     var dokument = $('#dokument').val();
+     var dokument_fisik = $('#dokument_fisik').val();
+     if(tanggal!="" && judul!=""){
+       //   $("#storememberbtn").attr("disabled", "disabled");
+         $.ajax({
+             url: "{{ route('admin.kegiatan.store') }}",
+             type: "POST",
+             data: {
+                 _token: $("#csrf").val(),
+                 type: 1,
+                 ms_kegiatan_id: ms_kegiatan_id,
+                 tanggal: tanggal,
+                 judul: judul,
+                 dokument: dokument,
+                 dokument_fisik: dokument_fisik
+             },
+             cache: false,
+             success: function(responseOutput){
+                 console.log(responseOutput);
+                 var responseOutput = JSON.parse(responseOutput);
+                
+                 
+             }
+         });
+     }
+     else{
+         alert('Please fill all the field !');
+     }
+ });
+});
+
     </script>
 @stop
