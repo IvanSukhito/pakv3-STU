@@ -32,7 +32,9 @@ class SeketariatController extends _CrudController
             'username' => [
                 'validation' => [
                     'edit' => 'required'
-                ]
+                ],
+                'lang' => 'NIP'
+
             ],
             'role' => [
                 'create' => false,

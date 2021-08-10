@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
+use App\User;
 use Illuminate\Http\Request;
 use App\Codes\Models\Users;
 use App\Codes\Models\Golongan;
@@ -104,6 +105,14 @@ class PerancangController extends _CrudController
             $request, 'general.perancang', 'perancang', 'Users', 'perancang',
             $passingData
         );
+        $getUpline = User::get();
+        $listUpline = [0 => 'Kosong'];
+        if($getUpline) {
+            foreach($getUpline as $list) {
+                $listUpline[$list->id] = $list->upline_id;
+            }
+        }
+
         $getGolongan = Golongan::get();
         $listGolongan = [0 => 'Kosong'];
         if($getGolongan) {
@@ -135,7 +144,7 @@ class PerancangController extends _CrudController
                 $listUnitKerja[$list->id] = $list->name;
             }
         }
-
+        $this->data['listSet']['upline_id'] = $listUpline;
         $this->data['listSet']['golongan_id'] = $listGolongan;
         $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
         $this->data['listSet']['pangkat_id'] = $listPangkat;
@@ -226,11 +235,13 @@ class PerancangController extends _CrudController
         $getUsername = $this->request->get('username');
         $getName = $this->request->get('name');
         $getEmail = $this->request->get('email');
+        $getUpline = $this->request->get('upline_id');
         $getPangkat = $this->request->get('pangkat_id');
         $getGolongan = $this->request->get('golongan_id');
         $getJenjangPerancang = $this->request->get('jenjang_perancang_id');
         $getUnitKerja = $this->request->get('unit_kerja_id');
         $getStatus = $this->request->get('status');
+        $getGender = $this->request->get('gender');
 
 
 
@@ -239,6 +250,7 @@ class PerancangController extends _CrudController
         $perancang->username = $getUsername;
         $perancang->email = $getEmail;
         $perancang->password = Hash::make('123');
+        $perancang->upline_id =$getUpline;
         $perancang->pangkat_id = $getPangkat;
         $perancang->golongan_id = $getGolongan;
         $perancang->jenjang_perancang_id = $getJenjangPerancang;
