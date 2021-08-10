@@ -11,7 +11,7 @@
                 <div class="input-group mb-3">
                     {{ Form::text('username', old('username'), ['id'=>'username',
                                 'class'=> $errors->has('username') ? 'form-control is-invalid' : 'form-control',
-                                'placeholder'=>__('general.username'), 'required'=>'required']) }}
+                                'placeholder'=>__('general.nip'), 'required'=>'required']) }}
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fa fa-user"></span>

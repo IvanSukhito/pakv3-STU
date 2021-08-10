@@ -93,6 +93,7 @@ return [
     'pangkat' => 'Pangkat',
     'submit_per_tanggal' => 'Submit Per Tanggal',
     'key' => 'Key',
+    'nip' => 'NIP',
     'latitude' => 'Latitude',
     'link' => 'Link',
     'log' => 'Log',
