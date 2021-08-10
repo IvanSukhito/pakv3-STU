@@ -117,11 +117,10 @@ class PakLogic
             $getMsKegiatan = $temp;
 
             $getPermen = Permen::whereIn('id', $permenIds)->get();
-            $permenIds = [];
             $listPermen = [];
+            $getMasterFilter = [];
             foreach ($getPermen as $list) {
                 $listPermen[$list->id] = $list->name;
-                $permenIds[] = $list->id;
             }
 
             foreach ($getMsKegiatan as $list) {

@@ -143,12 +143,7 @@ class KegiatanController extends _CrudController
         $getNewLogic = new PakLogic();
         $getData = $getNewLogic->createKegiatan();
 
-        //$judul = Kegiatan::where('user_id',$userId)->where('status',1)->groupBy('judul')->get();
-        $judul = DB::table('tx_kegiatan')
-             ->select(DB::raw('judul'))
-             ->where('status', '=', 1)
-             ->groupBy('judul')
-             ->get();
+        $judul = Kegiatan::select('judul')->where('user_id',$userId)->where('status',1)->groupBy('judul')->get();
 
         $getFilterKegiatan = [];
         foreach ($getData['data'] as $list) {
