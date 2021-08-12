@@ -140,8 +140,8 @@ if ( ! function_exists('getValidatePermissionMenu')) {
                 else if ($key == 'role_atasan') {
                     $listMenu['role_atasan'] = 1;
                 }
-                else if ($key == 'role_seketariat') {
-                    $listMenu['role_seketariat'] = 1;
+                else if ($key == 'role_sekretariat') {
+                    $listMenu['role_sekretariat'] = 1;
                 }
                 else if ($key == 'role_tim_penilai') {
                     $listMenu['role_tim_penilai'] = 1;
@@ -166,6 +166,33 @@ if ( ! function_exists('generateListPermission')) {
                     <input '.$value.' style="margin-right: 5px;" type="checkbox" class="checkThis super_admin"
                     data-name="super_admin" name="permission[super_admin]" value="1" id="super_admin"/>
                     Super Admin
+                </label><br/><br/>';
+        $value = isset($data['role_perancang']) ? 'checked' : '';
+                $html .= '<label for="role_perancang">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_perancang"
+                    data-name="role_perancang" name="permission[role_perancang]" value="1" id="role_perancang"/>
+                    Perancang
+                </label><br/><br/>';
+
+                $value = isset($data['role_atasan']) ? 'checked' : '';
+                $html .= '<label for="role_atasan">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_atasan"
+                    data-name="role_atasan" name="permission[role_atasan]" value="1" id="role_atasan"/>
+                    Atasan
+                </label><br/><br/>';
+
+                $value = isset($data['role_sekretariat']) ? 'checked' : '';
+                $html .= '<label for="role_sekretariat">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_sekretariat"
+                    data-name="role_sekretariat" name="permission[role_sekretariat]" value="1" id="role_sekretariat"/>
+                    Sekretariat
+                </label><br/><br/>';
+
+                $value = isset($data['role_tim_penilai']) ? 'checked' : '';
+                $html .= '<label for="role_tim_penilai">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_tim_penilai"
+                    data-name="role_tim_penilai" name="permission[role_tim_penilai]" value="1" id="role_tim_penilai"/>
+                    Tim Penilai
                 </label><br/><br/>';
 
         $html .= createTreePermission(listAllMenu(), 0, 'checkThis super_admin', $data);
@@ -375,7 +402,7 @@ if ( ! function_exists('listAllMenu')) {
                     'admin.staff.',
                     'admin.atasan.',
                     'admin.perancang.',
-                    'admin.seketariat.',
+                    'admin.sekretariat.',
                     'admin.tim_penilai.',
                 ],
                 'type' => 2,
@@ -424,6 +451,7 @@ if ( ! function_exists('listAllMenu')) {
                     'admin.role.',
                     'admin.admin.',
                     'admin.golongan.',
+                    'admin.pangkat.',
                     'admin.unit-kerja.',
                     'admin.pendidikan.',
                     'admin.jenjang-perancang.',

@@ -144,6 +144,7 @@ class PerancangController extends _CrudController
                 $listUnitKerja[$list->id] = $list->name;
             }
         }
+
         $this->data['listSet']['upline_id'] = $listUpline;
         $this->data['listSet']['golongan_id'] = $listGolongan;
         $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
@@ -166,7 +167,7 @@ class PerancangController extends _CrudController
         $dataTables = new DataTables();
 
         $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat, D.name as golongan, E.name as jenjang_perancang, F.name as unit_kerja, B.name AS role, users.status')
-            ->where('users.role_id', '=', 3)
+            ->where('users.perancang', '=', 1)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
             ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
             ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
