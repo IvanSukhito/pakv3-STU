@@ -176,11 +176,13 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
 
                 $getName = '<a href="#" class="click-kegiatan" data-id="'.$getId.'">'.$getName.'</a>';
                 $listIds = [];
+                $getKegiatanAk = 0;
 
                 $getDataInput = $list['data'] ?? false;
                 if ($getDataInput) {
                     foreach ($getDataInput as $listInput) {
 
+                        $getKegiatanAk += $listInput['kredit'];
                         $getDokument = json_decode($listInput['dokument_pendukung'], true);
                         $getDokumentFisik = json_decode($listInput['dokument_fisik'], true);
                         $getListDokument = [];
@@ -214,13 +216,16 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                         ];
 
                     }
+
+                    $getAk = $getAk * count($getDataInput);
+
                 }
 
                 if (count($listIds) > 0) {
                     $addLabel = '<input type="hidden" id="kegiatan_hidden_'.$getId.'" value="'.json_encode($listIds).'"/>';
                 }
 
-                $getNewAk = calculate_jenjang($jenjangPerancangId, $getJenjangKegiatan, $listJenjangPerancang, $getAk);
+                $getNewAk = $getKegiatanAk;
                 if ($getAk != $getNewAk) {
                     $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
                         '<td width="5%" class="text-center">80%</td>'.

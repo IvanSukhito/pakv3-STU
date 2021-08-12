@@ -580,45 +580,42 @@ class KegiatanController extends _CrudController
     {
         $this->callPermission();
 
-        $getDateRange = $this->request->get('daterange1');
-
         $userId = session()->get('admin_id');
 
-        $getStaff = Users::where('id', $userId)->first();
-        if ($getStaff->upline_id <= 0) {
+        $getUser = Users::where('id', $userId)->first();
+        if ($getUser->upline_id <= 0) {
             session()->flash('message', __('general.error_no_upline'));
             session()->flash('message_alert', 1);
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
-        $getSplitDate = explode(' | ', $getDateRange);
-        $getDateStart = date('Y-m-d', strtotime($getSplitDate[0]));
-        $getDateEnd = isset($getSplitDate[1]) ? date('Y-m-d', strtotime($getSplitDate[1])) : date('Y-m-d', strtotime($getSplitDate[0]));
-        $getKegiatan = Kegiatan::where('user_id', $userId)->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)->get();
-        $permenId = [];
-        $kegiatanId = [];
-        $temp = [];
-        foreach ($getKegiatan as $list) {
-            $permenId[] = $list->permen_id;
-            $kegiatanId[] = $list->ms_kegiatan_id;
-            $temp[$list->ms_kegiatan_id][] = $list;
-        }
-        $getKegiatan = $temp;
-
-        $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenId)->get();
+        $getDateRange = $this->request->get('daterange1');
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+
+        $getNewLogic = new PakLogic();
+        $getData = $getNewLogic->getKegiatanUser($userId, $getDateRange);
+
+        $dataPermen = [];
+        $dataKegiatan = [];
+        $getFilterKegiatan = [];
+
+        if (count($getData['data']) > 0) {
+            $dataPermen = $getData['permen'];
+            $dataKegiatan = $getData['data'];
+        }
 
         $data = $this->data;
 
         $data['viewType'] = 'create';
-        $data['formsTitle'] = __('general.title_create', ['field' => $data['thisLabel']]);
-        $data['dataUser'] = $getStaff;
-        $data['dataJenjangPerancang'] = $getJenjangPerancang;
-        $data['dataKegiatan'] = $getMsKegiatan;
-        $data['listKegiatan'] = $getKegiatan;
-        $data['listKegiatanIds'] = count($kegiatanId) > 0 ? array_unique($kegiatanId) : [];
+        $data['formsTitle'] = __('general.title_create', ['field' => __('general.surat_pernyataan')]);
+
         $data['getDateRange'] = $getDateRange;
+        $data['dataUser'] = $getUser;
+        $data['dataJenjangPerancang'] = $getJenjangPerancang;
+        $data['dataPermen'] = $dataPermen;
+        $data['dataFilterKegiatan'] = $getFilterKegiatan;
+        $data['dataKegiatan'] = $dataKegiatan;
 
         return view($this->listView['submit_kegiatan'], $data);
 

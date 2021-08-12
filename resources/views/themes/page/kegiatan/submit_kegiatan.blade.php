@@ -68,7 +68,22 @@ else {
                     <h3 class="form-section first-form">Kegiatan</h3>
                 </div>
                 <div class="card-body" style="overflow-x: auto">
-                    {!!  render_kegiatan_v3($dataKegiatan, $dataUser ? $dataUser->jenjang_perancang_id : 0, $dataJenjangPerancang, $listKegiatan) !!}
+
+                    @if(isset($dataKegiatan))
+                        @foreach($dataKegiatan as $getPermen => $listJudul)
+                            @foreach($listJudul as $getJudul => $listKegiatan)
+
+                                <div class="card card-permen card-permen-<?php echo $getPermen ?>">
+                                    <div class="card-header"><h3>{!! $getJudul !!}</h3></div>
+                                    <div class="card-body">
+                                        {!! view_kegiatan_v3($listKegiatan, $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
+                                    </div>
+                                </div>
+
+                            @endforeach
+                        @endforeach
+                    @endif
+
                 </div>
                 <!-- /.card-body -->
 
@@ -93,16 +108,5 @@ else {
     @include(env('ADMIN_TEMPLATE').'._component.generate_forms_script')
     <script type="text/javascript">
         'use strict';
-        let getClassList;
-
-        @foreach($listKegiatanIds as $list)
-            getClassList = $('#kegiatan-{!! $list !!}').show().attr('class').split(' ');
-            $.each(getClassList, function(index, item) {
-                if (item !== 'all-row' && item.length > 0) {
-                    $('#' + item).show();
-                }
-            });
-        @endforeach
-
     </script>
 @stop

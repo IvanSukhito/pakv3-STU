@@ -85,16 +85,30 @@ class PakLogic
 
     /**
      * @param $userId
+     * @param null $getDateRange
      * @param array $status
      * @return array
      */
-    public function getKegiatanUser($userId, array $status = [])
+    public function getKegiatanUser($userId, $getDateRange = null, array $status = [])
     {
         if (count($status) <= 0) {
             $status = [1];
         }
 
-        $getKegiatan = Kegiatan::where('user_id', $userId)->whereIn('status', $status)->orderBy('tanggal', 'ASC')->get();
+        if ($getDateRange) {
+            $getSplitDate = explode(' | ', $getDateRange);
+            $getDateStart = date('Y-m-d', strtotime($getSplitDate[0]));
+            $getDateEnd = isset($getSplitDate[1]) ? date('Y-m-d', strtotime($getSplitDate[1])) : date('Y-m-d', strtotime($getSplitDate[0]));
+
+            $getKegiatan = Kegiatan::where('user_id', $userId)->whereIn('status', $status)
+                ->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)
+                ->orderBy('tanggal', 'ASC')->get();
+
+        }
+        else {
+            $getKegiatan = Kegiatan::where('user_id', $userId)->whereIn('status', $status)->orderBy('tanggal', 'ASC')->get();
+        }
+
         if ($getKegiatan) {
             $getJudul = [];
             $getDataKegiatan = [];
