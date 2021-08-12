@@ -25,13 +25,13 @@ class CreateTxSuratPernyataanTable extends Migration
             $table->date('tanggal_akhir')->nullable();
             $table->string('pdf')->nullable();
             $table->text('pdf_url')->nullable();
+            $table->longText('info_surat_pernyataan')->nullable();
             $table->tinyInteger('approved')->default(0);
             $table->tinyInteger('connect')->default(0);
-            $table->float('total_kredit_lama', 10, 3)->default(0)->nullable();
             $table->float('total_kredit', 10, 3)->default(0)->nullable();
-            $table->float('total_kredit_total', 10, 3)->default(0)->nullable();
             $table->string('lokasi')->nullable();
             $table->text('alasan_menolak')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

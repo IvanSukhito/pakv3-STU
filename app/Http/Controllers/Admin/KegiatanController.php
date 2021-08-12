@@ -11,8 +11,7 @@ use App\Codes\Models\Permen;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
-use DB;
-use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class KegiatanController extends _CrudController
 {
@@ -643,16 +642,51 @@ class KegiatanController extends _CrudController
             ->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)
             ->get();
 
+        $getKredit = 0;
+        foreach ($getKegiatan as $list) {
+            $getKredit += $list->kredit;
+        }
+
+        DB::beginTransaction();
+
+        $suratPernyataan = new SuratPernyataan();
+        $suratPernyataan->save([
+            'user_id' => $userId,
+            'upline_id' => $getUser->upline_id,
+            'supervisor_id' => 0,
+            'dupak_id' => 0,
+            'tanggal' => null,
+            'nomor' => '',
+            'tanggal_mulai' => $getDateStart,
+            'tanggal_akhir' => $getDateEnd,
+            'info_surat_pernyataan' => '',
+            'status' => 1,
+            'approved' => 0,
+            'connect' => 0,
+            'total_kredit' => $getKredit
+        ]);
+
+        $suratPernyataanId = $suratPernyataan->id;
+
         $saveDetails = [];
         foreach ($getKegiatan as $list) {
-
+            $saveDetails[] = [
+                'surat_pernyataan_id' => $suratPernyataanId,
+                'kegiatan_id' => $list->id,
+                'ms_kegiatan_id' => $list->ms_kegiatan_id,
+                'status' => 1
+            ];
         }
+
+        MsKegiatan::insert($saveDetails);
 
         Kegiatan::where('user_id', $userId)->where('status', 1)
             ->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)
             ->update([
             'status' => 2
         ]);
+
+        DB::commit();
 
         if ($this->request->ajax()) {
             return response()->json(['result' => 1, 'message' => __('Surat Pernyataan berhasil di ajukan')]);
@@ -663,40 +697,6 @@ class KegiatanController extends _CrudController
         }
 
     }
-
-    protected function check_surat_pernyataan($kegiatan = null, $user_id = null) {
-        if($kegiatan) {
-            $parent_id = isset($kegiatan->parent_id) ? $kegiatan->parent_id : null;
-            if($parent_id) {
-                $surat_pernyataan = SuratPernyataan::where('parent_id', $parent_id)->where('user_id', $user_id)->where('connect', 0)->whereIn('approved', [0, 9])->first();
-                if($surat_pernyataan) {
-
-                    $get_kegiatan = $surat_pernyataan->getKegiatan()->get();
-                    $ids = [];
-                    if($get_kegiatan)
-                    {
-                        foreach($get_kegiatan as $list) {
-                            $ids[] = $list->id;
-                        }
-                    }
-                    if($ids && isset($kegiatan->id)) {
-                        $ids[] = $kegiatan->id;
-                        $surat_pernyataan->getKegiatan()->sync($ids);
-                        $kegiatan->sp = $surat_pernyataan->id;
-                        $kegiatan->connect = 1;
-                        $kegiatan->save();
-
-                        if($surat_pernyataan->approved == 1) {
-                            return $surat_pernyataan->id;
-                        }
-
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
 
 }
 

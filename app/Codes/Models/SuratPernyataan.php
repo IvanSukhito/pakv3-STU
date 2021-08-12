@@ -20,37 +20,21 @@ class SuratPernyataan extends Model
         'tanggal_akhir',
         'pdf',
         'pdf_url',
+        'info_surat_pernyataan',
+        'status',
+        'approved',
         'connect',
-        'total_kredit_lama',
         'total_kredit',
-        'total_kredit_baru',
         'lokasi',
         'alasan_menolak'
     ];
-
-    public function getMasterKegiatan() {
-        return $this->belongsTo(MsKegiatan::class, 'upline_id', 'id');
-    }
-
-    public function getKegiatan() {
-        return $this->hasMany(Kegiatan::class, 'sp', 'id');
-    }
 
     public function getUser() {
         return $this->belongsTo(Users::class, 'user_id', 'id');
     }
 
-    public function getSupervisor() {
-        return $this->belongsTo(Users::class, 'supervisor_id', 'id');
-    }
-
-    public function getDupak()
-    {
-        return $this->belongsToMany(Dupak::class, 'dupak_surat_pernyataan', 'dupak_id', 'surat_pernyataan_id');
-    }
-
-    public function getDupakOne() {
-        return $this->belongsTo(Users::class, 'dupak_id', 'id');
+    public function getUpline() {
+        return $this->belongsTo(Users::class, 'upline_id', 'id');
     }
 
 }
