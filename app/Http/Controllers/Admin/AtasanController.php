@@ -43,7 +43,8 @@ class AtasanController extends _CrudController
             ],
             'role' => [
                 'create' => false,
-                'edit' => false
+                'edit' => false,
+                'show' => 0,
             ],
             'pangkat_id' => [
                 'validation' => [
@@ -99,35 +100,35 @@ class AtasanController extends _CrudController
             $request, 'general.atasan', 'atasan', 'Users', 'atasan',
             $passingData
         );
-        $getGolongan = Golongan::get();
+        $getGolongan = Golongan::where('status', 1)->pluck('name', 'id')->toArray();
         $listGolongan = [0 => 'Kosong'];
         if($getGolongan) {
-            foreach($getGolongan as $list) {
-                $listGolongan[$list->id] = $list->name;
+            foreach($getGolongan as $key => $value) {
+                $listGolongan[$key] = $value;
             }
         }
 
-        $getJenjangPerancang = JenjangPerancang::get();
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->pluck('name', 'id')->toArray();
         $listJenjangPerancang = [0 => 'Kosong'];
         if($getJenjangPerancang) {
-            foreach($getJenjangPerancang as $list) {
-                $listJenjangPerancang[$list->id] = $list->name;
+            foreach($getJenjangPerancang as $key => $value) {
+                $listJenjangPerancang[$key] = $value;
             }
         }
 
-        $getPangkat = Pangkat::get();
+        $getPangkat = Pangkat::where('status', 1)->pluck('name', 'id')->toArray();
         $listPangkat = [0 => 'Kosong'];
         if($getPangkat) {
-            foreach($getPangkat as $list) {
-                $listPangkat[$list->id] = $list->name;
+            foreach($getPangkat as $key => $value) {
+                $listPangkat[$key] = $value;
             }
         }
 
-        $getUnitKerja = UnitKerja::get();
+        $getUnitKerja = UnitKerja::where('status', 1)->pluck('name', 'id')->toArray();
         $listUnitKerja = [0 => 'Kosong'];
         if($getUnitKerja) {
-            foreach($getUnitKerja as $list) {
-                $listUnitKerja[$list->id] = $list->name;
+            foreach($getUnitKerja as $key => $value) {
+                $listUnitKerja[$key] = $value;
             }
         }
 
@@ -149,7 +150,7 @@ class AtasanController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat, D.name as golongan, E.name as jenjang_perancang, F.name as unit_kerja, B.name AS role, users.status')
+        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role,users.gender, users.status')
             ->where('users.atasan', '=', 1)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
             ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
@@ -237,7 +238,8 @@ class AtasanController extends _CrudController
         $atasan->unit_kerja_id = $getUnitKerja;
         $atasan->status = $getStatus;
         $atasan->gender = $getGender;
-        $atasan->role_id = 3;
+        $atasan->role_id = 2;
+        $atasan->atasan = 1;
         $atasan->save();
 
         if($this->request->ajax()){

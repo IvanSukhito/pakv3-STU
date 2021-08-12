@@ -41,8 +41,10 @@ class PerancangController extends _CrudController
                 'type' => 'email'
             ],
             'role' => [
+
                 'create' => false,
-                'edit' => false
+                'edit' => false,
+                'show' => 0,
             ],
             'upline_id' => [
                 'validation' => [
@@ -114,27 +116,27 @@ class PerancangController extends _CrudController
             }
         }
 
-        $getJenjangPerancang = JenjangPerancang::get();
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->pluck('name', 'id')->toArray();
         $listJenjangPerancang = [0 => 'Kosong'];
         if($getJenjangPerancang) {
-            foreach($getJenjangPerancang as $list) {
-                $listJenjangPerancang[$list->id] = $list->name;
+            foreach($getJenjangPerancang as $key => $value) {
+                $listJenjangPerancang[$key] = $value;
             }
         }
 
-        $getPangkat = Pangkat::get();
+        $getPangkat = Pangkat::where('status', 1)->pluck('name', 'id')->toArray();
         $listPangkat = [0 => 'Kosong'];
         if($getPangkat) {
-            foreach($getPangkat as $list) {
-                $listPangkat[$list->id] = $list->name;
+            foreach($getPangkat as $key => $value) {
+                $listPangkat[$key] = $value;
             }
         }
 
-        $getUnitKerja = UnitKerja::get();
+        $getUnitKerja = UnitKerja::where('status', 1)->pluck('name', 'id')->toArray();
         $listUnitKerja = [0 => 'Kosong'];
         if($getUnitKerja) {
-            foreach($getUnitKerja as $list) {
-                $listUnitKerja[$list->id] = $list->name;
+            foreach($getUnitKerja as $key => $value) {
+                $listUnitKerja[$key] = $value;
             }
         }
 
@@ -144,6 +146,7 @@ class PerancangController extends _CrudController
         $this->data['listSet']['unit_kerja_id'] = $listUnitKerja;
         $this->data['listSet']['status'] = get_list_status();
         $this->data['listSet']['gender'] = get_list_gender();
+        $this->data['listSet']['upline_id'] = Users::where('atasan', 1)->pluck('name', 'id')->toArray();
 
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.perancang.list';
         //$this->passingData = Users::where('role_id',3);
@@ -214,13 +217,14 @@ class PerancangController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat, D.name as golongan, E.name as jenjang_perancang, F.name as unit_kerja, B.name AS role, users.status')
+        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
             ->where('users.perancang', '=', 1)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
             ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
             ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
             ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
             ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id');
+
 
 
         $dataTables = $dataTables->eloquent($builder)
@@ -307,6 +311,7 @@ class PerancangController extends _CrudController
         $perancang->status = $getStatus;
         $perancang->gender = $getGender;
         $perancang->role_id = 3;
+        $perancang->perancang = 1;
         $perancang->save();
 
         if($this->request->ajax()){
