@@ -52,6 +52,13 @@ class TimPenilaiController extends _CrudController
                 'type' => 'select2',
                 'lang' => 'general.unit_kerja'
             ],
+            'status' => [
+                'validate' => [
+                    'create' => 'required',
+                    'edit' => 'required'
+                ],
+                'type' => 'select'
+            ],
             'action' => [
                 'create' => 0,
                 'edit' => 0,
@@ -64,29 +71,6 @@ class TimPenilaiController extends _CrudController
             $request, 'general.tim_penilai', 'tim_penilai', 'Users', 'tim_penilai',
             $passingData
         );
-        $getGolongan = Golongan::get();
-        $listGolongan = [0 => 'Kosong'];
-        if($getGolongan) {
-            foreach($getGolongan as $list) {
-                $listGolongan[$list->id] = $list->name;
-            }
-        }
-
-        $getJenjangPerancang = JenjangPerancang::get();
-        $listJenjangPerancang = [0 => 'Kosong'];
-        if($getJenjangPerancang) {
-            foreach($getJenjangPerancang as $list) {
-                $listJenjangPerancang[$list->id] = $list->name;
-            }
-        }
-
-        $getPangkat = Pangkat::get();
-        $listPangkat = [0 => 'Kosong'];
-        if($getPangkat) {
-            foreach($getPangkat as $list) {
-                $listPangkat[$list->id] = $list->name;
-            }
-        }
 
         $getUnitKerja = UnitKerja::get();
         $listUnitKerja = [0 => 'Kosong'];
@@ -96,9 +80,6 @@ class TimPenilaiController extends _CrudController
             }
         }
 
-        $this->data['listSet']['golongan_id'] = $listGolongan;
-        $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
-        $this->data['listSet']['pangkat_id'] = $listPangkat;
         $this->data['listSet']['unit_kerja_id'] = $listUnitKerja;
         $this->data['listSet']['status'] = get_list_status();
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.tim_penilai.list';
@@ -113,12 +94,9 @@ class TimPenilaiController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat, D.name as golongan, E.name as jenjang_perancang, F.name as unit_kerja, B.name AS role, users.status')
+        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, F.name as unit_kerja_id, B.name AS role, users.status')
             ->where('users.tim_penilai', '=', 1)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
-            ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
-            ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
-            ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
             ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id');
 
 
@@ -183,10 +161,7 @@ class TimPenilaiController extends _CrudController
         $getUsername = $this->request->get('username');
         $getName = $this->request->get('name');
         $getEmail = $this->request->get('email');
-        $getPangkat = $this->request->get('pangkat');
-        $getGolongan = $this->request->get('golongan');
-        $getJenjangPerancang = $this->request->get('jenjang_perancang');
-        $getUnitKerja = $this->request->get('unit_kerja');
+        $getUnitKerja = $this->request->get('unit_kerja_id');
         $getStatus = $this->request->get('status');
 
         $timpenilai = new Users();
@@ -194,12 +169,10 @@ class TimPenilaiController extends _CrudController
         $timpenilai->username = $getUsername;
         $timpenilai->email = $getEmail;
         $timpenilai->password = Hash::make('123');
-        $timpenilai->pangkat_id = $getPangkat;
-        $timpenilai->golongan_id = $getGolongan;
-        $timpenilai->jenjang_perancang_id = $getJenjangPerancang;
         $timpenilai->unit_kerja_id = $getUnitKerja;
         $timpenilai->status = $getStatus;
-        $timpenilai->role_id = 3;
+        $timpenilai->role_id = 5;
+        $timpenilai->tim_penilai = 1;
         $timpenilai->save();
 
         if($this->request->ajax()){

@@ -402,7 +402,7 @@ if ( ! function_exists('listAllMenu')) {
                     'admin.staff.',
                     'admin.atasan.',
                     'admin.perancang.',
-                    'admin.sekretariat.',
+                    'admin.seketariat.',
                     'admin.tim_penilai.',
                 ],
                 'type' => 2,
