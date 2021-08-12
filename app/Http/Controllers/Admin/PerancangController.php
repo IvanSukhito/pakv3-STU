@@ -105,19 +105,12 @@ class PerancangController extends _CrudController
             $request, 'general.perancang', 'perancang', 'Users', 'perancang',
             $passingData
         );
-        $getUpline = User::get();
-        $listUpline = [0 => 'Kosong'];
-        if($getUpline) {
-            foreach($getUpline as $list) {
-                $listUpline[$list->id] = $list->upline_id;
-            }
-        }
 
-        $getGolongan = Golongan::get();
+        $getGolongan = Golongan::where('status', 1)->pluck('name', 'id')->toArray();
         $listGolongan = [0 => 'Kosong'];
         if($getGolongan) {
-            foreach($getGolongan as $list) {
-                $listGolongan[$list->id] = $list->name;
+            foreach($getGolongan as $key => $value) {
+                $listGolongan[$key] = $value;
             }
         }
 
@@ -145,7 +138,6 @@ class PerancangController extends _CrudController
             }
         }
 
-        $this->data['listSet']['upline_id'] = $listUpline;
         $this->data['listSet']['golongan_id'] = $listGolongan;
         $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
         $this->data['listSet']['pangkat_id'] = $listPangkat;
@@ -157,6 +149,62 @@ class PerancangController extends _CrudController
         //$this->passingData = Users::where('role_id',3);
     }
 
+    public function create()
+    {
+        $this->callPermission();
+
+        $data = $this->data;
+
+        $data['viewType'] = 'create';
+        $data['formsTitle'] = __('general.title_create', ['field' => $data['thisLabel']]);
+        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
+
+        $data['listSet']['upline_id'] = Users::where('atasan', 1)->pluck('name', 'id')->toArray();
+
+        return view($this->listView[$data['viewType']], $data);
+    }
+
+    public function edit($id)
+    {
+        $this->callPermission();
+
+        $getData = $this->crud->show($id);
+        if (!$getData) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $data = $this->data;
+
+        $data['viewType'] = 'edit';
+        $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
+        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
+        $data['data'] = $getData;
+
+        $data['listSet']['upline_id'] = Users::where('id', '!=', $id)->where('atasan', 1)->pluck('name', 'id')->toArray();
+
+        return view($this->listView[$data['viewType']], $data);
+    }
+
+    public function show($id)
+    {
+        $this->callPermission();
+
+        $getData = $this->crud->show($id);
+        if (!$getData) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $data = $this->data;
+
+        $data['viewType'] = 'show';
+        $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
+        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
+        $data['data'] = $getData;
+
+        $data['listSet']['upline_id'] = Users::where('id', '!=', $id)->where('atasan', 1)->pluck('name', 'id')->toArray();
+
+        return view($this->listView[$data['viewType']], $data);
+    }
 
     public function dataTable()
     {
