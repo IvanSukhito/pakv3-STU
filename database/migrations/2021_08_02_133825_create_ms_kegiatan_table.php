@@ -17,6 +17,7 @@ class CreateMsKegiatanTable extends Migration
             $table->id();
             $table->bigInteger('permen_id')->default(0);
             $table->bigInteger('parent_id')->default(0);
+            $table->bigInteger('top_id')->default(0);
             $table->text('name');
             $table->float('ak', 10, 3)->nullable();
             $table->string('satuan')->nullable();

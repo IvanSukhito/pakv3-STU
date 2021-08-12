@@ -18,6 +18,7 @@ class CreateTxKegiatanTable extends Migration
             $table->unsignedBigInteger('user_id')->default(0);
             $table->unsignedBigInteger('upline_id')->default(0);
             $table->unsignedBigInteger('ms_kegiatan_id')->default(0);
+            $table->unsignedBigInteger('top_id')->default(0);
             $table->unsignedBigInteger('permen_id')->default(0);
             $table->unsignedBigInteger('user_jenjang_id')->default(0);
             $table->unsignedBigInteger('kegiatan_jenjang_id')->default(0);

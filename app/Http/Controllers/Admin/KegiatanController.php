@@ -105,7 +105,7 @@ class KegiatanController extends _CrudController
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getKegiatanUser($userId);
+        $getData = $getNewLogic->getKegiatanUser($userId, '', [1,2]);
 
         $dataPermen = [];
         $dataKegiatan = [];

@@ -12,6 +12,7 @@ class MsKegiatan extends Model
         'id',
         'permen_id',
         'parent_id',
+        'top_id',
         'name',
         'ak',
         'satuan',

@@ -14,6 +14,7 @@ class Kegiatan extends Model
         'upline_id',
         'ms_kegiatan_id',
         'permen_id',
+        'top_id',
         'tanggal',
         'judul',
         'deskripsi',
