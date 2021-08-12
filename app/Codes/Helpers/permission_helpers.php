@@ -545,17 +545,8 @@ if ( ! function_exists('listAvailablePermission'))
             'tim_penilai',
             'instansi',
             'pangkat',
-            //'kegiatan',
-            'persetujuan-surat-pernyataan',
-            'surat-pernyataan',
-            //'dupak',
-            //'bapak',
-            //'staff',
-            //'gender',
-            //'user-registered',
             'golongan',
             'jenjang-perancang',
-            //'ms-kegiatan',
             'pendidikan',
             'unit-kerja',
             'role',
@@ -577,9 +568,41 @@ if ( ! function_exists('listAvailablePermission'))
                 'show' => [
                     'admin.'.$keyPermission.'.show'
                 ],
-                'destroy' => [
-                    'admin.'.$keyPermission.'.destroy'
-                ]
+//                'destroy' => [
+//                    'admin.'.$keyPermission.'.destroy'
+//                ]
+            ];
+        }
+
+        foreach ([
+            'persetujuan-surat-pernyataan',
+                 ] as $keyPermission) {
+            $listPermission[$keyPermission] = [
+                'list' => [
+                    'admin.'.$keyPermission.'.index',
+                    'admin.'.$keyPermission.'.dataTable'
+                ],
+                'edit' => [
+                    'admin.'.$keyPermission.'.edit',
+                    'admin.'.$keyPermission.'.update'
+                ],
+                'show' => [
+                    'admin.'.$keyPermission.'.show'
+                ],
+            ];
+        }
+
+        foreach ([
+            'surat-pernyataan',
+                 ] as $keyPermission) {
+            $listPermission[$keyPermission] = [
+                'list' => [
+                    'admin.'.$keyPermission.'.index',
+                    'admin.'.$keyPermission.'.dataTable'
+                ],
+                'show' => [
+                    'admin.'.$keyPermission.'.show'
+                ],
             ];
         }
 
