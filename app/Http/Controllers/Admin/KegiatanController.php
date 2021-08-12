@@ -46,7 +46,7 @@ class KegiatanController extends _CrudController
             ],
             'ms_kegiatan_id' => [
                 'list' => 0,
-                'show' => 0,
+                'show' => 1,
                 'edit' => 0,
                 'type' => 'select2',
                 'lang' => 'general.ms_kegiatan',
@@ -85,8 +85,11 @@ class KegiatanController extends _CrudController
             $passingData
         );
 
+
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.list';
+
         $this->listView['create'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms_create';
+        $this->listView['edit'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.forms_edit';
         $this->listView['submit_kegiatan'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.submit_kegiatan';
 
         $this->data['listSet']['status'] = get_list_status();
@@ -167,6 +170,38 @@ class KegiatanController extends _CrudController
         $data['dataKegiatan'] = $getData['data'];
 
         return view($this->listView[$data['viewType']], $data);
+    }
+    public function edit($id){
+        $this->callPermission();
+
+
+        //dd($getData->id);
+        $userId = session()->get('admin_id');
+
+        $getUser = Users::where('id', $userId)->first();
+
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+        $judul = Kegiatan::select('judul')->where('user_id',$userId)->where('status',1)->groupBy('judul')->get();
+
+
+        $dataKegiatan = Kegiatan::where('id', $id)->get();
+        //dd($data);
+
+
+        $data = $this->data;
+
+
+        $data['viewType'] = 'edit';
+        $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
+        $data['dataUser'] = $getUser;
+        $data['dataKegiatan'] = $dataKegiatan;
+        $data['judul'] = $judul;
+        $data['data'] = $this->crud->show($id);
+
+
+
+        return view($this->listView['edit'], $data);
+
     }
 
     public function store()

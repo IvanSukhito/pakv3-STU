@@ -112,6 +112,47 @@
 
         </div>
     </div>
+
+    <!--Modal-->
+    <div id="kegiatanModal" class="modal" role="dialog" data-backdrop="static" data-width="100%" data-keyboard="false">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" id="close" data-dismiss="modal">×</button>
+                </div>
+                <form method="post" action="#" id="#" >
+                    @csrf
+                    <div class="modal-body" id="modal-body">
+                    <input type="hidden" id="id" name="id">
+                        <div class="form-group">
+
+                            <table >
+                                <thead>
+                                    <tr>
+                                    <th>Tanggal</th>
+                                    <th>Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <td id="tanggal" width="50%"></td>
+                                    <td id="button-edit"width="10%"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                </form>
+            </div>
+
+        </div>
+    </div>
 @stop
 
 @section('script-bottom')
@@ -120,10 +161,9 @@
 
         let dataFilter = {!! json_encode($dataFilterKegiatan) !!};
 
-        $(document).ready(function() {
-            // $('.all-row').hide();
-            // changePermen();
-        });
+
+
+
 
         function changePermen() {
             let getPermen = $('#permen').val();
@@ -157,6 +197,47 @@
                 "separator": " | "
             }
         });
+
+        $('.click-kegiatan').click(function () {
+
+            let myId = $(this).data('id');
+            $('#kegiatanModal').modal('show');
+
+           //var a =  document.getElementById("kegiatan_hidden_"+myId);
+            var a = $('#kegiatan_hidden_'+myId).attr('value');
+            console.log(a);
+            var id = []
+            var tanggal = []
+            try {
+                //data = JSON.parse(a).reduce((acc, val)=>[...acc, val.id, val.tanggal], [])
+              id= JSON.parse(a).reduce((acc, val)=>[...acc, val.id], [])
+              tanggal= JSON.parse(a).reduce((acc, val)=>[...acc, val.tanggal], [])
+            } catch (e){
+              console.log("Invalid json")
+            }
+
+            let inputTanggal = "";
+            for (let i=0; i < tanggal.length; i++){
+                inputTanggal +=
+                '<input type="text" name="tanggal" value="'+tanggal[i]+'"  class="form-control" autocomplete="off" readonly>';
+            }
+            $("#tanggal").prepend(inputTanggal);
+            let inputID = "";
+            for (let i=0; i < id.length; i++){
+              var idEdit = id[i];
+            inputID +=
+            '<a href="kegiatan/'+id[i]+'/edit" class="form-control" title="@lang('general.edit')">'+
+                            '<i class="fa fa-pencil"></i>'+
+                            '<span class="d-none d-md-inline"> @lang('general.edit')</span> </a>';
+            }
+            $("#button-edit").prepend(inputID);
+            clearAll();
+
+        });
+        function clearAll(){
+
+        }
+//
 
     </script>
 @stop
