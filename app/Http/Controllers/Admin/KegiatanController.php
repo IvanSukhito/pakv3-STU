@@ -627,19 +627,35 @@ class KegiatanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getStaff = Users::where('id', $userId)->first();
+        $getUser = Users::where('id', $userId)->first();
+        if ($getUser->upline_id <= 0) {
+            session()->flash('message', __('general.error_no_upline'));
+            session()->flash('message_alert', 1);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
 
         $getDateRange = $this->request->get('daterange1');
         $getSplitDate = explode(' | ', $getDateRange);
         $getDateStart = date('Y-m-d', strtotime($getSplitDate[0]));
         $getDateEnd = isset($getSplitDate[1]) ? date('Y-m-d', strtotime($getSplitDate[1])) : date('Y-m-d', strtotime($getSplitDate[0]));
 
-        Kegiatan::where('user_id', $userId)->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)->update([
+        $getKegiatan = Kegiatan::where('user_id', $userId)->where('status', 1)
+            ->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)
+            ->get();
+
+        $saveDetails = [];
+        foreach ($getKegiatan as $list) {
+
+        }
+
+        Kegiatan::where('user_id', $userId)->where('status', 1)
+            ->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)
+            ->update([
             'status' => 2
         ]);
 
         if ($this->request->ajax()) {
-            return response()->json(['result' => 1, 'message' => __('Kegiatan berhasil di ajukan')]);
+            return response()->json(['result' => 1, 'message' => __('Surat Pernyataan berhasil di ajukan')]);
         } else {
             session()->flash('message', __('Kegiatan berhasil di ajukan'));
             session()->flash('message_alert', 2);

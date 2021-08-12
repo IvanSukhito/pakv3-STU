@@ -222,7 +222,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                 }
 
                 if (count($listIds) > 0) {
-                    $addLabel = '<input type="hidden" id="kegiatan_hidden_'.$getId.'" value="'.json_encode($listIds).'"/>';
+                    $addLabel = '<input type="hidden" id="kegiatan_hidden_'.$getId.'" value=\''.json_encode($listIds).'\'/>';
                 }
 
                 $getNewAk = $getKegiatanAk;
