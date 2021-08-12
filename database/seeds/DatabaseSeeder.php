@@ -14,6 +14,6 @@ class DatabaseSeeder extends Seeder
         $this->call(\Database\Seeders\InstallingSeeder::class);
         $this->call(\Database\Seeders\SetupSeeder::class);
         $this->call(\Database\Seeders\KegiatanSeeder::class);
-       
+
     }
 }
