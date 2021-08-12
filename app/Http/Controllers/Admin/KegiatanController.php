@@ -109,11 +109,13 @@ class KegiatanController extends _CrudController
 
         $dataPermen = [];
         $dataKegiatan = [];
+        $dataTopKegiatan = [];
         $getFilterKegiatan = [];
 
         if (count($getData['data']) > 0) {
             $dataPermen = $getData['permen'];
             $dataKegiatan = $getData['data'];
+            $dataTopKegiatan = $getData['top_kegiatan'];
         }
 
         $data = $this->data;
@@ -123,6 +125,7 @@ class KegiatanController extends _CrudController
         $data['dataPermen'] = $dataPermen;
         $data['dataFilterKegiatan'] = $getFilterKegiatan;
         $data['dataKegiatan'] = $dataKegiatan;
+        $data['dataTopKegiatan'] = $dataTopKegiatan;
 
         return view($this->listView['index'], $data);
     }
@@ -598,11 +601,13 @@ class KegiatanController extends _CrudController
 
         $dataPermen = [];
         $dataKegiatan = [];
+        $dataTopKegiatan = [];
         $getFilterKegiatan = [];
 
         if (count($getData['data']) > 0) {
             $dataPermen = $getData['permen'];
             $dataKegiatan = $getData['data'];
+            $dataTopKegiatan = $getData['top_kegiatan'];
         }
 
         $data = $this->data;
@@ -616,6 +621,7 @@ class KegiatanController extends _CrudController
         $data['dataPermen'] = $dataPermen;
         $data['dataFilterKegiatan'] = $getFilterKegiatan;
         $data['dataKegiatan'] = $dataKegiatan;
+        $data['dataTopKegiatan'] = $dataTopKegiatan;
 
         return view($this->listView['submit_kegiatan'], $data);
 

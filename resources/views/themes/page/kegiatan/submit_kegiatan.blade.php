@@ -70,14 +70,24 @@ else {
                 <div class="card-body" style="overflow-x: auto">
 
                     @if(isset($dataKegiatan))
-                        @foreach($dataKegiatan as $getPermen => $listJudul)
-                            @foreach($listJudul as $getJudul => $listKegiatan)
+                        @foreach($dataKegiatan as $getPermen => $listTopKegiatan)
+                            @foreach($listTopKegiatan as $getTop => $listJudul)
+                                <?php
+                                $getTopKegiatan = isset($dataTopKegiatan[$getTop]) ? $dataTopKegiatan[$getTop] : false;
+                                ?>
 
                                 <div class="card card-permen card-permen-<?php echo $getPermen ?>">
+                                    <div class="card-header"><h3>{!! $getTopKegiatan['name'] !!}</h3></div>
+
+                                    @foreach($listJudul as $getJudul => $listKegiatan)
+
                                     <div class="card-header"><h3>{!! $getJudul !!}</h3></div>
                                     <div class="card-body">
                                         {!! view_kegiatan_v3($listKegiatan, $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
                                     </div>
+
+                                    @endforeach
+
                                 </div>
 
                             @endforeach

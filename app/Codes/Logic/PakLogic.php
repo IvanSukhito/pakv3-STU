@@ -122,7 +122,11 @@ class PakLogic
 
             $getMsKegiatan = MsKegiatan::where('permen_id', $permenIds)->get();
             $temp = [];
+            $getListTopKegiatan = [];
             foreach ($getMsKegiatan->toArray() as $list) {
+                if ($list['parent_id'] <= 0) {
+                    $getListTopKegiatan[$list['id']] = $list;
+                }
                 $temp[$list['id']] = $list;
             }
 
@@ -136,7 +140,8 @@ class PakLogic
 
             return [
                 'data' => $this->getParentTreeKegiatan($getMsKegiatan, $getJudul, $getDataKegiatan),
-                'permen' => $listPermen
+                'permen' => $listPermen,
+                'top_kegiatan' => $getListTopKegiatan
             ];
 
         }
