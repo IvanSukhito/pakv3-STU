@@ -9,6 +9,7 @@ use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
 use App\Codes\Models\Permen;
 use App\Codes\Models\SuratPernyataan;
+use App\Codes\Models\SuratPernyataanKegiatan;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -678,7 +679,7 @@ class KegiatanController extends _CrudController
             ];
         }
 
-        MsKegiatan::insert($saveDetails);
+        SuratPernyataanKegiatan::insert($saveDetails);
 
         Kegiatan::where('user_id', $userId)->where('status', 1)
             ->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)
