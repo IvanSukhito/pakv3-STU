@@ -169,11 +169,13 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
             $getBukti = '';
             $getChilds = $list['have_child'] == 1 ? $list['childs'] : [];
             $addClass = $parentClass.' kegiatan-'.$getId;
+            $addLabel = '';
 
             $addHtmlAk = '<td width="15%" colspan="3">&nbsp;</td>';
             if ($getAk > 0) {
 
                 $getName = '<a href="#" class="click-kegiatan" data-id="'.$getId.'">'.$getName.'</a>';
+                $listIds = [];
 
                 $getDataInput = $list['data'] ?? false;
                 if ($getDataInput) {
@@ -181,22 +183,42 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
 
                         $getDokument = json_decode($listInput['dokument_pendukung'], true);
                         $getDokumentFisik = json_decode($listInput['dokument_fisik'], true);
+                        $getListDokument = [];
+                        $getListDokumentFisik = [];
                         if ($getDokument) {
                             foreach ($getDokument as $listDokument) {
+                                $getListDokument[] = [
+                                    'url' => asset($listDokument['location']),
+                                    'name' => $listDokument['name']
+                                ];
                                 $getBukti .= strlen($getBukti) > 1 ? ', <a href="'.asset($listDokument['location']).'">'.$listDokument['name'].'</a>' : '<a href="'.asset($listDokument['location']).'">'.$listDokument['name'].'</a>';
                             }
                         }
                         if ($getDokumentFisik) {
                             foreach ($getDokumentFisik as $listDokument) {
+                                $getListDokumentFisik[] = [
+                                    'url' => asset($listDokument['location']),
+                                    'name' => $listDokument['name']
+                                ];
                                 $getBukti .= strlen($getBukti) > 1 ? ', <a href="'.asset($listDokument['location']).'">'.$listDokument['name'].'</a>' : '<a href="'.asset($listDokument['location']).'">'.$listDokument['name'].'</a>';
                             }
                         }
 
                         $getTanggal .= strlen($getTanggal) > 1 ? ', '.$listInput['tanggal'] : $listInput['tanggal'];
 
+                        $listIds[] = [
+                            'id' => $listInput['id'],
+                            'tanggal' => $listInput['tanggal'],
+                            'dokument' => $getListDokument,
+                            'dokument_fisik' => $getListDokumentFisik
+                        ];
+
                     }
                 }
 
+                if (count($listIds) > 0) {
+                    $addLabel = '<input type="hidden" id="kegiatan_hidden_'.$getId.'" value="'.json_encode($listIds).'"/>';
+                }
 
                 $getNewAk = calculate_jenjang($jenjangPerancangId, $getJenjangKegiatan, $listJenjangPerancang, $getAk);
                 if ($getAk != $getNewAk) {
@@ -218,7 +240,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
             $newDeep = $getDeep - $deep;
 
             $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
-                    <td colspan="'.$newDeep.'">'.$getName.'</td>
+                    <td colspan="'.$newDeep.'">'.$addLabel.$getName.'</td>
                     <td width="10%" class="text-center">'.$getTanggal.'</td>
                     '.$addHtmlAk.'
                     <td width="10%" class="text-center">'.$getSatuan.'</td>
