@@ -360,6 +360,9 @@ class KegiatanController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
+      
+     
+        
         $getListCollectData = collectPassingData($this->passingData, $viewType);
         $validate = $this->setValidateData($getListCollectData, $viewType, $id);
         if (count($validate) > 0)
@@ -373,10 +376,98 @@ class KegiatanController extends _CrudController
             }
         }
 
+        $userId = session()->get('admin_id');
+        $getUser = Users::where('id', $userId)->first();
+        if ($getUser->upline_id <= 0) {
+            if ($this->request->ajax()) {
+                return response()->json(['result' => 2, 'message' => __('general.error_no_upline')]);
+            }
+            else {
+                return redirect()->back()->withInput()->withErrors(['message' => __('general.error_no_upline')]);
+            }
+        }
+    
+        $userNip = $getUser->username;
+
         $data = $this->getCollectedData($getListCollectData, $viewType, $data, $getData);
 
-//        $data['updated_by'] = session()->get('admin_name');
+        $getDataPermen = $getData->permen_id;
+        $msKegiatanId = $getData->ms_kegiatan_id;
+        $getTanggal = $data['tanggal']  ;
+        
+           $getPermen = Permen::where('id', $getDataPermen)->where('tanggal_start', '<=', $getTanggal)
+        ->where('tanggal_end', '>=', $getTanggal)->first();
 
+        if (!$getPermen) {
+            if ($this->request->ajax()) {
+                return response()->json(
+                    ['result' => 2, 'message' => __('Tanggal Permen sudah lewat'), 'params' => $getTanggal, 'permen' => $getPermen]
+                );
+            }
+            else {
+                session()->flash('message', __('general.error_permen'));
+                session()->flash('message_alert', 1);
+                return redirect()->back()->withInput();
+            }
+        }
+
+//        $data['updated_by'] = session()->get('admin_name');
+            //Dokumen
+            
+         
+       
+        $userFolder = 'user_' . preg_replace("/[^A-Za-z0-9?!]/", '', $userNip);
+        $todayDate = date('Y-m-d');
+        $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
+
+        $dokument = $this->request->file('dokument');
+        $dokumentFisik = $this->request->file('dokument_fisik');
+
+        $totalDokument = [];
+        $totalDokumentFisik = [];
+
+        if($dokument != null){foreach ($dokument as $listDoc) {
+            if ($listDoc->getError() == 0) {
+                $getFileName = $listDoc->getClientOriginalName();
+                $ext = explode('.', $getFileName);
+                $fileName = reset($ext);
+                $ext = end($ext);
+                $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
+                $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
+                $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
+                $listDoc->move($destinationPath, $setFileName);
+
+                $totalDokument[] = [
+                    'name' => $setFileName,
+                    'location' => $destinationLink
+                ];
+                $data['dokument_pendukung'] = json_encode($totalDokument);
+            }
+        }
+    }
+
+        if($dokumentFisik != null){foreach ($dokumentFisik as $listDoc) {
+            if ($listDoc->getError() == 0) {
+                $getFileName = $listDoc->getClientOriginalName();
+                $ext = explode('.', $getFileName);
+                $fileName = reset($ext);
+                $ext = end($ext);
+                $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
+                $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
+                $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
+                $listDoc->move($destinationPath, $setFileName);
+
+                $totalDokumentFisik[] = [
+                    'name' => $setFileName,
+                    'location' => $destinationLink
+                ];
+
+                $data['dokument_fisik'] = json_encode($totalDokumentFisik);
+            }
+        }
+        }
+       
+     
         $getData = $this->crud->update($data, $id);
 
         $id = $getData->id;
