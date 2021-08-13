@@ -126,6 +126,7 @@ class KegiatanController extends _CrudController
         $data['dataUser'] = $getUser;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;
+
         $data['dataFilterKegiatan'] = $getFilterKegiatan;
         $data['dataKegiatan'] = $dataKegiatan;
         $data['dataTopKegiatan'] = $dataTopKegiatan;
@@ -322,6 +323,7 @@ class KegiatanController extends _CrudController
 
         $data['user_id'] = $userId;
         $data['user_name'] = $getUser->name;
+        $data['top_id'] = $getMsKegiatan->top_id;
         $data['user_jenjang_id'] = $getUser->jenjang_perancang_id;
         $data['upline_id'] = $getUser->upline_id;
         $data['upline_name'] = $getAtasan ? $getAtasan->name : '';
