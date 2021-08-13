@@ -205,10 +205,10 @@
             $('#kegiatanModal').modal('show');
 
            //var a =  document.getElementById("kegiatan_hidden_"+myId);
-            var a = $('#kegiatan_hidden_'+myId).attr('value');
+            let a = $('#kegiatan_hidden_'+myId).attr('value');
             console.log(a);
-            var id = []
-            var tanggal = []
+            let id = []
+            let tanggal = []
             try {
                 //data = JSON.parse(a).reduce((acc, val)=>[...acc, val.id, val.tanggal], [])
               id= JSON.parse(a).reduce((acc, val)=>[...acc, val.id], [])
@@ -222,23 +222,19 @@
                 inputTanggal +=
                 '<input type="text" name="tanggal" value="'+tanggal[i]+'"  class="form-control" autocomplete="off" readonly>';
             }
-            $("#tanggal").prepend(inputTanggal);
+            $("#tanggal").html(inputTanggal);
             let inputID = "";
             for (let i=0; i < id.length; i++){
-              var idEdit = id[i];
+            
             inputID +=
             '<a href="kegiatan/'+id[i]+'/edit" class="form-control" title="@lang('general.edit')">'+
                             '<i class="fa fa-pencil"></i>'+
                             '<span class="d-none d-md-inline"> @lang('general.edit')</span> </a>';
             }
-            $("#button-edit").prepend(inputID);
-            clearAll();
+            $("#button-edit").html(inputID);
+
 
         });
-        function clearAll(){
-
-        }
-//
 
     </script>
 @stop
