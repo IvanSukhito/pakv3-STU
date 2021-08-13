@@ -57,7 +57,6 @@
                                 $getTopKegiatan = isset($dataTopKegiatan[$getTop]) ? $dataTopKegiatan[$getTop] : false;
                                 ?>
 
-                </div>
                                 <div class="card card-permen card-permen-<?php echo $getPermen ?>">
 
                                     <div class="card-header"><h3>{!! $getTopKegiatan ? $getTopKegiatan['name'] : '' !!}</h3></div>
