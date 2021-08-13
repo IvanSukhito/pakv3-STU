@@ -166,8 +166,8 @@ else {
             $('.dropify').dropify();
             $("#judul").select2({
                 tags: true
-            });
-
+            });           
+             
         });
 
 
@@ -248,90 +248,7 @@ else {
 
         }
 
-        $('#storeModal').on('submit', function(e) {
-            e.preventDefault();
-
-            let tanggal = $('#tanggal').val();
-            let judul = $('#judul').val();
-            let validateOk = 1;
-
-            if (validateOk === 1) {
-                let formData = new FormData();
-                formData.append('ms_kegiatan_id', $('#msKegiatanId').val());
-                formData.append('tanggal', tanggal);
-                formData.append('judul', judul);
-
-                $.each($('input[name="dokument[]"]'), function(index, item) {
-                    formData.append('dokument[]', $(item).prop('files')[0]);
-                });
-                $.each($('input[name="dokument_fisik[]"]'), function(index, item) {
-                    formData.append('dokument_fisik[]', $(item).prop('files')[0]);
-                });
-
-                let link = '{{ route('admin.kegiatan.store') }}';
-                let linkSplit = link.split('/');
-                let url = '';
-                for(let i=3; i<linkSplit.length; i++) {
-                    url += '/'+linkSplit[i];
-                }
-
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    dataType: 'text',
-                    data: formData,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    headers: {
-                        'X-CSRF-TOKEN': jQuery('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(result) {
-                        if(typeof result !== "object") {
-                            result = JSON.parse(result);
-                        }
-
-                        if (parseInt(result.result) === 1) {
-
-                            $('#kegiatanModal').modal('hide');
-
-                            $.notify({
-                                message: result.message
-                            },{
-                                type: 'success',
-                                placement: {
-                                    from: "bottom",
-                                    align: "right"
-                                },
-                            });
-
-                        }
-                        else {
-                            $.notify({
-                                message: result.message
-                            },{
-                                type: 'danger',
-                                placement: {
-                                    from: "bottom",
-                                    align: "right"
-                                },
-                            });
-                        }
-
-                    },
-                    complete: function(){
-
-                    }
-                });
-
-            }
-        });
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+      
 
     </script>
 @stop

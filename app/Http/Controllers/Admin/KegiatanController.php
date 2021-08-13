@@ -585,6 +585,9 @@ class KegiatanController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
+      
+     
+        
         $getListCollectData = collectPassingData($this->passingData, $viewType);
         $validate = $this->setValidateData($getListCollectData, $viewType, $id);
         if (count($validate) > 0)
@@ -599,6 +602,25 @@ class KegiatanController extends _CrudController
         }
 
         $data = $this->getCollectedData($getListCollectData, $viewType, $data, $getData);
+
+        $getDataPermen = $getData->permen_id;
+        $getTanggal = $data['tanggal']  ;
+        
+           $getPermen = Permen::where('id', $getDataPermen)->where('tanggal_start', '<=', $getTanggal)
+        ->where('tanggal_end', '>=', $getTanggal)->first();
+
+        if (!$getPermen) {
+            if ($this->request->ajax()) {
+                return response()->json(
+                    ['result' => 2, 'message' => __('Tanggal Permen sudah lewat'), 'params' => $getTanggal, 'permen' => $getPermen]
+                );
+            }
+            else {
+                session()->flash('message', __('general.error_permen'));
+                session()->flash('message_alert', 1);
+                return redirect()->back()->withInput();
+            }
+        }
 
 //        $data['updated_by'] = session()->get('admin_name');
 

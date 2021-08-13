@@ -567,5 +567,6 @@ return [
     'resolution_image_twitter' => 'Resolution 1200 x 630',
     'date_has_passed' => 'Maaf Tanggal Kegiatan telah lewat dari tanggal berakhir nya PERMEN, Dimohon cek kembali',
     'error_no_upline' => 'Maaf, Perancang tidak memiliki atasan',
+    'error_permen' => 'Tanggal Permen sudah lewat'
 
 ];
