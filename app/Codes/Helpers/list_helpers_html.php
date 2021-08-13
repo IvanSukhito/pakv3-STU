@@ -127,11 +127,12 @@ if ( ! function_exists('view_kegiatan_v3')) {
         $html = '<table class="table table-kegiatan table-bordered table-striped">
                     <thead>
                     <tr>
-                    <th width="50%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
+                    <th width="45%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
                     <th width="10%" class="text-center">Tanggal</th>
                     <th width="15%" colspan="3" class="text-center">AK</th>
                     <th width="10%" class="text-center">Satuan</th>
                     <th width="15%" class="text-center">Bukti Keterangan</th>
+                    <th width="5%" class="text-center">Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -163,10 +164,10 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
             $getId = $list['id'];
             $getName = $list['name'];
             $getAk = $list['ak'] > 0 ? $list['ak'] : '';
-            $getJenjangKegiatan = $list['jenjang_perancang_id'];
             $getSatuan = strlen($list['satuan']) > 0 ? $list['satuan'] : '';
             $getTanggal = '';
             $getBukti = '';
+            $getStatus = '';
             $getChilds = $list['have_child'] == 1 ? $list['childs'] : [];
             $addClass = $parentClass.' kegiatan-'.$getId;
             $addLabel = '';
@@ -182,9 +183,11 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                 if ($getDataInput) {
                     foreach ($getDataInput as $listInput) {
 
+                        $getListStatus = get_list_kegiatan();
                         $getKegiatanAk += $listInput['kredit'];
                         $getDokument = json_decode($listInput['dokument_pendukung'], true);
                         $getDokumentFisik = json_decode($listInput['dokument_fisik'], true);
+                        $getStatus = $getListStatus[$listInput['status']] ?? '-';
                         $getListDokument = [];
                         $getListDokumentFisik = [];
                         if ($getDokument) {
@@ -249,7 +252,8 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                     <td width="10%" class="text-center">'.$getTanggal.'</td>
                     '.$addHtmlAk.'
                     <td width="10%" class="text-center">'.$getSatuan.'</td>
-                    <th width="15%" class="text-center">'.$getBukti.'</th>
+                    <td width="15%" class="text-center">'.$getBukti.'</td>
+                    <td width="5%" class="text-center">'.$getStatus.'</td>
                     </tr>';
 
             if ($getChilds) {

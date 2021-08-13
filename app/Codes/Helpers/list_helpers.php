@@ -63,12 +63,16 @@ if ( ! function_exists('get_list_show_hide')) {
     }
 }
 
-if ( ! function_exists('get_list_show_hide')) {
-    function get_list_show_hide()
+if ( ! function_exists('get_list_kegiatan')) {
+    function get_list_kegiatan()
     {
         return [
-            0 => __('general.show'),
-            1 => __('general.hide')
+            1 => __('general.pending'),
+            2 => __('Proses Surat Pernyataan'),
+            3 => __('Proses Surat DUPAK'),
+            4 => __('Proses Surat BAPAK'),
+            5 => __('Proses Surat PAK'),
+            99 => __('general.reject'),
         ];
     }
 }
