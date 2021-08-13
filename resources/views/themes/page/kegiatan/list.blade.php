@@ -138,8 +138,8 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                    <td id="tanggal" width="50%"></td>
-                                    <td id="button-edit"width="10%"></td>
+                                    <td width="80%"><div id="tanggal"></div></td>
+                                    <td width="20%"><div id="button-edit"></div></td>
                                     </tr>
                                 </tbody>
                             </table>
