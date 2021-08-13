@@ -360,9 +360,9 @@ class KegiatanController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
-      
-     
-        
+
+
+
         $getListCollectData = collectPassingData($this->passingData, $viewType);
         $validate = $this->setValidateData($getListCollectData, $viewType, $id);
         if (count($validate) > 0)
@@ -386,7 +386,7 @@ class KegiatanController extends _CrudController
                 return redirect()->back()->withInput()->withErrors(['message' => __('general.error_no_upline')]);
             }
         }
-    
+
         $userNip = $getUser->username;
 
         $data = $this->getCollectedData($getListCollectData, $viewType, $data, $getData);
@@ -394,7 +394,7 @@ class KegiatanController extends _CrudController
         $getDataPermen = $getData->permen_id;
         $msKegiatanId = $getData->ms_kegiatan_id;
         $getTanggal = $data['tanggal']  ;
-        
+
            $getPermen = Permen::where('id', $getDataPermen)->where('tanggal_start', '<=', $getTanggal)
         ->where('tanggal_end', '>=', $getTanggal)->first();
 
@@ -413,9 +413,9 @@ class KegiatanController extends _CrudController
 
 //        $data['updated_by'] = session()->get('admin_name');
             //Dokumen
-            
-         
-       
+
+
+
         $userFolder = 'user_' . preg_replace("/[^A-Za-z0-9?!]/", '', $userNip);
         $todayDate = date('Y-m-d');
         $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
@@ -466,8 +466,8 @@ class KegiatanController extends _CrudController
             }
         }
         }
-       
-     
+
+
         $getData = $this->crud->update($data, $id);
 
         $id = $getData->id;
@@ -561,43 +561,60 @@ class KegiatanController extends _CrudController
             ->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)
             ->get();
 
-        $getKredit = 0;
+        $getTopId = [];
         foreach ($getKegiatan as $list) {
-            $getKredit += $list->kredit;
+            $getTopId[] = $list->top_id;
         }
+
+        $getTopId = array_unique($getTopId);
 
         DB::beginTransaction();
 
-        $suratPernyataan = new SuratPernyataan();
-        $suratPernyataan->save([
-            'user_id' => $userId,
-            'upline_id' => $getUser->upline_id,
-            'supervisor_id' => 0,
-            'dupak_id' => 0,
-            'tanggal' => null,
-            'nomor' => '',
-            'tanggal_mulai' => $getDateStart,
-            'tanggal_akhir' => $getDateEnd,
-            'info_surat_pernyataan' => '',
-            'status' => 1,
-            'approved' => 0,
-            'connect' => 0,
-            'total_kredit' => $getKredit
-        ]);
+        foreach ($getTopId as $topId) {
 
-        $suratPernyataanId = $suratPernyataan->id;
+            $getKredit = 0;
+            foreach ($getKegiatan as $list) {
+                if ($list->top_id == $topId) {
+                    $getKredit += $list->kredit;
+                }
+            }
 
-        $saveDetails = [];
-        foreach ($getKegiatan as $list) {
-            $saveDetails[] = [
-                'surat_pernyataan_id' => $suratPernyataanId,
-                'kegiatan_id' => $list->id,
-                'ms_kegiatan_id' => $list->ms_kegiatan_id,
-                'status' => 1
-            ];
+            $suratPernyataan = new SuratPernyataan();
+            $suratPernyataan->save([
+                'user_id' => $userId,
+                'upline_id' => $getUser->upline_id,
+                'supervisor_id' => 0,
+                'dupak_id' => 0,
+                'tanggal' => null,
+                'nomor' => '',
+                'tanggal_mulai' => $getDateStart,
+                'tanggal_akhir' => $getDateEnd,
+                'info_surat_pernyataan' => '',
+                'status' => 1,
+                'approved' => 0,
+                'connect' => 0,
+                'total_kredit' => $getKredit
+            ]);
+
+            $suratPernyataanId = $suratPernyataan->id;
+
+            $saveDetails = [];
+            foreach ($getKegiatan as $list) {
+                if ($list->top_id == $topId) {
+                    $saveDetails[] = [
+                        'surat_pernyataan_id' => $suratPernyataanId,
+                        'kegiatan_id' => $list->id,
+                        'ms_kegiatan_id' => $list->ms_kegiatan_id,
+                        'status' => 1
+                    ];
+                }
+            }
+
+            if (count($saveDetails) > 0) {
+                SuratPernyataanKegiatan::insert($saveDetails);
+            }
+
         }
-
-        SuratPernyataanKegiatan::insert($saveDetails);
 
         Kegiatan::where('user_id', $userId)->where('status', 1)
             ->where('tanggal', '>=', $getDateStart)->where('tanggal', '<=', $getDateEnd)
