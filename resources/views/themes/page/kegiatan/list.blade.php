@@ -162,9 +162,6 @@
 
         let dataFilter = {!! json_encode($dataFilterKegiatan) !!};
 
-      
-
-
         function changePermen() {
             let getPermen = $('#permen').val();
             $('#filter').empty();
@@ -224,7 +221,7 @@
             $("#tanggal").html(inputTanggal);
             let inputID = "";
             for (let i=0; i < id.length; i++){
-           
+
             inputID +=
             '<a href="kegiatan/'+id[i]+'/edit" class="form-control" title="@lang('general.edit')">'+
                             '<i class="fa fa-pencil"></i>'+

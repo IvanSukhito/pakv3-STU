@@ -12,6 +12,7 @@ class SuratPernyataan extends Model
         'id',
         'user_id',
         'upline_id',
+        'top_kegiatan_id',
         'supervisor_id',
         'dupak_id',
         'tanggal',

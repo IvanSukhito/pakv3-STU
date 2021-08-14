@@ -22,8 +22,12 @@ class PersetujuanSuratPernyataanController extends _CrudController
     {
         $passingData = [
             'username' => [
+                'lang' => 'general.nip'
             ],
             'name' => [
+            ],
+            'kegiatan' => [
+                'custom' => ', name:"ms_kegiatan.name"'
             ],
             'action' => [
                 'create' => 0,
@@ -38,12 +42,6 @@ class PersetujuanSuratPernyataanController extends _CrudController
             $passingData
         );
 
-        $this->listView['index'] = env('ADMIN_TEMPLATE').'.page.surat_pernyataan.list';
-        $this->listView['create'] = env('ADMIN_TEMPLATE').'.page.surat_pernyataan.forms';
-        $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.surat_pernyataan.forms';
-        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.surat_pernyataan.forms';
-        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.surat_pernyataan.list_button';
-
         $this->data['listSet']['approved'] = get_list_status_pak();
 
     }
@@ -56,13 +54,11 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('users.id, users.username, users.name, COUNT(tx_surat_pernyataan.id) AS total_sp')
+        $builder = Users::selectRaw('tx_surat_pernyataan.id, users.username, users.name, ms_kegiatan.name AS kegiatan')
             ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
-//            ->where('users.upline_id', $userId)
-//            ->groupByRaw('users.id, users.username, users.name')
-//            ->having('total_sp', '>', 0)
-            ->get();
-        dd($builder);
+            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')
+            ->where('users.upline_id', $userId)
+            ->whereIn('tx_surat_pernyataan.status', [1,2]);
 
         $dataTables = $dataTables->eloquent($builder)
             ->addColumn('action', function ($query) {
