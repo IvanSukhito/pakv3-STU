@@ -53,11 +53,16 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $this->callPermission();
 
         $userId = session()->get('admin_id');
-        $getUser = Users::where('id', $userId)->first();
 
         $dataTables = new DataTables();
 
-        $builder = Users::where('upline_id', $userId);
+        $builder = Users::selectRaw('users.id, users.username, users.name, COUNT(tx_surat_pernyataan.id) AS total_sp')
+            ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
+//            ->where('users.upline_id', $userId)
+//            ->groupByRaw('users.id, users.username, users.name')
+//            ->having('total_sp', '>', 0)
+            ->get();
+        dd($builder);
 
         $dataTables = $dataTables->eloquent($builder)
             ->addColumn('action', function ($query) {
