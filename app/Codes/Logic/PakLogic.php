@@ -5,6 +5,7 @@ namespace App\Codes\Logic;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
 use App\Codes\Models\Permen;
+use PhpParser\Node\Stmt\DeclareDeclare;
 
 class PakLogic
 {
@@ -131,7 +132,7 @@ class PakLogic
                 $topIds = array_unique($topIds);
             }
 
-            $getMsKegiatan = MsKegiatan::where('permen_id', $permenIds)->get();
+            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenIds)->whereIn('top_id', $topIds)->get();
             $temp = [];
             $getListTopKegiatan = [];
             foreach ($getMsKegiatan->toArray() as $list) {
@@ -166,7 +167,7 @@ class PakLogic
 
     public function getSuratPernyataanUser($userId, $suratPernyataan)
     {
-        $getKegiatan = Kegiatan::select('tx_kegiatan.*, tx_surat_pernyataan_kegiatan.id AS sp_kegiatan_id, tx_surat_pernyataan_kegiatan.message AS sp_kegiatan_message, tx_surat_pernyataan_kegiatan.status AS sp_kegiatan_status')
+        $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_surat_pernyataan_kegiatan.id AS sp_kegiatan_id, tx_surat_pernyataan_kegiatan.message AS sp_kegiatan_message, tx_surat_pernyataan_kegiatan.status AS sp_kegiatan_status')
             ->join('tx_surat_pernyataan_kegiatan', 'tx_surat_pernyataan_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
             ->where('tx_surat_pernyataan_kegiatan.surat_pernyataan_id', '=', $suratPernyataan->id)->get();
 
@@ -192,7 +193,7 @@ class PakLogic
                 $topIds = array_unique($topIds);
             }
 
-            $getMsKegiatan = MsKegiatan::where('permen_id', $permenIds)->get();
+            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenIds)->whereIn('top_id', $topIds)->get();
             $temp = [];
             $getListTopKegiatan = [];
             foreach ($getMsKegiatan->toArray() as $list) {

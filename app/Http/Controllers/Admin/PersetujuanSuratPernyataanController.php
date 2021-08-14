@@ -126,6 +126,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $getNewLogic = new PakLogic();
         $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan->user_id, $getSuratPernyataan);
+        dd($getData);
 
         $data = $this->data;
 
