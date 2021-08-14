@@ -5,7 +5,6 @@ namespace App\Codes\Logic;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
 use App\Codes\Models\Permen;
-use PhpParser\Node\Stmt\DeclareDeclare;
 
 class PakLogic
 {
@@ -263,6 +262,8 @@ class PakLogic
                 }
             }
         }
+
+        var_dump($result); die();
 
         return $result;
 
