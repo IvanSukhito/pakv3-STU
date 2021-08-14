@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
+use App\Codes\Models\Golongan;
+use App\Codes\Models\JabatanPerancang;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
+use App\Codes\Models\Pangkat;
 use App\Codes\Models\Permen;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\SuratPernyataanKegiatan;
+use App\Codes\Models\UnitKerja;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -84,7 +88,6 @@ class KegiatanController extends _CrudController
             $request, 'general.kegiatan', 'kegiatan', 'Kegiatan', 'kegiatan',
             $passingData
         );
-
 
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.kegiatan.list';
 
@@ -181,16 +184,11 @@ class KegiatanController extends _CrudController
 
         $getUser = Users::where('id', $userId)->first();
 
-        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
         $judul = Kegiatan::select('judul')->where('user_id',$userId)->where('status',1)->groupBy('judul')->get();
 
-
         $dataKegiatan = Kegiatan::where('id', $id)->get();
-        //dd($data);
-
 
         $data = $this->data;
-
 
         $data['viewType'] = 'edit';
         $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
@@ -198,8 +196,6 @@ class KegiatanController extends _CrudController
         $data['dataKegiatan'] = $dataKegiatan;
         $data['judul'] = $judul;
         $data['data'] = $this->crud->show($id);
-
-
 
         return view($this->listView['edit'], $data);
 
@@ -360,9 +356,6 @@ class KegiatanController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
-
-
-
         $getListCollectData = collectPassingData($this->passingData, $viewType);
         $validate = $this->setValidateData($getListCollectData, $viewType, $id);
         if (count($validate) > 0)
@@ -411,11 +404,6 @@ class KegiatanController extends _CrudController
             }
         }
 
-//        $data['updated_by'] = session()->get('admin_name');
-            //Dokumen
-
-
-
         $userFolder = 'user_' . preg_replace("/[^A-Za-z0-9?!]/", '', $userNip);
         $todayDate = date('Y-m-d');
         $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
@@ -426,47 +414,48 @@ class KegiatanController extends _CrudController
         $totalDokument = [];
         $totalDokumentFisik = [];
 
-        if($dokument != null){foreach ($dokument as $listDoc) {
-            if ($listDoc->getError() == 0) {
-                $getFileName = $listDoc->getClientOriginalName();
-                $ext = explode('.', $getFileName);
-                $fileName = reset($ext);
-                $ext = end($ext);
-                $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
-                $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
-                $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
-                $listDoc->move($destinationPath, $setFileName);
+        if($dokument != null) {
+            foreach ($dokument as $listDoc) {
+                if ($listDoc->getError() == 0) {
+                    $getFileName = $listDoc->getClientOriginalName();
+                    $ext = explode('.', $getFileName);
+                    $fileName = reset($ext);
+                    $ext = end($ext);
+                    $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0, 100) . '.' . $ext;
+                    $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
+                    $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
+                    $listDoc->move($destinationPath, $setFileName);
 
-                $totalDokument[] = [
-                    'name' => $setFileName,
-                    'location' => $destinationLink
-                ];
-                $data['dokument_pendukung'] = json_encode($totalDokument);
+                    $totalDokument[] = [
+                        'name' => $setFileName,
+                        'location' => $destinationLink
+                    ];
+                    $data['dokument_pendukung'] = json_encode($totalDokument);
+                }
             }
         }
-    }
 
-        if($dokumentFisik != null){foreach ($dokumentFisik as $listDoc) {
-            if ($listDoc->getError() == 0) {
-                $getFileName = $listDoc->getClientOriginalName();
-                $ext = explode('.', $getFileName);
-                $fileName = reset($ext);
-                $ext = end($ext);
-                $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
-                $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
-                $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
-                $listDoc->move($destinationPath, $setFileName);
+        if($dokumentFisik != null) {
+            foreach ($dokumentFisik as $listDoc) {
+                if ($listDoc->getError() == 0) {
+                    $getFileName = $listDoc->getClientOriginalName();
+                    $ext = explode('.', $getFileName);
+                    $fileName = reset($ext);
+                    $ext = end($ext);
+                    $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0, 100) . '.' . $ext;
+                    $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
+                    $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
+                    $listDoc->move($destinationPath, $setFileName);
 
-                $totalDokumentFisik[] = [
-                    'name' => $setFileName,
-                    'location' => $destinationLink
-                ];
+                    $totalDokumentFisik[] = [
+                        'name' => $setFileName,
+                        'location' => $destinationLink
+                    ];
 
-                $data['dokument_fisik'] = json_encode($totalDokumentFisik);
+                    $data['dokument_fisik'] = json_encode($totalDokumentFisik);
+                }
             }
         }
-        }
-
 
         $getData = $this->crud->update($data, $id);
 
@@ -552,6 +541,28 @@ class KegiatanController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
+        $getAtasan = Users::where('id', $getUser->upline_id)->first();
+        //tmt_pangkat_golongan
+        //kenaikan_jenjang_terakhir
+        $getListPangkat = Pangkat::pluck('name', 'id')->toArray();
+        $getListGolongan = Golongan::pluck('name', 'id')->toArray();
+        $getListJabatan = JabatanPerancang::pluck('name', 'id')->toArray();
+        $getListUnitKerja = UnitKerja::pluck('name', 'id')->toArray();
+
+        $getUserPangkat = $getListPangkat[$getUser->pangkat_id] ?? '';
+        $getUserGolongan = $getListGolongan[$getUser->golongan_id] ?? '';
+        $getUserJabatan = $getListJabatan[$getUser->jenjang_perancang_id] ?? '';
+        $getUserUnitKerja = $getListUnitKerja[$getUser->unit_kerja_id] ?? '';
+        $getUserPangkatTms = $getUser->tmt_kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getUser->tmt_kenaikan_jenjang_terakhir)) : '';
+        $getUserJabatanTms = $getUser->kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getUser->kenaikan_jenjang_terakhir)) : '';
+
+        $getAtasanPangkat = $getListPangkat[$getAtasan->pangkat_id] ?? '';
+        $getAtasanGolongan = $getListGolongan[$getAtasan->golongan_id] ?? '';
+        $getAtasanJabatan = $getListJabatan[$getAtasan->jenjang_perancang_id] ?? '';
+        $getAtasanUnitKerja = $getListUnitKerja[$getAtasan->unit_kerja_id] ?? '';
+        $getAtasanPangkatTms = $getAtasan->tmt_kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getAtasan->tmt_kenaikan_jenjang_terakhir)) : '';
+        $getAtasanJabatanTms = $getAtasan->kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getAtasan->kenaikan_jenjang_terakhir)) : '';
+
         $getDateRange = $this->request->get('daterange1');
         $getSplitDate = explode(' | ', $getDateRange);
         $getDateStart = date('Y-m-d', strtotime($getSplitDate[0]));
@@ -580,21 +591,34 @@ class KegiatanController extends _CrudController
             }
 
             $suratPernyataan = new SuratPernyataan();
-            $suratPernyataan->save([
-                'user_id' => $userId,
-                'upline_id' => $getUser->upline_id,
-                'supervisor_id' => 0,
-                'dupak_id' => 0,
-                'tanggal' => null,
-                'nomor' => '',
-                'tanggal_mulai' => $getDateStart,
-                'tanggal_akhir' => $getDateEnd,
-                'info_surat_pernyataan' => '',
-                'status' => 1,
-                'approved' => 0,
-                'connect' => 0,
-                'total_kredit' => $getKredit
+
+            $suratPernyataan->user_id = $userId;
+            $suratPernyataan->upline_id = $getUser->upline_id;
+            $suratPernyataan->top_kegiatan_id = $topId;
+            $suratPernyataan->supervisor_id = 0;
+            $suratPernyataan->dupak_id = 0;
+            $suratPernyataan->tanggal = null;
+            $suratPernyataan->nomor = '';
+            $suratPernyataan->tanggal_mulai = $getDateStart;
+            $suratPernyataan->tanggal_akhir = $getDateEnd;
+            $suratPernyataan->info_surat_pernyataan = json_encode([
+                'perancang_name' => $getUser->name,
+                'perancang_nip' => $getUser->username,
+                'perancang_pangkat' => $getUserPangkat.'/'.$getUserGolongan.'/'.$getUserPangkatTms,
+                'perancang_jabatan' => $getUserJabatan.'/'.$getUserJabatanTms,
+                'perancang_unit_kerja' => $getUserUnitKerja,
+                'atasan_name' => $getAtasan->name,
+                'atasan_nip' => $getAtasan->username,
+                'atasan_pangkat' => $getAtasanPangkat.'/'.$getAtasanGolongan.'/'.$getAtasanPangkatTms,
+                'atasan_jabatan' => $getAtasanJabatan.'/'.$getAtasanJabatanTms,
+                'atasan_unit_kerja' => $getAtasanUnitKerja
             ]);
+            $suratPernyataan->status = 1;
+            $suratPernyataan->approved = 0;
+            $suratPernyataan->connect = 0;
+            $suratPernyataan->total_kredit = $getKredit;
+
+            $suratPernyataan->save();
 
             $suratPernyataanId = $suratPernyataan->id;
 

@@ -69,7 +69,7 @@ else {
                     <p>Perancang mengajukan:</p>
                     <ul>
                         <li>Permen: {!! number_format($totalPermen, 0) !!}</li>
-                        <li>Surat Pernyataan: {!! number_format($totalPermen, 0) !!}</li>
+                        <li>Surat Pernyataan: {!! number_format($totalTop, 0) !!}</li>
                         <li>Nilai AK yang di ajukan: {!! number_format($totalAk, 3) !!}</li>
                     </ul>
                 </div>

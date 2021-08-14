@@ -18,6 +18,7 @@ class CreateTxSuratPernyataanTable extends Migration
             $table->unsignedBigInteger('user_id')->default(0);
             $table->unsignedBigInteger('upline_id')->default(0);
             $table->unsignedBigInteger('supervisor_id')->default(0);
+            $table->unsignedBigInteger('top_kegiatan_id')->default(0);
             $table->unsignedBigInteger('dupak_id')->default(0);
             $table->date('tanggal')->nullable();
             $table->string('nomor')->nullable();
