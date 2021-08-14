@@ -13,6 +13,7 @@ class SuratPernyataanKegiatan extends Model
         'surat_pernyataan_id',
         'kegiatan_id',
         'ms_kegiatan_id',
+        'message',
         'status'
     ];
 

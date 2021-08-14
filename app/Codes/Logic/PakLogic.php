@@ -164,6 +164,66 @@ class PakLogic
 
     }
 
+    public function getSuratPernyataanUser($userId, $suratPernyataan)
+    {
+        $getKegiatan = Kegiatan::select('tx_kegiatan.*, tx_surat_pernyataan_kegiatan.id AS sp_kegiatan_id, tx_surat_pernyataan_kegiatan.message AS sp_kegiatan_message, tx_surat_pernyataan_kegiatan.status AS sp_kegiatan_status')
+            ->join('tx_surat_pernyataan_kegiatan', 'tx_surat_pernyataan_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
+            ->where('tx_surat_pernyataan_kegiatan.surat_pernyataan_id', '=', $suratPernyataan->id)->get();
+
+        if ($getKegiatan) {
+            $getJudul = [];
+            $getDataKegiatan = [];
+            $permenIds = [];
+            $topIds = [];
+            $totalAk = 0;
+
+            foreach ($getKegiatan as $list) {
+                $permenIds[] = $list->permen_id;
+                $topIds[] = $list->top_id;
+                $getJudul[$list->permen_id][$list->top_id][$list->judul][] = $list->ms_kegiatan_id;
+                $getDataKegiatan[$list->permen_id][$list->top_id][$list->judul][$list->ms_kegiatan_id][] = $list->toArray();
+                $totalAk += $list->kredit;
+            }
+
+            if (count($permenIds) > 0) {
+                $permenIds = array_unique($permenIds);
+            }
+            if (count($topIds) > 0) {
+                $topIds = array_unique($topIds);
+            }
+
+            $getMsKegiatan = MsKegiatan::where('permen_id', $permenIds)->get();
+            $temp = [];
+            $getListTopKegiatan = [];
+            foreach ($getMsKegiatan->toArray() as $list) {
+                if ($list['parent_id'] <= 0) {
+                    $getListTopKegiatan[$list['id']] = $list;
+                }
+                $temp[$list['id']] = $list;
+            }
+
+            $getMsKegiatan = $temp;
+
+            $getPermen = Permen::whereIn('id', $permenIds)->get();
+            $listPermen = [];
+            foreach ($getPermen as $list) {
+                $listPermen[$list->id] = $list->name;
+            }
+
+            return [
+                'data' => $this->getParentTreeKegiatan($getMsKegiatan, $getJudul, $getDataKegiatan),
+                'total_permen' => $permenIds,
+                'total_top' => $topIds,
+                'total_ak' => $totalAk,
+                'permen' => $listPermen,
+                'top_kegiatan' => $getListTopKegiatan
+            ];
+
+        }
+
+        return [];
+    }
+
     /**
      * @param $msKegiatan
      * @param $listJudulKegiatan

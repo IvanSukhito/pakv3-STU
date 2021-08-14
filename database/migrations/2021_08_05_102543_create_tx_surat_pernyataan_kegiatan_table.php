@@ -18,6 +18,7 @@ class CreateTxSuratPernyataanKegiatanTable extends Migration
             $table->unsignedBigInteger('surat_pernyataan_id')->default(0);
             $table->unsignedBigInteger('kegiatan_id')->default(0);
             $table->unsignedBigInteger('ms_kegiatan_id')->default(0);
+            $table->string('message')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->index(['id', 'surat_pernyataan_id', 'kegiatan_id', 'ms_kegiatan_id'], 'sp_kegiatan_index');

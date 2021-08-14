@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
+use App\Codes\Logic\PakLogic;
 use App\Codes\Models\JabatanPerancang;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
@@ -41,6 +42,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
             $request, 'general.persetujuan_surat_pernyataan', 'persetujuan-surat-pernyataan', 'SuratPernyataan', 'persetujuan-surat-pernyataan',
             $passingData
         );
+
+        $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.persetujuan_surat_pernyataan.forms';
 
         $this->data['listSet']['approved'] = get_list_status_pak();
 
@@ -112,100 +115,17 @@ class PersetujuanSuratPernyataanController extends _CrudController
             ->make(true);
     }
 
-    public function create()
+    public function edit($id)
     {
         $this->callPermission();
 
         $userId = session()->get('admin_id');
 
-        $getStaff = Users::where('id', $userId)->first();
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2])->first();
+        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
 
-        $getFilterPermen = Permen::where('status', 1)->pluck('name', 'id')->toArray();
-        $getKegiatanData = Kegiatan::where('user_id', $userId)->where('connect', 0)->where('permen_id', '>', 0)->get();
-       // dd($getKegiatanData);
-        $getMsKegiatanParentIds = [];
-        $list_kegiatan_ids = [];
-        $temp = [];
-        foreach ($getKegiatanData as $list) {
-            $getMsKegiatanParentIds[] = $list->parent_id;
-            $list_kegiatan_ids[] = $list->ms_kegiatan_id;
-            $temp[$list->ms_kegiatan_id][] = $list;
-        }
-        $getKegiatanData = $temp;
-        //dd($getKegiatanData);
-        //dd($getMsKegiatanParentIds);
-        $getMsKegiatan = MsKegiatan::whereIn('id', $getMsKegiatanParentIds)->where('status', 1)->where('permen_id', '>', 0)->get();
-       //dd($getMsKegiatan);
-        $getFilterKegiatan = [];
-        foreach ($getMsKegiatan as $list) {
-            if ($list->parent_id > 0) {
-                continue;
-            }
-            $getFilterKegiatan[$list->permen_id][$list->id] = $list->name;
-        }
-
-        $temp = [];
-        foreach ($getFilterKegiatan as $indexPermen => $listKegiatan) {
-            $temp2 = [];
-            foreach ($listKegiatan as $kegiatanId => $kegiatanName) {
-                $temp2[] = [
-                    'id' => $kegiatanId,
-                    'name' => $kegiatanName
-                ];
-            }
-
-            $temp[] = [
-                'id' => $indexPermen,
-                'data' => $temp2
-            ];
-
-        }
-        $getFilterKegiatan = $temp;
-
-       // dd($getFilterKegiatan);
-        $getKegiatan = MsKegiatan::get_all_child_from_ids($list_kegiatan_ids);
-        //dd($getKegiatan);
-        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
-
-        $data = $this->data;
-
-        $data['viewType'] = 'create';
-        $data['formsTitle'] = __('general.title_create', ['field' => $data['thisLabel']]);
-        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-
-        $data['dataJenjangPerancang'] = $getJenjangPerancang;
-        $data['dataKegiatan'] = $getKegiatan;
-        $data['dataKegiatanData'] = $getKegiatanData;
-        $data['dataFilterPermen'] = $getFilterPermen;
-        $data['dataFilterKegiatan'] = $getFilterKegiatan;
-        $data['getStaff'] = $getStaff;
-
-        return view($this->listView[$data['viewType']], $data);
-    }
-
-    public function edit($id)
-    {
-        $this->callPermission();
-
-        $getData = $this->crud->show($id);
-        if (!$getData) {
-            return redirect()->route('admin.' . $this->route . '.index');
-        }
-
-        $get_kegiatan = $getData->getKegiatan()->get();
-
-        $list_kegiatan = [];
-        $ms_kegiatan = [];
-        if($get_kegiatan) {
-            $ids = [];
-            foreach($get_kegiatan as $list) {
-                $ids[] = $list->ms_kegiatan_id;
-                $list_kegiatan[$list->ms_kegiatan_id][] = $list;
-            }
-
-            $ms_kegiatan = MsKegiatan::get_all_child_from_ids($ids);
-
-        }
+        $getNewLogic = new PakLogic();
+        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan->user_id, $getSuratPernyataan);
 
         $data = $this->data;
 
@@ -213,80 +133,23 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
         $data['data'] = $getData;
-        $data['msKegiatan'] = $ms_kegiatan;
-        $data['listKegiatanTotal'] = $list_kegiatan;
-        $data['listDataKegiatan'] = [];
 
         return view($this->listView[$data['viewType']], $data);
     }
 
-    public function show($id)
+    public function update($id)
     {
         $this->callPermission();
+
+        $viewType = 'edit';
 
         $getData = $this->crud->show($id);
         if (!$getData) {
-            return redirect()->route('admin.' . $this->route . '.index');
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-
-        $get_kegiatan = $getData->getKegiatan()->get();
-        $list_kegiatan = [];
-        $ms_kegiatan = [];
-        if($get_kegiatan) {
-            $ids = [];
-            foreach($get_kegiatan as $list) {
-                $ids[] = $list->ms_kegiatan_id;
-                $list_kegiatan[$list->ms_kegiatan_id][] = $list;
-            }
-
-            $ms_kegiatan = MsKegiatan::get_all_child_from_ids($ids);
-
-        }
-
-        $data = $this->data;
-
-        $data['viewType'] = 'show';
-        $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
-        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getData;
-        $data['msKegiatan'] = $ms_kegiatan;
-        $data['listKegiatanTotal'] = $list_kegiatan;
-        $data['listDataKegiatan'] = [];
-
-        return view($this->listView[$data['viewType']], $data);
-    }
-
-    public function store()
-    {
-        $this->callPermission();
-
-        $userId = session()->get('admin_id');
-
-        $filterPermen = $this->request->get('filter_permen');
-        $filterKegiatan = $this->request->get('filter_kegiatan');
-
-        $getKegiatanData = Kegiatan::where('permen_id', $filterPermen)->where('parent_id', $filterKegiatan)
-            ->where('user_id', $userId)->where('connect', 0)->get();
-
-        if (!$getKegiatanData) {
-            return redirect()->back()->withInput()->withErrors(
-                [
-                    'filter_permen' => 'Kategori Kegiatan Tidak ditemukan'
-                ]
-            );
-        }
-
-        $getKredit = 0;
-        foreach ($getKegiatanData as $list) {
-            $getKredit += $list->kredit;
-        }
-
-        $userId = session()->get('admin_id');
-
-        $viewType = 'create';
 
         $getListCollectData = collectPassingData($this->passingData, $viewType);
-        $validate = $this->setValidateData($getListCollectData, $viewType);
+        $validate = $this->setValidateData($getListCollectData, $viewType, $id);
         if (count($validate) > 0)
         {
             $data = $this->validate($this->request, $validate);
@@ -298,52 +161,42 @@ class PersetujuanSuratPernyataanController extends _CrudController
             }
         }
 
-        $getParentId = $this->request->get('parent_id');
-//        dd($getParentId);
-        $kegiatanIds = [];
-        $get_kegiatan = Kegiatan::where('user_id', $userId)->where('connect', 0)->get();
+        $data = $this->getCollectedData($getListCollectData, $viewType, $data, $getData);
 
-        if(!$get_kegiatan) {
-            return redirect()->back()->withInput()->withErrors(
-                [
-                    'kegiatan_id' => 'Kategori Kegiatan Tidak ditemukan'
-                ]
-            );
+        foreach ($getListCollectData as $key => $val) {
+            if($val['type'] == 'image_many') {
+                $getStorage = explode(',', $this->request->get($key.'_storage')) ?? [];
+                $getOldData = json_decode($getData->$key, true);
+                $tempData = [];
+                if ($getOldData) {
+                    foreach ($getOldData as $index => $value) {
+                        if (in_array($index, $getStorage)) {
+                            $tempData[] = $value;
+                        }
+                    }
+                }
+                if (isset($data[$key])) {
+                    foreach (json_decode($data[$key], true) as $index => $value) {
+                        $tempData[] = $value;
+                    }
+                }
+                $data[$key] = json_encode($tempData);
+            }
         }
-        foreach ($get_kegiatan as $list) {
-            $kegiatanIds[] = $list->id;
-        }
 
-        $data = $this->getCollectedData($getListCollectData, $viewType, $data);
-//        $data['created_by'] = session()->get('admin_name');
-
-        $staff = Users::where('id' ,$userId)->first();
-
-        $data['parent_id'] = $getParentId;
-        $data['user_id'] = $userId;
-        $data['supervisor_id'] = $staff->staff_id;
-        $data['total_kredit'] = $getKredit;
-
-        $getData = $this->crud->store($data);
+        $getData = $this->crud->update($data, $id);
 
         $id = $getData->id;
 
-        $getKegiatanData = Kegiatan::where('permen_id', $filterPermen)->where('parent_id', $filterKegiatan)
-            ->where('user_id', $userId)->where('connect', 0)->update([
-                'sp' => $id,
-                'connect' => 1
-            ]);
-
         if($this->request->ajax()){
-            return response()->json(['result' => 1, 'message' => __('general.success_add')]);
+            return response()->json(['result' => 1, 'message' => __('general.success_edit_', ['field' => $this->data['thisLabel']])]);
         }
         else {
-            session()->flash('message', __('general.success_add'));
+            session()->flash('message', __('general.success_edit_', ['field' => $this->data['thisLabel']]));
             session()->flash('message_alert', 2);
-            return redirect()->route('admin.' . $this->route . '.show', $id);
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.show', $id);
         }
     }
-
 
     protected function createPDF($id, $superVisorId)
     {

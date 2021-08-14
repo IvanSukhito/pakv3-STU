@@ -178,8 +178,6 @@ class KegiatanController extends _CrudController
     public function edit($id){
         $this->callPermission();
 
-
-        //dd($getData->id);
         $userId = session()->get('admin_id');
 
         $getUser = Users::where('id', $userId)->first();
