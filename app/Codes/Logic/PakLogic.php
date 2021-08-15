@@ -257,13 +257,11 @@ class PakLogic
                         }
                     }
 
-                    $result[$getPermen][$getTop][$getJudul] = $this->getCreateListTreeKegiatan($tempKegiatan);
+                    $result[$getPermen][$getTop][$getJudul] = $this->getCreateListTreeKegiatan($tempKegiatan, $getTop);
 
                 }
             }
         }
-
-        var_dump($result); die();
 
         return $result;
 

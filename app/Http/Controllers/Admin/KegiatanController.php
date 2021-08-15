@@ -540,8 +540,6 @@ class KegiatanController extends _CrudController
         }
 
         $getAtasan = Users::where('id', $getUser->upline_id)->first();
-        //tmt_pangkat_golongan
-        //kenaikan_jenjang_terakhir
         $getListPangkat = Pangkat::pluck('name', 'id')->toArray();
         $getListGolongan = Golongan::pluck('name', 'id')->toArray();
         $getListJabatan = JabatanPerancang::pluck('name', 'id')->toArray();

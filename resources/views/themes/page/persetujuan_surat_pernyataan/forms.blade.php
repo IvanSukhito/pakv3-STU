@@ -82,7 +82,7 @@ else {
 
                                         <div class="card-header"><h4>{!! $getJudul !!}</h4></div>
                                         <div class="card-body">
-                                            {!! view_kegiatan_v3($listKegiatan[0]['childs'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
+                                            {!! persetujuan_sp_kegiatan_v3($listKegiatan[0]['childs'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
                                         </div>
 
                                     @endforeach

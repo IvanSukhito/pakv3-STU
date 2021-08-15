@@ -124,16 +124,43 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2])->first();
         $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
 
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+
         $getNewLogic = new PakLogic();
         $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan->user_id, $getSuratPernyataan);
-        dd($getData);
+
+        $dataPermen = [];
+        $dataKegiatan = [];
+        $dataTopKegiatan = [];
+        $getFilterKegiatan = [];
+        $totalPermen = 0 ;
+        $totalTop = 0 ;
+        $totalAk = 0 ;
+
+        if (count($getData['data']) > 0) {
+            $totalPermen = count($getData['total_permen']);
+            $totalTop = count($getData['total_top']);
+            $totalAk = $getData['total_ak'];
+            $dataPermen = $getData['permen'];
+            $dataKegiatan = $getData['data'];
+            $dataTopKegiatan = $getData['top_kegiatan'];
+        }
 
         $data = $this->data;
 
         $data['viewType'] = 'edit';
         $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getData;
+        $data['data'] = $getSuratPernyataan;
+        $data['dataUser'] = $getPerancang;
+        $data['dataJenjangPerancang'] = $getJenjangPerancang;
+        $data['dataPermen'] = $dataPermen;
+        $data['dataFilterKegiatan'] = $getFilterKegiatan;
+        $data['dataKegiatan'] = $dataKegiatan;
+        $data['dataTopKegiatan'] = $dataTopKegiatan;
+        $data['totalPermen'] = $totalPermen;
+        $data['totalTop'] = $totalTop;
+        $data['totalAk'] = $totalAk;
 
         return view($this->listView[$data['viewType']], $data);
     }
