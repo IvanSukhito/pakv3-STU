@@ -173,7 +173,10 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
             $addClass = $parentClass.' kegiatan-'.$getId;
             $addLabel = '';
 
-            $addHtmlAk = '<td width="15%" colspan="3">&nbsp;</td>';
+            $totalColspan = 0;
+            $addHtmlAk = '';
+            $htmlColspan = '';
+            $listIds = [];
             if ($getAk > 0) {
 
                 if ($deep > 1 && strlen($getName) <= 100 && strlen($prevName) > 0) {
@@ -181,15 +184,14 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                 }
 
                 $getName = '<a href="#" class="click-kegiatan" data-id="'.$getId.'">'.$getName.'</a>';
-                $listIds = [];
-                $getKegiatanAk = 0;
 
                 $getDataInput = $list['data'] ?? false;
                 if ($getDataInput) {
+                    $totalColspan = count($getDataInput);
                     foreach ($getDataInput as $listInput) {
 
                         $getListStatus = get_list_kegiatan();
-                        $getKegiatanAk += $listInput['kredit'];
+                        $getKegiatanAk = $listInput['kredit'];
                         $getDokument = json_decode($listInput['dokument_pendukung'], true);
                         $getDokumentFisik = json_decode($listInput['dokument_fisik'], true);
                         $getStatus = $getListStatus[$listInput['status']] ?? '-';
@@ -214,18 +216,20 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                             }
                         }
 
-                        $getTanggal .= strlen($getTanggal) > 1 ? ', '.$listInput['tanggal'] : $listInput['tanggal'];
-
                         $listIds[] = [
                             'id' => $listInput['id'],
-                            'tanggal' => $listInput['tanggal'],
+                            'tanggal' => date('d-M-Y', strtotime($listInput['tanggal'])),
+                            'kredit_ak' => $getAk,
+                            'kredit' => $getKegiatanAk,
                             'dokument' => $getListDokument,
                             'dokument_fisik' => $getListDokumentFisik
                         ];
 
                     }
 
-                    $getAk = $getAk * count($getDataInput);
+                    if (count($listIds) > 1) {
+                        $htmlColspan .= ' rowspan="'.count($listIds).'" ';
+                    }
 
                 }
 
@@ -233,34 +237,134 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                     $addLabel = '<input type="hidden" id="kegiatan_hidden_'.$getId.'" value=\''.json_encode($listIds).'\'/>';
                 }
 
-                $getNewAk = $getKegiatanAk;
-                if ($getAk != $getNewAk) {
-                    $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
-                        '<td width="5%" class="text-center">80%</td>'.
-                        '<td width="5%" class="text-center">'.$getNewAk.'</td>';
-                }
-                else {
-                    $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
-                        '<td width="5%" class="text-center">100%</td>'.
-                        '<td width="5%" class="text-center">'.$getNewAk.'</td>';
-                }
+            }
+            else {
+                $addHtmlAk = '<td width="15%" colspan="3">&nbsp;</td>';
             }
 
             $addHtmlTd = '';
             if ($deep > 0) {
-                $addHtmlTd = str_repeat('<td width="1%">&nbsp;</td>', $deep);
+                $addHtmlTd = str_repeat('<td'.$htmlColspan.' width="1%">&nbsp;</td>', $deep);
             }
             $newDeep = $getDeep - $deep;
 
             if ($deep == 0 || $getAk > 0) {
-                $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
-                    <td colspan="'.$newDeep.'">'.$addLabel.$getName.'</td>
-                    <td width="10%" class="text-center">'.$getTanggal.'</td>
-                    '.$addHtmlAk.'
-                    <td width="10%" class="text-center">'.$getSatuan.'</td>
-                    <td width="15%" class="text-center">'.$getBukti.'</td>
-                    <td width="5%" class="text-center">'.$getStatus.'</td>
-                    </tr>';
+
+                if ($totalColspan <= 0) {
+
+                    $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
+                        <td colspan="'.$newDeep.'">'.$addLabel.$getName.'</td>
+                        <td width="10%" class="text-center">'.$getTanggal.'</td>
+                        '.$addHtmlAk.'
+                        <td width="10%" class="text-center">'.$getSatuan.'</td>
+                        <td width="15%" class="text-center">'.$getBukti.'</td>
+                        <td width="5%" class="text-center">'.$getStatus.'</td>
+                        </tr>';
+
+                }
+                else if ($totalColspan == 1) {
+
+                    foreach ($listIds as $listDataKegiatan) {
+
+                        $dokument = $listDataKegiatan['dokument'];
+                        $dokument_fisik = $listDataKegiatan['dokument_fisik'];
+                        $getBukti = 'Dokument Pendukung:<ul>';
+                        foreach ($dokument as $listDoc) {
+                            $shortDocName = strlen($listDoc['name']) > 15 ? substr($listDoc['name'], 0, 15).'...' : $listDoc['name'];
+                            $getBukti .= '<li><a href="'.$listDoc['url'].'" title="'.$listDoc['name'].'">'.$shortDocName.'</a></li>';
+                        }
+                        $getBukti .= '</ul>';
+
+                        $getBukti .= 'Dokument Fisik:<ul>';
+                        foreach ($dokument_fisik as $listDoc) {
+                            $shortDocName = strlen($listDoc['name']) > 15 ? substr($listDoc['name'], 0, 15).'...' : $listDoc['name'];
+                            $getBukti .= '<li><a href="'.$listDoc['url'].'" title="'.$listDoc['name'].'">'.$shortDocName.'</a></li>';
+                        }
+                        $getBukti .= '</ul>';
+
+                        $getAk = $listDataKegiatan['kredit_ak'];
+                        $getNewAk = $listDataKegiatan['kredit'];
+
+                        if ($getAk != $getNewAk) {
+                            $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                                '<td width="5%" class="text-center">80%</td>'.
+                                '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                        }
+                        else {
+                            $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                                '<td width="5%" class="text-center">100%</td>'.
+                                '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                        }
+
+                        $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
+                        <td colspan="'.$newDeep.'">'.$addLabel.$getName.'</td>
+                        <td width="10%" class="text-center">'.$listDataKegiatan['tanggal'].'</td>
+                        '.$addHtmlAk.'
+                        <td width="10%" class="text-center">'.$getSatuan.'</td>
+                        <td width="15%">'.$getBukti.'</td>
+                        <td width="5%" class="text-center">'.$getStatus.'</td>
+                        </tr>';
+
+                    }
+
+                }
+                else {
+
+                    foreach ($listIds as $indexing => $listDataKegiatan) {
+
+                        $dokument = $listDataKegiatan['dokument'];
+                        $dokument_fisik = $listDataKegiatan['dokument_fisik'];
+                        $getBukti = 'Dokument Pendukung:<ul>';
+                        foreach ($dokument as $listDoc) {
+                            $shortDocName = strlen($listDoc['name']) > 15 ? substr($listDoc['name'], 0, 15).'...' : $listDoc['name'];
+                            $getBukti .= '<li><a href="'.$listDoc['url'].'" title="'.$listDoc['name'].'">'.$shortDocName.'</a></li>';
+                        }
+                        $getBukti .= '</ul>';
+
+                        $getBukti .= 'Dokument Fisik:<ul>';
+                        foreach ($dokument_fisik as $listDoc) {
+                            $shortDocName = strlen($listDoc['name']) > 15 ? substr($listDoc['name'], 0, 15).'...' : $listDoc['name'];
+                            $getBukti .= '<li><a href="'.$listDoc['url'].'" title="'.$listDoc['name'].'">'.$shortDocName.'</a></li>';
+                        }
+                        $getBukti .= '</ul>';
+
+                        $getAk = $listDataKegiatan['kredit_ak'];
+                        $getNewAk = $listDataKegiatan['kredit'];
+                        if ($getAk != $getNewAk) {
+                            $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                                '<td width="5%" class="text-center">80%</td>'.
+                                '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                        }
+                        else {
+                            $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                                '<td width="5%" class="text-center">100%</td>'.
+                                '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                        }
+
+                        if ($indexing == 0) {
+
+                            $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
+                        <td' . $htmlColspan . ' colspan="' . $newDeep . '">' . $addLabel . $getName . '</td>
+                        <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
+                        ' . $addHtmlAk . '
+                        <td' . $htmlColspan . ' width="10%" class="text-center">' . $getSatuan . '</td>
+                        <td width="15%" class="text-center">' . $getBukti . '</td>
+                        <td' . $htmlColspan . ' width="5%" class="text-center">' . $getStatus . '</td>
+                        </tr>';
+
+                        } else {
+
+                            $html .= '<tr class="all-row' . $addClass . '">
+                            <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
+                            ' . $addHtmlAk . '
+                            <td width="15%" class="text-center">' . $getBukti . '</td>
+                            </tr>';
+
+                        }
+                    }
+
+                }
+
             }
 
             $getOldName = $getName;
@@ -339,12 +443,15 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
             $getSatuan = strlen($list['satuan']) > 0 ? $list['satuan'] : '';
             $getTanggal = '';
             $getBukti = '';
-            $getAction = '';
+            $getStatus = '';
             $getChilds = $list['have_child'] == 1 ? $list['childs'] : [];
             $addClass = $parentClass.' kegiatan-'.$getId;
             $addLabel = '';
 
-            $addHtmlAk = '<td width="15%" colspan="3">&nbsp;</td>';
+            $totalColspan = 0;
+            $addHtmlAk = '';
+            $htmlColspan = '';
+            $listIds = [];
             if ($getAk > 0) {
 
                 if ($deep > 1 && strlen($getName) <= 100 && strlen($prevName) > 0) {
@@ -352,18 +459,17 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                 }
 
                 $getName = '<a href="#" class="click-kegiatan" data-id="'.$getId.'">'.$getName.'</a>';
-                $listIds = [];
-                $getKegiatanAk = 0;
 
                 $getDataInput = $list['data'] ?? false;
                 if ($getDataInput) {
+                    $totalColspan = count($getDataInput);
                     foreach ($getDataInput as $listInput) {
 
                         $getListStatus = get_list_kegiatan();
-                        $getKegiatanAk += $listInput['kredit'];
+                        $getKegiatanAk = $listInput['kredit'];
                         $getDokument = json_decode($listInput['dokument_pendukung'], true);
                         $getDokumentFisik = json_decode($listInput['dokument_fisik'], true);
-                        $getAction = '-';
+                        $getStatus = $getListStatus[$listInput['status']] ?? '-';
                         $getListDokument = [];
                         $getListDokumentFisik = [];
                         if ($getDokument) {
@@ -385,18 +491,20 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                             }
                         }
 
-                        $getTanggal .= strlen($getTanggal) > 1 ? ', '.$listInput['tanggal'] : $listInput['tanggal'];
-
                         $listIds[] = [
                             'id' => $listInput['id'],
-                            'tanggal' => $listInput['tanggal'],
+                            'tanggal' => date('d-M-Y', strtotime($listInput['tanggal'])),
+                            'kredit_ak' => $getAk,
+                            'kredit' => $getKegiatanAk,
                             'dokument' => $getListDokument,
                             'dokument_fisik' => $getListDokumentFisik
                         ];
 
                     }
 
-                    $getAk = $getAk * count($getDataInput);
+                    if (count($listIds) > 1) {
+                        $htmlColspan .= ' rowspan="'.count($listIds).'" ';
+                    }
 
                 }
 
@@ -404,34 +512,134 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                     $addLabel = '<input type="hidden" id="kegiatan_hidden_'.$getId.'" value=\''.json_encode($listIds).'\'/>';
                 }
 
-                $getNewAk = $getKegiatanAk;
-                if ($getAk != $getNewAk) {
-                    $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
-                        '<td width="5%" class="text-center">80%</td>'.
-                        '<td width="5%" class="text-center">'.$getNewAk.'</td>';
-                }
-                else {
-                    $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
-                        '<td width="5%" class="text-center">100%</td>'.
-                        '<td width="5%" class="text-center">'.$getNewAk.'</td>';
-                }
+            }
+            else {
+                $addHtmlAk = '<td width="15%" colspan="3">&nbsp;</td>';
             }
 
             $addHtmlTd = '';
             if ($deep > 0) {
-                $addHtmlTd = str_repeat('<td width="1%">&nbsp;</td>', $deep);
+                $addHtmlTd = str_repeat('<td'.$htmlColspan.' width="1%">&nbsp;</td>', $deep);
             }
             $newDeep = $getDeep - $deep;
 
             if ($deep == 0 || $getAk > 0) {
-                $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
-                    <td colspan="'.$newDeep.'">'.$addLabel.$getName.'</td>
-                    <td width="10%" class="text-center">'.$getTanggal.'</td>
-                    '.$addHtmlAk.'
-                    <td width="10%" class="text-center">'.$getSatuan.'</td>
-                    <td width="15%" class="text-center">'.$getBukti.'</td>
-                    <td width="5%" class="text-center">'.$getAction.'</td>
-                    </tr>';
+
+                if ($totalColspan <= 0) {
+
+                    $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
+                        <td colspan="'.$newDeep.'">'.$addLabel.$getName.'</td>
+                        <td width="10%" class="text-center">'.$getTanggal.'</td>
+                        '.$addHtmlAk.'
+                        <td width="10%" class="text-center">'.$getSatuan.'</td>
+                        <td width="15%" class="text-center">'.$getBukti.'</td>
+                        <td width="5%" class="text-center">'.$getStatus.'</td>
+                        </tr>';
+
+                }
+                else if ($totalColspan == 1) {
+
+                    foreach ($listIds as $listDataKegiatan) {
+
+                        $dokument = $listDataKegiatan['dokument'];
+                        $dokument_fisik = $listDataKegiatan['dokument_fisik'];
+                        $getBukti = 'Dokument Pendukung:<ul>';
+                        foreach ($dokument as $listDoc) {
+                            $shortDocName = strlen($listDoc['name']) > 15 ? substr($listDoc['name'], 0, 15).'...' : $listDoc['name'];
+                            $getBukti .= '<li><a href="'.$listDoc['url'].'" title="'.$listDoc['name'].'">'.$shortDocName.'</a></li>';
+                        }
+                        $getBukti .= '</ul>';
+
+                        $getBukti .= 'Dokument Fisik:<ul>';
+                        foreach ($dokument_fisik as $listDoc) {
+                            $shortDocName = strlen($listDoc['name']) > 15 ? substr($listDoc['name'], 0, 15).'...' : $listDoc['name'];
+                            $getBukti .= '<li><a href="'.$listDoc['url'].'" title="'.$listDoc['name'].'">'.$shortDocName.'</a></li>';
+                        }
+                        $getBukti .= '</ul>';
+
+                        $getAk = $listDataKegiatan['kredit_ak'];
+                        $getNewAk = $listDataKegiatan['kredit'];
+
+                        if ($getAk != $getNewAk) {
+                            $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                                '<td width="5%" class="text-center">80%</td>'.
+                                '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                        }
+                        else {
+                            $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                                '<td width="5%" class="text-center">100%</td>'.
+                                '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                        }
+
+                        $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
+                        <td colspan="'.$newDeep.'">'.$addLabel.$getName.'</td>
+                        <td width="10%" class="text-center">'.$listDataKegiatan['tanggal'].'</td>
+                        '.$addHtmlAk.'
+                        <td width="10%" class="text-center">'.$getSatuan.'</td>
+                        <td width="15%">'.$getBukti.'</td>
+                        <td width="5%" class="text-center">'.$getStatus.'</td>
+                        </tr>';
+
+                    }
+
+                }
+                else {
+
+                    foreach ($listIds as $indexing => $listDataKegiatan) {
+
+                        $dokument = $listDataKegiatan['dokument'];
+                        $dokument_fisik = $listDataKegiatan['dokument_fisik'];
+                        $getBukti = 'Dokument Pendukung:<ul>';
+                        foreach ($dokument as $listDoc) {
+                            $shortDocName = strlen($listDoc['name']) > 15 ? substr($listDoc['name'], 0, 15).'...' : $listDoc['name'];
+                            $getBukti .= '<li><a href="'.$listDoc['url'].'" title="'.$listDoc['name'].'">'.$shortDocName.'</a></li>';
+                        }
+                        $getBukti .= '</ul>';
+
+                        $getBukti .= 'Dokument Fisik:<ul>';
+                        foreach ($dokument_fisik as $listDoc) {
+                            $shortDocName = strlen($listDoc['name']) > 15 ? substr($listDoc['name'], 0, 15).'...' : $listDoc['name'];
+                            $getBukti .= '<li><a href="'.$listDoc['url'].'" title="'.$listDoc['name'].'">'.$shortDocName.'</a></li>';
+                        }
+                        $getBukti .= '</ul>';
+
+                        $getAk = $listDataKegiatan['kredit_ak'];
+                        $getNewAk = $listDataKegiatan['kredit'];
+                        if ($getAk != $getNewAk) {
+                            $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                                '<td width="5%" class="text-center">80%</td>'.
+                                '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                        }
+                        else {
+                            $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
+                                '<td width="5%" class="text-center">100%</td>'.
+                                '<td width="5%" class="text-center">'.$getNewAk.'</td>';
+                        }
+
+                        if ($indexing == 0) {
+
+                            $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
+                        <td' . $htmlColspan . ' colspan="' . $newDeep . '">' . $addLabel . $getName . '</td>
+                        <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
+                        ' . $addHtmlAk . '
+                        <td' . $htmlColspan . ' width="10%" class="text-center">' . $getSatuan . '</td>
+                        <td width="15%" class="text-center">' . $getBukti . '</td>
+                        <td' . $htmlColspan . ' width="5%" class="text-center">' . $getStatus . '</td>
+                        </tr>';
+
+                        } else {
+
+                            $html .= '<tr class="all-row' . $addClass . '">
+                            <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
+                            ' . $addHtmlAk . '
+                            <td width="15%" class="text-center">' . $getBukti . '</td>
+                            </tr>';
+
+                        }
+                    }
+
+                }
+
             }
 
             $getOldName = $getName;

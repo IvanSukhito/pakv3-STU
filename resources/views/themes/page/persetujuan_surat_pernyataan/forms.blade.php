@@ -66,7 +66,7 @@ else {
                     {{ Form::open(['id'=>'form', 'role' => 'form'])  }}
                 @endif
 
-                <div class="card-body overflow">
+                <div class="card-body">
                     @if(isset($dataKegiatan))
                         @foreach($dataKegiatan as $getPermen => $listTopKegiatan)
                             @foreach($listTopKegiatan as $getTop => $listJudul)
@@ -81,7 +81,7 @@ else {
                                     @foreach($listJudul as $getJudul => $listKegiatan)
 
                                         <div class="card-header"><h4>{!! $getJudul !!}</h4></div>
-                                        <div class="card-body">
+                                        <div class="card-body overflow">
                                             {!! persetujuan_sp_kegiatan_v3($listKegiatan[0]['childs'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
                                         </div>
 

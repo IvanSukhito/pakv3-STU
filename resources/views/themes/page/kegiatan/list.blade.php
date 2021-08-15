@@ -49,7 +49,7 @@
                         {{ Form::select('permen', $dataPermen, old('permen'), ['id' => 'permen', 'class' => 'form-control', 'onchange' => 'changePermen()']) }}
                     </div>
                 </div>
-                <div class="card-body overflow">
+                <div class="card-body">
                     @if(isset($dataKegiatan))
                         @foreach($dataKegiatan as $getPermen => $listTopKegiatan)
                             @foreach($listTopKegiatan as $getTop => $listJudul)
@@ -64,7 +64,7 @@
                                     @foreach($listJudul as $getJudul => $listKegiatan)
 
                                         <div class="card-header"><h4>{!! $getJudul !!}</h4></div>
-                                        <div class="card-body">
+                                        <div class="card-body overflow">
                                             {!! view_kegiatan_v3($listKegiatan[0]['childs'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
                                         </div>
 
@@ -195,7 +195,8 @@
             }
         });
 
-        $('.click-kegiatan').click(function () {
+        $('.click-kegiatan').click(function (e) {
+            e.preventDefault();
 
             let myId = $(this).data('id');
             $('#kegiatanModal').modal('show');
@@ -229,6 +230,7 @@
             }
             $("#button-edit").html(inputID);
 
+            return false;
 
         });
 
