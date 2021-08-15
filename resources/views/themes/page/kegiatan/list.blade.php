@@ -49,7 +49,7 @@
                         {{ Form::select('permen', $dataPermen, old('permen'), ['id' => 'permen', 'class' => 'form-control', 'onchange' => 'changePermen()']) }}
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow">
                     @if(isset($dataKegiatan))
                         @foreach($dataKegiatan as $getPermen => $listTopKegiatan)
                             @foreach($listTopKegiatan as $getTop => $listJudul)

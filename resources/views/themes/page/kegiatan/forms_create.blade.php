@@ -77,7 +77,7 @@ else {
                         {{ Form::select('filter', [], old('filter'), ['id' => 'filter', 'class' => 'form-control', 'onchange' => 'changeFilter()']) }}
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body overflow">
                     {!! create_kegiatan_v3($dataKegiatan, $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
                 </div>
                 <!-- /.card-body -->

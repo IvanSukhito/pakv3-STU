@@ -9,3 +9,7 @@
 {
     color: #444444;
 }
+
+.card-body.overflow {
+    overflow: auto;
+}

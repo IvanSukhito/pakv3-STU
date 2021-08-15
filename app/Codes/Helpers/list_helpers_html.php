@@ -128,11 +128,11 @@ if ( ! function_exists('view_kegiatan_v3')) {
                     <thead>
                     <tr>
                     <th width="45%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
-                    <th width="10%" class="text-center">Tanggal</th>
+                    <th width="10%" class="text-center">'.__('general.date').'</th>
                     <th width="15%" colspan="3" class="text-center">AK</th>
                     <th width="10%" class="text-center">Satuan</th>
-                    <th width="15%" class="text-center">Bukti Keterangan</th>
-                    <th width="5%" class="text-center">Status</th>
+                    <th width="15%" class="text-center">'.__('general.evidence').'</th>
+                    <th width="5%" class="text-center">'.__('general.status').'</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -154,9 +154,10 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
      * @param $getDeep
      * @param $jenjangPerancangId
      * @param string $parentClass
+     * @param string $prevName
      * @return string
      */
-    function render_view_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $parentClass = '') {
+    function render_view_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $parentClass = '', $prevName = '') {
         $html = '';
 
         foreach ($ms_kegiatan as $list) {
@@ -174,6 +175,10 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
 
             $addHtmlAk = '<td width="15%" colspan="3">&nbsp;</td>';
             if ($getAk > 0) {
+
+                if ($deep > 1 && strlen($getName) <= 100 && strlen($prevName) > 0) {
+                    $getName = $prevName.': '.$getName;
+                }
 
                 $getName = '<a href="#" class="click-kegiatan" data-id="'.$getId.'">'.$getName.'</a>';
                 $listIds = [];
@@ -247,7 +252,8 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
             }
             $newDeep = $getDeep - $deep;
 
-            $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
+            if ($deep == 0 || $getAk > 0) {
+                $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
                     <td colspan="'.$newDeep.'">'.$addLabel.$getName.'</td>
                     <td width="10%" class="text-center">'.$getTanggal.'</td>
                     '.$addHtmlAk.'
@@ -255,9 +261,12 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                     <td width="15%" class="text-center">'.$getBukti.'</td>
                     <td width="5%" class="text-center">'.$getStatus.'</td>
                     </tr>';
+            }
+
+            $getOldName = $getName;
 
             if ($getChilds) {
-                $html .= render_view_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass);
+                $html .= render_view_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass, $getOldName);
             }
 
         }
@@ -290,11 +299,11 @@ if ( ! function_exists('persetujuan_sp_kegiatan_v3')) {
                     <thead>
                     <tr>
                     <th width="45%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
-                    <th width="10%" class="text-center">Tanggal</th>
+                    <th width="10%" class="text-center">'.__('general.date').'</th>
                     <th width="15%" colspan="3" class="text-center">AK</th>
                     <th width="10%" class="text-center">Satuan</th>
-                    <th width="15%" class="text-center">Bukti Keterangan</th>
-                    <th width="5%" class="text-center">Aksi</th>
+                    <th width="15%" class="text-center">'.__('general.evidence').'</th>
+                    <th width="5%" class="text-center">'.__('general.status').'</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -316,9 +325,10 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
      * @param $getDeep
      * @param $jenjangPerancangId
      * @param string $parentClass
+     * @param string $prevName
      * @return string
      */
-    function render_persetujuan_sp_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $parentClass = '') {
+    function render_persetujuan_sp_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $parentClass = '', $prevName = '') {
         $html = '';
 
         foreach ($ms_kegiatan as $list) {
@@ -329,13 +339,17 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
             $getSatuan = strlen($list['satuan']) > 0 ? $list['satuan'] : '';
             $getTanggal = '';
             $getBukti = '';
-            $getStatus = '';
+            $getAction = '';
             $getChilds = $list['have_child'] == 1 ? $list['childs'] : [];
             $addClass = $parentClass.' kegiatan-'.$getId;
             $addLabel = '';
 
             $addHtmlAk = '<td width="15%" colspan="3">&nbsp;</td>';
             if ($getAk > 0) {
+
+                if ($deep > 1 && strlen($getName) <= 100 && strlen($prevName) > 0) {
+                    $getName = $prevName.': '.$getName;
+                }
 
                 $getName = '<a href="#" class="click-kegiatan" data-id="'.$getId.'">'.$getName.'</a>';
                 $listIds = [];
@@ -349,7 +363,7 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                         $getKegiatanAk += $listInput['kredit'];
                         $getDokument = json_decode($listInput['dokument_pendukung'], true);
                         $getDokumentFisik = json_decode($listInput['dokument_fisik'], true);
-                        $getStatus = $getListStatus[$listInput['status']] ?? '-';
+                        $getAction = '-';
                         $getListDokument = [];
                         $getListDokumentFisik = [];
                         if ($getDokument) {
@@ -409,17 +423,21 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
             }
             $newDeep = $getDeep - $deep;
 
-            $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
+            if ($deep == 0 || $getAk > 0) {
+                $html .= '<tr class="all-row'.$addClass.'">'.$addHtmlTd.'
                     <td colspan="'.$newDeep.'">'.$addLabel.$getName.'</td>
                     <td width="10%" class="text-center">'.$getTanggal.'</td>
                     '.$addHtmlAk.'
                     <td width="10%" class="text-center">'.$getSatuan.'</td>
                     <td width="15%" class="text-center">'.$getBukti.'</td>
-                    <td width="5%" class="text-center">'.$getStatus.'</td>
+                    <td width="5%" class="text-center">'.$getAction.'</td>
                     </tr>';
+            }
+
+            $getOldName = $getName;
 
             if ($getChilds) {
-                $html .= render_persetujuan_sp_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass);
+                $html .= render_persetujuan_sp_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass, $getOldName);
             }
 
         }

@@ -66,7 +66,7 @@ else {
                     {{ Form::open(['id'=>'form', 'role' => 'form'])  }}
                 @endif
 
-                <div class="card-body">
+                <div class="card-body overflow">
                     @if(isset($dataKegiatan))
                         @foreach($dataKegiatan as $getPermen => $listTopKegiatan)
                             @foreach($listTopKegiatan as $getTop => $listJudul)

@@ -131,7 +131,7 @@ class PakLogic
                 $topIds = array_unique($topIds);
             }
 
-            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenIds)->whereIn('top_id', $topIds)->get();
+            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenIds)->get();
             $temp = [];
             $getListTopKegiatan = [];
             foreach ($getMsKegiatan->toArray() as $list) {
@@ -192,7 +192,7 @@ class PakLogic
                 $topIds = array_unique($topIds);
             }
 
-            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenIds)->whereIn('top_id', $topIds)->get();
+            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenIds)->get();
             $temp = [];
             $getListTopKegiatan = [];
             foreach ($getMsKegiatan->toArray() as $list) {
@@ -254,10 +254,11 @@ class PakLogic
                             }
 
                             $tempKegiatan[] = $temp;
+
                         }
                     }
 
-                    $result[$getPermen][$getTop][$getJudul] = $this->getCreateListTreeKegiatan($tempKegiatan, $getTop);
+                    $result[$getPermen][$getTop][$getJudul] = $this->getCreateListTreeKegiatan($tempKegiatan);
 
                 }
             }
