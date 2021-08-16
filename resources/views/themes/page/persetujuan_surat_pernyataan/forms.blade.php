@@ -168,7 +168,6 @@ else {
                 let getId = $(this).data('id');
                 let getMessage = prompt('Alasan di tolak?');
                 if (getMessage) {
-                    console.log("A");
                     $('#message_kegiatan_' + getId).val(getMessage);
                 }
             }

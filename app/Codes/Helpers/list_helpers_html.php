@@ -619,7 +619,7 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                         $getBukti .= '</ul>';
 
                         $getAction = '<label><input type="radio" class="radio_button_ok" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_2" name="action_kegiatan['.$getKegId.']" value="2"/> Disetujui</label>
-                            <label><input type="radio" class="radio_button_cancel" data-id="'.$getKegId.' id="action_kegiatan_'.$getKegId.'_9" name="action_kegiatan['.$getKegId.']" value="9"/> Ditolak</label>
+                            <label><input type="radio" class="radio_button_cancel" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_9" name="action_kegiatan['.$getKegId.']" value="9"/> Ditolak</label>
                             <input type="hidden" class="message_kegiatan" id="message_kegiatan_'.$getKegId.'" name="message_kegiatan['.$getKegId.']" value="'.$getKegMessage.'">';
 
                         if ($getAk != $getNewAk) {
