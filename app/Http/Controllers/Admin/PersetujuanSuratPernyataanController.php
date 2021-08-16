@@ -11,9 +11,11 @@ use App\Codes\Models\MsKegiatan;
 use App\Codes\Models\Permen;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
+use App\Codes\Models\SuratPernyataanKegiatan;
 use App\Codes\Models\UnitKerja;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use PDF;
 
@@ -122,7 +124,13 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $userId = session()->get('admin_id');
 
         $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2])->first();
+        if (!$getSuratPernyataan) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
         $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
+        if (!$getPerancang) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
@@ -169,54 +177,41 @@ class PersetujuanSuratPernyataanController extends _CrudController
     {
         $this->callPermission();
 
-        $viewType = 'edit';
-
-        var_dump($this->request->all()); die();
-
         $getData = $this->crud->show($id);
         if (!$getData) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        $getListCollectData = collectPassingData($this->passingData, $viewType);
-        $validate = $this->setValidateData($getListCollectData, $viewType, $id);
-        if (count($validate) > 0)
-        {
-            $data = $this->validate($this->request, $validate);
+        $actionKegiatan = $this->request->get('action_kegiatan');
+        $messageKegiatan = $this->request->get('message_kegiatan');
+        $getSaveFlag = $this->request->get('save');
+
+        DB::beginTransaction();
+
+        $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::where('surat_pernyataan_id', $id)->get();
+        foreach ($getSuratPernyataanKegiatan as $list) {
+            $getAction = isset($actionKegiatan[$list->id]) ? $actionKegiatan[$list->id] : 1;
+            $getMessage = '';
+            if ($getAction == 9) {
+                $getMessage = isset($messageKegiatan[$list->id]) ? $messageKegiatan[$list->id] : '';
+            }
+            $list->message = $getMessage;
+            $list->status = $getAction;
+            $list->save();
+
+        }
+
+        if ($getSaveFlag == 2) {
+            $getData->status = 2;
+            $this->generatePDF($id);
         }
         else {
-            $data = [];
-            foreach ($getListCollectData as $key => $val) {
-                $data[$key] = $this->request->get($key);
-            }
+            $getData->status = 1;
         }
 
-        $data = $this->getCollectedData($getListCollectData, $viewType, $data, $getData);
+        $getData->save();
 
-        foreach ($getListCollectData as $key => $val) {
-            if($val['type'] == 'image_many') {
-                $getStorage = explode(',', $this->request->get($key.'_storage')) ?? [];
-                $getOldData = json_decode($getData->$key, true);
-                $tempData = [];
-                if ($getOldData) {
-                    foreach ($getOldData as $index => $value) {
-                        if (in_array($index, $getStorage)) {
-                            $tempData[] = $value;
-                        }
-                    }
-                }
-                if (isset($data[$key])) {
-                    foreach (json_decode($data[$key], true) as $index => $value) {
-                        $tempData[] = $value;
-                    }
-                }
-                $data[$key] = json_encode($tempData);
-            }
-        }
-
-        $getData = $this->crud->update($data, $id);
-
-        $id = $getData->id;
+        DB::commit();
 
         if($this->request->ajax()){
             return response()->json(['result' => 1, 'message' => __('general.success_edit_', ['field' => $this->data['thisLabel']])]);
