@@ -127,7 +127,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan->user_id, $getSuratPernyataan);
+        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -170,6 +170,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $this->callPermission();
 
         $viewType = 'edit';
+
+        var_dump($this->request->all()); die();
 
         $getData = $this->crud->show($id);
         if (!$getData) {

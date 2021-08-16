@@ -67,6 +67,10 @@ else {
                 @endif
 
                 <div class="card-body">
+                    <label for="all_ok_check"><input type="radio" class="all_ok_check" id="all_ok_check" name="flag_check_all"/> Setuju Semua</label>
+                    <label for="all_cancel_check"><input type="radio" class="all_cancel_check" id="all_cancel_check" name="flag_check_all"/> Tolak Semua</label>
+                </div>
+                <div class="card-body">
                     @if(isset($dataKegiatan))
                         @foreach($dataKegiatan as $getPermen => $listTopKegiatan)
                             @foreach($listTopKegiatan as $getTop => $listJudul)
@@ -129,4 +133,46 @@ else {
 @section('script-bottom')
     @parent
     @include(env('ADMIN_TEMPLATE').'._component.generate_forms_script')
+    <script type="text/javascript">
+        'use strict';
+        $(document).ready(function (e) {
+
+        });
+
+        $('#all_ok_check').change(function() {
+            if($(this).prop('checked') === true) {
+                $('.radio_button_ok').prop('checked', true);
+                $('.message_kegiatan').val('');
+            }
+        });
+
+        $('#all_cancel_check').change(function() {
+            if($(this).prop('checked') === true) {
+                $('.radio_button_cancel').prop('checked', true);
+                let getMessage = prompt('Alasan di tolak?');
+                if (getMessage) {
+                    $('.message_kegiatan').val(getMessage);
+                }
+            }
+        });
+
+        $('.radio_button_ok').click(function() {
+            if($(this).prop('checked') === true) {
+                let getId = $(this).data('id');
+                $('#message_kegiatan_' + getId).val('');
+            }
+        });
+
+        $('.radio_button_cancel').click(function() {
+            if($(this).prop('checked') === true) {
+                let getId = $(this).data('id');
+                let getMessage = prompt('Alasan di tolak?');
+                if (getMessage) {
+                    console.log("A");
+                    $('#message_kegiatan_' + getId).val(getMessage);
+                }
+            }
+        });
+
+    </script>
 @stop
