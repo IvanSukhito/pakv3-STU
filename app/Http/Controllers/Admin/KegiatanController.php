@@ -117,12 +117,24 @@ class KegiatanController extends _CrudController
         $dataKegiatan = [];
         $dataTopKegiatan = [];
         $getFilterKegiatan = [];
+        $totalPermen = 0 ;
+        $totalTop = 0 ;
+        $totalAk = 0 ;
 
         if (count($getData['data']) > 0) {
             $dataPermen = $getData['permen'];
             $dataKegiatan = $getData['data'];
             $dataTopKegiatan = $getData['top_kegiatan'];
+            $totalPermen = count($getData['total_permen']);
+            $totalTop = count($getData['total_top']);
+            $topId = $getData['total_top'];
+            $totalAk = $getData['total_ak'];
+            $kredit = $getData['kredit'];
+          
+          
         }
+
+       // $dataAk = isset($coba[$top]) ? $coba[$top] : false;
 
         $data = $this->data;
 
@@ -133,7 +145,18 @@ class KegiatanController extends _CrudController
         $data['dataFilterKegiatan'] = $getFilterKegiatan;
         $data['dataKegiatan'] = $dataKegiatan;
         $data['dataTopKegiatan'] = $dataTopKegiatan;
-
+        $data['totalPermen'] = $totalPermen;
+        $data['totalTop'] = $totalTop;
+        $data['totalAk'] = $totalAk;
+        $data['topId'] = $topId;
+        $data['kredit'] = $kredit;
+           
+        
+        //dd($dataKegiatan);
+        //dd($dataTopKegiatan);
+        //dd($coba);
+        //dd($topId);
+        //dd($tes);
         return view($this->listView['index'], $data);
     }
 
@@ -385,6 +408,27 @@ class KegiatanController extends _CrudController
         $getDataPermen = $getData->permen_id;
         $msKegiatanId = $getData->ms_kegiatan_id;
         $getTanggal = $data['tanggal']  ;
+        $getDok = json_decode($getData->dokument_pendukung, true);
+        $getDokFisik = json_decode($getData->dokument_pendukung, true);
+        
+        //$getListDokument = [];
+        //$getListDokumentFisik = [];
+        //if ($getDok) {
+        //    foreach ($getDok as $listDokument) {
+        //   
+        //        $getDokLoc = asset($listDokument['location']);
+        //        $getDokName = $listDokument['name'];
+        //    }
+        //}
+        //if ($getDokFisik) {
+        //    foreach ($getDokFisik as $listDokument) {
+        //        $getDokFisikLoc = asset($listDokument['location']);
+        //        $getDokFisikName = $listDokument['name'];
+        //    }
+        //}
+
+      
+       // dd($getDok);
 
            $getPermen = Permen::where('id', $getDataPermen)->where('tanggal_start', '<=', $getTanggal)
         ->where('tanggal_end', '>=', $getTanggal)->first();
@@ -409,8 +453,8 @@ class KegiatanController extends _CrudController
         $dokument = $this->request->file('dokument');
         $dokumentFisik = $this->request->file('dokument_fisik');
 
-        $totalDokument = [];
-        $totalDokumentFisik = [];
+        $totalDokument = $getDok;
+        $totalDokumentFisik = $getDokFisik;
 
         if($dokument != null) {
             foreach ($dokument as $listDoc) {
@@ -425,8 +469,8 @@ class KegiatanController extends _CrudController
                     $listDoc->move($destinationPath, $setFileName);
 
                     $totalDokument[] = [
-                        'name' => $setFileName,
-                        'location' => $destinationLink
+                        'name' => $setFileName,            
+                        'location' => $destinationLink,                 
                     ];
                     $data['dokument_pendukung'] = json_encode($totalDokument);
                 }
@@ -504,6 +548,9 @@ class KegiatanController extends _CrudController
             $dataPermen = $getData['permen'];
             $dataKegiatan = $getData['data'];
             $dataTopKegiatan = $getData['top_kegiatan'];
+            $topId = $getData['total_top'];
+            $kredit = $getData['kredit'];
+          
         }
 
         $data = $this->data;
@@ -521,6 +568,10 @@ class KegiatanController extends _CrudController
         $data['totalPermen'] = $totalPermen;
         $data['totalTop'] = $totalTop;
         $data['totalAk'] = $totalAk;
+        $data['topId'] = $topId;
+        $data['kredit'] = $kredit;
+           
+        
 
         return view($this->listView['submit_kegiatan'], $data);
 
@@ -655,4 +706,3 @@ class KegiatanController extends _CrudController
     }
 
 }
-
