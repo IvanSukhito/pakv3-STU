@@ -133,6 +133,7 @@ if ( ! function_exists('view_kegiatan_v3')) {
                     <th width="10%" class="text-center">Satuan</th>
                     <th width="15%" class="text-center">'.__('general.evidence').'</th>
                     <th width="5%" class="text-center">'.__('general.status').'</th>
+                    <th width="5%" class="text-center">'.__('general.created').'</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -169,6 +170,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
             $getTanggal = '';
             $getBukti = '';
             $getStatus = '';
+            $getCreated = '';
             $getChilds = $list['have_child'] == 1 ? $list['childs'] : [];
             $addClass = $parentClass.' kegiatan-'.$getId;
             $addLabel = '';
@@ -195,6 +197,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                         $getDokument = json_decode($listInput['dokument_pendukung'], true);
                         $getDokumentFisik = json_decode($listInput['dokument_fisik'], true);
                         $getStatus = $getListStatus[$listInput['status']] ?? '-';
+                        $getCreated = date('d-M-y', strtotime(strtotime($listInput['created_at'])));
                         $getListDokument = [];
                         $getListDokumentFisik = [];
                         if ($getDokument) {
@@ -222,7 +225,8 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                             'kredit_ak' => $getAk,
                             'kredit' => $getKegiatanAk,
                             'dokument' => $getListDokument,
-                            'dokument_fisik' => $getListDokumentFisik
+                            'dokument_fisik' => $getListDokumentFisik,
+                            'created' => $getCreated
                         ];
 
                     }
@@ -259,6 +263,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                         <td width="10%" class="text-center">'.$getSatuan.'</td>
                         <td width="15%" class="text-center">'.$getBukti.'</td>
                         <td width="5%" class="text-center">'.$getStatus.'</td>
+                        <td width="1%" class="text-center">'.$getCreated.'</td>
                         </tr>';
 
                 }
@@ -284,6 +289,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
 
                         $getAk = $listDataKegiatan['kredit_ak'];
                         $getNewAk = $listDataKegiatan['kredit'];
+                        $getCreated = $listDataKegiatan['created'];
 
                         if ($getAk != $getNewAk) {
                             $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
@@ -303,6 +309,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                         <td width="10%" class="text-center">'.$getSatuan.'</td>
                         <td width="15%">'.$getBukti.'</td>
                         <td width="5%" class="text-center">'.$getStatus.'</td>
+                        <td width="1%" class="text-center">'.$getCreated.'</td>
                         </tr>';
 
                     }
@@ -328,6 +335,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                         }
                         $getBukti .= '</ul>';
 
+                        $getCreated = $listDataKegiatan['created'];
                         $getAk = $listDataKegiatan['kredit_ak'];
                         $getNewAk = $listDataKegiatan['kredit'];
                         if ($getAk != $getNewAk) {
@@ -350,6 +358,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                         <td' . $htmlColspan . ' width="10%" class="text-center">' . $getSatuan . '</td>
                         <td width="15%" class="text-center">' . $getBukti . '</td>
                         <td' . $htmlColspan . ' width="5%" class="text-center">' . $getStatus . '</td>
+                        <td width="%" class="text-center">' . $getCreated . '</td>
                         </tr>';
 
                         } else {
@@ -358,6 +367,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                             <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
                             ' . $addHtmlAk . '
                             <td width="15%" class="text-center">' . $getBukti . '</td>
+                            <td width="1%" class="text-center">' . $getCreated . '</td>
                             </tr>';
 
                         }
