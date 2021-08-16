@@ -86,6 +86,33 @@ else {
                     <label for="all_cancel_check"><input type="radio" class="all_cancel_check" id="all_cancel_check" name="flag_check_all"/> Tolak Semua</label>
                 </div>
                 <div class="card-body">
+                    <h3 class="form-section first-form">Kegiatan</h3>
+                    <p>Perancang mengajukan:</p>
+                    <ul>
+                     
+                        <li>Surat Pernyataan:
+                        @foreach($topId as $top)
+
+                    
+                        <?php $data = isset($dataTopKegiatan[$top]) ? $dataTopKegiatan[$top] : false;?>
+                        <?php $dataAk = isset($kredit[$top]) ? $kredit[$top] : false;?>
+                        
+                           <ul>
+                               <?php $sumAk = 0;?>
+                               @foreach($dataAk as $dataAk)
+                               <?php $sumAk += $dataAk?>
+                               @endforeach
+                             
+                              <li>{!! $data ? $data['name'] : '' !!} - {!!number_format($sumAk,3)!!}</li> 
+                             
+                           </ul> 
+                           @endforeach
+                        </li>
+                     
+                        <li>Total AK yang di ajukan: {!! number_format($totalAk, 3) !!}</li>
+                    </ul>
+                </div>
+                <div class="card-body">
                     @if(isset($dataKegiatan))
                         @foreach($dataKegiatan as $getPermen => $listTopKegiatan)
                             @foreach($listTopKegiatan as $getTop => $listJudul)

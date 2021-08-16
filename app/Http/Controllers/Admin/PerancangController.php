@@ -50,7 +50,7 @@ class PerancangController extends _CrudController
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'lang' => 'Atasan',
+                'lang' => 'general.atasan',
                 'type' => 'select2'
             ],
             'pangkat_id' => [
@@ -86,7 +86,7 @@ class PerancangController extends _CrudController
                     'edit' => 'required'
                 ],
                 'type' => 'select',
-                'lang' => 'general.jenis_kelamin'
+                'lang' => 'general.gender'
             ],
             'status' => [
                 'validate' => [
