@@ -115,10 +115,12 @@ class PakLogic
             $permenIds = [];
             $topIds = [];
             $totalAk = 0;
-
+            $kredit = [];
+         
             foreach ($getKegiatan as $list) {
                 $permenIds[] = $list->permen_id;
                 $topIds[] = $list->top_id;
+                $kredit[$list->top_id][] = $list->kredit;
                 $getJudul[$list->permen_id][$list->top_id][$list->judul][] = $list->ms_kegiatan_id;
                 $getDataKegiatan[$list->permen_id][$list->top_id][$list->judul][$list->ms_kegiatan_id][] = $list->toArray();
                 $totalAk += $list->kredit;
@@ -138,7 +140,7 @@ class PakLogic
                 if ($list['parent_id'] <= 0) {
                     $getListTopKegiatan[$list['id']] = $list;
                 }
-                $temp[$list['id']] = $list;
+                $temp[$list['id']] = $list;    
             }
 
             $getMsKegiatan = $temp;
@@ -155,7 +157,10 @@ class PakLogic
                 'total_top' => $topIds,
                 'total_ak' => $totalAk,
                 'permen' => $listPermen,
-                'top_kegiatan' => $getListTopKegiatan
+                'top_kegiatan' => $getListTopKegiatan,
+                'kredit' => $kredit,
+              
+           
             ];
 
         }
