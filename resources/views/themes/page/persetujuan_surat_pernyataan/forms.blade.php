@@ -66,6 +66,21 @@ else {
                     {{ Form::open(['id'=>'form', 'role' => 'form'])  }}
                 @endif
 
+                <div class="card-footer">
+
+                    <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')" onclick="return checkConfirm()">
+                        <i class="fa fa-send"></i><span class=""> @lang('general.update')</span>
+                    </button>
+                    <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
+                        <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
+                    </button>
+                    <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
+                       title="{{ __('general.back') }}">
+                        <i class="fa fa-arrow-circle-o-left"></i><span class=""> {{ __('general.back') }}</span>
+                    </a>
+
+                </div>
+
                 <div class="card-body">
                     <label for="all_ok_check"><input type="radio" class="all_ok_check" id="all_ok_check" name="flag_check_all"/> Setuju Semua</label>
                     <label for="all_cancel_check"><input type="radio" class="all_cancel_check" id="all_cancel_check" name="flag_check_all"/> Tolak Semua</label>
@@ -101,20 +116,12 @@ else {
 
                 <div class="card-footer">
 
-                    @if(in_array($viewType, ['create']))
-                        <button type="submit" class="mb-2 mr-2 btn btn-success" title="@lang('general.save')">
-                            <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
-                        </button>
-                    @elseif (in_array($viewType, ['edit']))
-                        <button type="submit" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')">
-                            <i class="fa fa-save"></i><span class=""> @lang('general.update')</span>
-                        </button>
-                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true)
-                        <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
-                           class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
-                            <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
-                        </a>
-                    @endif
+                    <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')" onclick="return checkConfirm()">
+                        <i class="fa fa-send"></i><span class=""> @lang('general.update')</span>
+                    </button>
+                    <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
+                        <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
+                    </button>
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
                         <i class="fa fa-arrow-circle-o-left"></i><span class=""> {{ __('general.back') }}</span>
@@ -172,6 +179,10 @@ else {
                 }
             }
         });
+
+        function checkConfirm() {
+            return confirm("Menyetujui Surat Pernyataan?");
+        }
 
     </script>
 @stop
