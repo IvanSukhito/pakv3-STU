@@ -17,7 +17,6 @@ class AtasanController extends _CrudController
 {
     public function __construct(Request $request)
     {
-
         $passingData = [
             'id' => [
                 'create' => 0,
@@ -139,7 +138,38 @@ class AtasanController extends _CrudController
         $this->data['listSet']['status'] = get_list_status();
         $this->data['listSet']['gender'] = get_list_gender();
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.atasan.list';
+        $this->listView['show'] = env('ADMIN_TEMPLATE') . '.page.atasan.forms';
         //$this->passingData = Users::where('role_id',3);
+    }
+
+    public function show($id)
+    {
+        $this->callPermission();
+
+        $getData = $this->crud->show($id);
+        if (!$getData) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $getPerancang = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
+            ->where('users.perancang', '=', 1)
+            ->where('users.upline_id','=',$id)
+            ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
+            ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
+            ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
+            ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
+            ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')->get();
+
+        $data = $this->data;
+
+        $data['viewType'] = 'show';
+        $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
+        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
+        $data['data'] = $getData;
+        $data['getPerancang'] = $getPerancang;
+
+
+        return view($this->listView[$data['viewType']], $data);
     }
 
     public function dataTable()

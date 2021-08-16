@@ -67,38 +67,43 @@ class ProfileController extends _GlobalFunctionController
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'lang' => 'Atasan',
+                'lang' => 'general.atasan',
                 'type' => 'select2'
             ],
             'pangkat_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.pangkat'
             ],
             'golongan_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.golongan'
             ],
             'jenjang_perancang_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.jenjang_perancang'
             ],
             'unit_kerja_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
             ],
             'gender' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select'
+                'type' => 'select',
+                'lang' => 'general.gender'
             ],
         ]);
         $this->passingAtasan = generatePassingData([
@@ -123,31 +128,37 @@ class ProfileController extends _GlobalFunctionController
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.pangkat'
+
             ],
             'golongan_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.golongan'
             ],
             'jenjang_perancang_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.jenjang_perancang'
             ],
             'unit_kerja_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
             ],
             'gender' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select'
+                'type' => 'select',
+                'lang' => 'general.gender'
             ],
         ]);
         $this->passingSeketariat = generatePassingData([
@@ -172,7 +183,8 @@ class ProfileController extends _GlobalFunctionController
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2'
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
             ],
         ]);
         $this->passingTimPerancang = $this->passingSeketariat;
@@ -209,6 +221,7 @@ class ProfileController extends _GlobalFunctionController
 
     }
 
+
     public function profile()
     {
         $data = $this->data;
@@ -229,6 +242,15 @@ class ProfileController extends _GlobalFunctionController
         }
         elseif ($getAtasan == 1) {
             $getPassing = $this->passingAtasan;
+            $getPerancang = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
+                ->where('users.perancang', '=', 1)
+                ->where('users.upline_id','=',session()->get('admin_id'))
+                ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
+                ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
+                ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
+                ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
+                ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')->get();
+
         }
         elseif ($getSeketariat == 1) {
             $getPassing = $this->passingSeketariat;
@@ -246,6 +268,7 @@ class ProfileController extends _GlobalFunctionController
         $data['thisLabel'] = __('general.title_show', ['field' => __('general.profile') . ' ' . $getData->name]);
         $data['thisRoute'] = 'profile';
         $data['passing'] = generatePassingData($getPassing);
+        $data['getPerancang'] = $getPerancang;
 
         return view(env('ADMIN_TEMPLATE').'.page.profile.show', $data);
     }
