@@ -136,6 +136,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $totalPermen = 0 ;
         $totalTop = 0 ;
         $totalAk = 0 ;
+        $topId = [];
+        $kredit = [];
 
         if (count($getData['data']) > 0) {
             $totalPermen = count($getData['total_permen']);
@@ -144,6 +146,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
             $dataPermen = $getData['permen'];
             $dataKegiatan = $getData['data'];
             $dataTopKegiatan = $getData['top_kegiatan'];
+            $topId = $getData['total_top'];
+            $kredit = $getData['kredit'];
         }
 
         $data = $this->data;
@@ -161,6 +165,9 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $data['totalPermen'] = $totalPermen;
         $data['totalTop'] = $totalTop;
         $data['totalAk'] = $totalAk;
+        $data['topId'] = $topId;
+        $data['kredit'] = $kredit;
+           
 
         return view($this->listView[$data['viewType']], $data);
     }
