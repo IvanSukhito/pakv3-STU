@@ -117,6 +117,8 @@ class KegiatanController extends _CrudController
         $dataKegiatan = [];
         $dataTopKegiatan = [];
         $getFilterKegiatan = [];
+        $topId = [];
+        $kredit = [];
         $totalPermen = 0 ;
         $totalTop = 0 ;
         $totalAk = 0 ;
