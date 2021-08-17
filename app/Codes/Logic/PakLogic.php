@@ -5,6 +5,9 @@ namespace App\Codes\Logic;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
 use App\Codes\Models\Permen;
+use App\Codes\Models\SuratPernyataan;
+use App\Codes\Models\SuratPernyataanKegiatan;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class PakLogic
 {
@@ -116,7 +119,7 @@ class PakLogic
             $topIds = [];
             $totalAk = 0;
             $kredit = [];
-         
+
             foreach ($getKegiatan as $list) {
                 $permenIds[] = $list->permen_id;
                 $topIds[] = $list->top_id;
@@ -140,7 +143,7 @@ class PakLogic
                 if ($list['parent_id'] <= 0) {
                     $getListTopKegiatan[$list['id']] = $list;
                 }
-                $temp[$list['id']] = $list;    
+                $temp[$list['id']] = $list;
             }
 
             $getMsKegiatan = $temp;
@@ -159,8 +162,8 @@ class PakLogic
                 'permen' => $listPermen,
                 'top_kegiatan' => $getListTopKegiatan,
                 'kredit' => $kredit,
-              
-           
+
+
             ];
 
         }
@@ -297,4 +300,49 @@ class PakLogic
         return $result;
     }
 
+    public function generateSuratPernyataan($suratPernyataanId)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+
+        $getSuratPernyataan = SuratPernyataan::where('id', $suratPernyataanId)->first();
+        if($getSuratPernyataan) {
+            $getData = $this->getSuratPernyataanUser($getSuratPernyataan);
+
+            $spreadsheet = new Spreadsheet();
+            $spreadsheet->getProperties()->setCreator('Peraturan Perundang-undangan')
+                ->setLastModifiedBy('PAK')
+                ->setTitle('Laporan Surat Pernyataan')
+                ->setSubject('Laporan Surat Pernyataan')
+                ->setDescription('Laporan Surat Pernyataan');
+
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $sheet
+
+        }
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

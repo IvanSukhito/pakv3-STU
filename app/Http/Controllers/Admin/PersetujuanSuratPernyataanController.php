@@ -117,6 +117,28 @@ class PersetujuanSuratPernyataanController extends _CrudController
             ->make(true);
     }
 
+    public function show($id)
+    {
+        $this->callPermission();
+
+        $getData = $this->crud->show($id);
+        if (!$getData) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $pakLogic = new PakLogic();
+        $pakLogic->generateSuratPernyataan($id);
+
+        $data = $this->data;
+
+        $data['viewType'] = 'show';
+        $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
+        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
+        $data['data'] = $getData;
+
+        return view($this->listView[$data['viewType']], $data);
+    }
+
     public function edit($id)
     {
         $this->callPermission();
@@ -175,7 +197,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $data['totalAk'] = $totalAk;
         $data['topId'] = $topId;
         $data['kredit'] = $kredit;
-           
+
 
         return view($this->listView[$data['viewType']], $data);
     }
@@ -210,7 +232,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         if ($getSaveFlag == 2) {
             $getData->status = 2;
-            $this->generatePDF($id);
+            $pakLogic = new PakLogic();
+            $pakLogic->generateSuratPernyataan($id);
         }
         else {
             $getData->status = 1;
