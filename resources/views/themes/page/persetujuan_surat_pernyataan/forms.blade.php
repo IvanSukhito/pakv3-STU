@@ -81,7 +81,7 @@ else {
                         <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
                             <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
                         </button>
-                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true)
+                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true && in_array($data->status, [1,2]))
                         <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
                            class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
                             <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
@@ -169,7 +169,7 @@ else {
                         <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
                             <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
                         </button>
-                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true)
+                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true && in_array($data->status, [1,2]))
                         <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
                            class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
                             <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>

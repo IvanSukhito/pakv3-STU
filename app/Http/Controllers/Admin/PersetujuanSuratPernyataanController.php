@@ -50,6 +50,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.persetujuan_surat_pernyataan.forms';
         $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.persetujuan_surat_pernyataan.forms';
+        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.persetujuan_surat_pernyataan.list_button';
 
         $this->data['listSet']['status'] = get_list_status_surat_pernyataan();
 
@@ -68,7 +69,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
             ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
             ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')
             ->where('users.upline_id', $userId)
-            ->whereIn('tx_surat_pernyataan.status', [1,2]);
+            ->whereIn('tx_surat_pernyataan.status', [1,2,80,99]);
 
         $dataTables = $dataTables->eloquent($builder)
             ->addColumn('action', function ($query) {
@@ -190,7 +191,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2,80])->first();
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2])->first();
         if (!$getSuratPernyataan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -250,7 +251,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
     {
         $this->callPermission();
 
-        $getData = $this->crud->show($id);
+        $getData = SuratPernyataan::where('id', $id)->whereIn('status', [1,2])->first();
         if (!$getData) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -276,8 +277,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         if ($getSaveFlag == 2) {
             $getData->status = 80;
-            $pakLogic = new PakLogic();
-            $pakLogic->generateSuratPernyataan($id);
+//            $pakLogic = new PakLogic();
+//            $pakLogic->generateSuratPernyataan($id);
         }
         else {
             $getData->status = 2;
