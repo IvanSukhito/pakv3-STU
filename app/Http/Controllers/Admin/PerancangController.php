@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
-use App\User;
 use Illuminate\Http\Request;
 use App\Codes\Models\Users;
 use App\Codes\Models\Golongan;
@@ -12,6 +11,7 @@ use App\Codes\Models\UnitKerja;
 use App\Codes\Models\JenjangPerancang;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
+
 class PerancangController extends _CrudController
 {
     public function __construct(Request $request)

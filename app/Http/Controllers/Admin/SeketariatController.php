@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Codes\Models\Users;
 use App\Codes\Models\Golongan;

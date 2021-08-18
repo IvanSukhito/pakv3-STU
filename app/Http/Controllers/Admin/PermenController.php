@@ -3,11 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
-use App\Codes\Models\JenjangPerancang;
-use App\Codes\Models\MsKegiatan;
-use App\Codes\Models\Permen;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 
 class PermenController extends _CrudController
 {

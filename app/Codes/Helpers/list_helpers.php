@@ -73,7 +73,7 @@ if ( ! function_exists('get_list_status_dupak')) {
     function get_list_status_dupak()
     {
         return [
-            1 => __('Menunggu Perancang Upload'),
+            1 => __('Menunggu Perancang Upload SP'),
             2 => __('general.pending'),
             3 => __('Di Proses'),
             80 => __('Di Setujui'),

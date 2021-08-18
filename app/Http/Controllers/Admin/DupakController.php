@@ -10,7 +10,7 @@ use App\Codes\Models\Users;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-class SuratPernyataanController extends _CrudController
+class DupakController extends _CrudController
 {
     public function __construct(Request $request)
     {

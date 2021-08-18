@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
-use App\Codes\Models\Settings;
 use Illuminate\Http\Request;
 
 class SettingsController extends _CrudController
