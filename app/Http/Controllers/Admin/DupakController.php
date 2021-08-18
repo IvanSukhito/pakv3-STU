@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
+use App\Codes\Models\Dupak;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Users;
@@ -42,12 +43,12 @@ class DupakController extends _CrudController
         ];
 
         parent::__construct(
-            $request, 'general.surat_pernyataan', 'surat-pernyataan', 'SuratPernyataan', 'surat-pernyataan',
+            $request, 'general.dupak', 'dupak', 'Dupak', 'dupak',
             $passingData
         );
 
-        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.surat_pernyataan.forms';
-        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.surat_pernyataan.list_button';
+        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.dupak.forms';
+        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.dupak.list_button';
 
         $this->data['listSet']['status'] = get_list_status_surat_pernyataan();
 
@@ -61,12 +62,12 @@ class DupakController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('tx_surat_pernyataan.id, ms_kegiatan.name AS kegiatan, tx_surat_pernyataan.status,
-            tx_surat_pernyataan.total_kredit, tx_surat_pernyataan.created_at, tx_surat_pernyataan.updated_at')
-            ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
-            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')
-            ->where('tx_surat_pernyataan.user_id', $userId)
-            ->whereIn('tx_surat_pernyataan.status', [80,99]);
+        $builder = Users::selectRaw('tx_dupak.id, ms_kegiatan.name AS kegiatan, tx_dupak.status,
+            tx_dupak.total_kredit, tx_dupak.created_at, tx_dupak.updated_at')
+            ->join('tx_dupak', 'tx_dupak.user_id', '=', 'users.id')
+            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_dupak.top_kegiatan_id')
+            ->where('tx_dupak.user_id', $userId)
+            ->whereIn('tx_dupak.status', [1,2,3,80,99]);
 
         $dataTables = $dataTables->eloquent($builder)
             ->addColumn('action', function ($query) {
@@ -132,24 +133,24 @@ class DupakController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [80,99])->first();
-        if (!$getSuratPernyataan) {
+        $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2,3,80,99])->first();
+        if (!$getDupak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $userId)->where('upline_id', $getSuratPernyataan->upline_id)->first();
+        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
         if ($this->request->get('pdf') == 1) {
             $getPAKLogic = new PakLogic();
-            $getPAKLogic->generateSuratPernyataan($id);
+            $getPAKLogic->generateDupak($id);
         }
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan);
+        $getData = $getNewLogic->getDupakUser($getDupak);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -177,7 +178,7 @@ class DupakController extends _CrudController
         $data['viewType'] = 'show';
         $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getSuratPernyataan;
+        $data['data'] = $getDupak;
         $data['dataUser'] = $getPerancang;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;

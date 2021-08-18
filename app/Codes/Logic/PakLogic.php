@@ -2,11 +2,11 @@
 
 namespace App\Codes\Logic;
 
+use App\Codes\Models\Dupak;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
 use App\Codes\Models\Permen;
 use App\Codes\Models\SuratPernyataan;
-use App\Codes\Models\SuratPernyataanKegiatan;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -237,6 +237,70 @@ class PakLogic
         return [];
     }
 
+    public function getDupakUser($dupak)
+    {
+        $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_dupak_kegiatan.id AS sp_kegiatan_id, tx_dupak_kegiatan.message AS sp_kegiatan_message, tx_dupak_kegiatan.status AS sp_kegiatan_status')
+            ->join('tx_dupak_kegiatan', 'tx_dupak_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
+            ->where('tx_dupak_kegiatan.dupak_id', '=', $dupak->id)
+            ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
+
+        if ($getKegiatan) {
+            $getJudul = [];
+            $getDataKegiatan = [];
+            $permenIds = [];
+            $topIds = [];
+            $totalAk = 0;
+            $kredit = [];
+
+            foreach ($getKegiatan as $list) {
+                $permenIds[] = $list->permen_id;
+                $topIds[] = $list->top_id;
+                $kredit[$list->top_id][] = $list->kredit;
+                $getJudul[$list->permen_id][$list->top_id][$list->judul][] = $list->ms_kegiatan_id;
+                $getDataKegiatan[$list->permen_id][$list->top_id][$list->judul][$list->ms_kegiatan_id][] = $list->toArray();
+                $totalAk += $list->kredit;
+            }
+
+            if (count($permenIds) > 0) {
+                $permenIds = array_unique($permenIds);
+            }
+            if (count($topIds) > 0) {
+                $topIds = array_unique($topIds);
+            }
+
+            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenIds)->get();
+            $temp = [];
+            $getListTopKegiatan = [];
+            foreach ($getMsKegiatan->toArray() as $list) {
+                if ($list['parent_id'] <= 0) {
+                    $getListTopKegiatan[$list['id']] = $list;
+                }
+                $temp[$list['id']] = $list;
+            }
+
+            $getMsKegiatan = $temp;
+
+            $getPermen = Permen::whereIn('id', $permenIds)->get();
+            $listPermen = [];
+            foreach ($getPermen as $list) {
+                $listPermen[$list->id] = $list->name;
+            }
+
+            return [
+                'data' => $this->getParentTreeKegiatan($getMsKegiatan, $getJudul, $getDataKegiatan),
+                'total_permen' => $permenIds,
+                'total_top' => $topIds,
+                'total_ak' => $totalAk,
+                'permen' => $listPermen,
+                'top_kegiatan' => $getListTopKegiatan,
+                'kredit' => $kredit
+            ];
+
+        }
+
+        return [];
+    }
+
     /**
      * @param $msKegiatan
      * @param $listJudulKegiatan
@@ -330,6 +394,48 @@ class PakLogic
             // Redirect output to a client’s web browser (PDF)
             header('Content-Type: application/pdf');
             header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.pdf"');
+
+            header('Cache-Control: max-age=0');
+            // If you're serving to IE 9, then the following may be needed
+            header('Cache-Control: max-age=1');
+
+//            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $writer = IOFactory::createWriter($spreadsheet, 'Pdf');
+            $writer->save('php://output');
+            exit;
+
+        }
+    }
+
+    public function generateDupak($dupakId)
+    {
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+
+        $getDupak = Dupak::where('id', $dupakId)->first();
+        if($getDupak) {
+            $getData = $this->getSuratPernyataanUser($getDupak);
+
+            $spreadsheet = new Spreadsheet();
+            $spreadsheet->getProperties()->setCreator('Peraturan Perundang-undangan')
+                ->setLastModifiedBy('PAK')
+                ->setTitle('Laporan Surat Pernyataan')
+                ->setSubject('Laporan Surat Pernyataan')
+                ->setDescription('Laporan Surat Pernyataan');
+
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $row = 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'List User Riddle');
+
+            // Redirect output to a client’s web browser (Xls)
+//            header('Content-Type: application/vnd.ms-excel');
+//            header('Content-Disposition: attachment;filename="dupak_' . strtotime("now") . '.xlsx"');
+
+            // Redirect output to a client’s web browser (PDF)
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment;filename="dupak_' . strtotime("now") . '.pdf"');
 
             header('Cache-Control: max-age=0');
             // If you're serving to IE 9, then the following may be needed
