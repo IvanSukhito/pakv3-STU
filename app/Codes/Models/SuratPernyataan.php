@@ -21,8 +21,8 @@ class SuratPernyataan extends Model
         'pdf_url',
         'info_surat_pernyataan',
         'total_kredit',
-        'status',
-        'alasan_menolak'
+        'alasan_menolak',
+        'status'
     ];
 
 }
