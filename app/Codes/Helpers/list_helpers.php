@@ -37,6 +37,18 @@ if ( ! function_exists('get_list_kegiatan')) {
 }
 
 if ( ! function_exists('get_list_status_surat_pernyataan')) {
+    function get_list_status_surat_pernyataan()
+    {
+        return [
+            1 => __('general.pending'),
+            2 => __('Di Proses'),
+            8 => __('Di Setujui'),
+            99 => __('Di Tolak'),
+        ];
+    }
+}
+
+if ( ! function_exists('get_list_status_pak')) {
     function get_list_status_pak()
     {
         return [

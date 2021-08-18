@@ -47,7 +47,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.persetujuan_surat_pernyataan.forms';
 
-        $this->data['listSet']['approved'] = get_list_status_pak();
+        $this->data['listSet']['approved'] = get_list_status_surat_pernyataan();
 
     }
 
