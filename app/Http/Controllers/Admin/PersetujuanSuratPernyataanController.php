@@ -45,6 +45,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
             $passingData
         );
 
+        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.persetujuan_surat_pernyataan.forms';
         $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.persetujuan_surat_pernyataan.forms';
 
         $this->data['listSet']['approved'] = get_list_status_surat_pernyataan();
@@ -121,20 +122,60 @@ class PersetujuanSuratPernyataanController extends _CrudController
     {
         $this->callPermission();
 
-        $getData = $this->crud->show($id);
-        if (!$getData) {
+        $userId = session()->get('admin_id');
+
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2,80])->first();
+        if (!$getSuratPernyataan) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
+        if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        $pakLogic = new PakLogic();
-        $pakLogic->generateSuratPernyataan($id);
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+
+        $getNewLogic = new PakLogic();
+        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan);
+
+        $dataPermen = [];
+        $dataKegiatan = [];
+        $dataTopKegiatan = [];
+        $getFilterKegiatan = [];
+        $totalPermen = 0 ;
+        $totalTop = 0 ;
+        $totalAk = 0 ;
+        $topId = [];
+        $kredit = [];
+
+        if (count($getData['data']) > 0) {
+            $totalPermen = count($getData['total_permen']);
+            $totalTop = count($getData['total_top']);
+            $totalAk = $getData['total_ak'];
+            $dataPermen = $getData['permen'];
+            $dataKegiatan = $getData['data'];
+            $dataTopKegiatan = $getData['top_kegiatan'];
+            $topId = $getData['total_top'];
+            $kredit = $getData['kredit'];
+        }
 
         $data = $this->data;
 
         $data['viewType'] = 'show';
         $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getData;
+        $data['data'] = $getSuratPernyataan;
+        $data['dataUser'] = $getPerancang;
+        $data['dataJenjangPerancang'] = $getJenjangPerancang;
+        $data['dataPermen'] = $dataPermen;
+        $data['dataFilterKegiatan'] = $getFilterKegiatan;
+        $data['dataKegiatan'] = $dataKegiatan;
+        $data['dataTopKegiatan'] = $dataTopKegiatan;
+        $data['totalPermen'] = $totalPermen;
+        $data['totalTop'] = $totalTop;
+        $data['totalAk'] = $totalAk;
+        $data['topId'] = $topId;
+        $data['kredit'] = $kredit;
 
         return view($this->listView[$data['viewType']], $data);
     }
@@ -145,7 +186,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2])->first();
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2,80])->first();
         if (!$getSuratPernyataan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -198,7 +239,6 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $data['topId'] = $topId;
         $data['kredit'] = $kredit;
 
-
         return view($this->listView[$data['viewType']], $data);
     }
 
@@ -231,12 +271,12 @@ class PersetujuanSuratPernyataanController extends _CrudController
         }
 
         if ($getSaveFlag == 2) {
-            $getData->status = 2;
+            $getData->status = 80;
             $pakLogic = new PakLogic();
             $pakLogic->generateSuratPernyataan($id);
         }
         else {
-            $getData->status = 1;
+            $getData->status = 2;
         }
 
         $getData->save();
@@ -251,143 +291,6 @@ class PersetujuanSuratPernyataanController extends _CrudController
             session()->flash('message_alert', 2);
             return redirect()->route($this->rootRoute.'.' . $this->route . '.show', $id);
         }
-    }
-
-    protected function createPDF($id, $superVisorId)
-    {
-        $getData = SuratPernyataan::where('id', $id)->first();
-        if($getData) {
-            $userId = $getData->user_id;
-
-            $superVisorUser = Users::where('id', $superVisorId)->first();
-           // $superVisorStaff = Staffs::where('user_id', $superVisorId)->first();
-
-            $user = Users::where('id', $userId)->first();
-            $staff = Users::where('id', $userId)->first();
-
-            $getJenjangPerancang = JenjangPerancang::whereIn('id', [$staff->jenjang_perancang_id, $superVisorStaff->jenjang_perancang_id])->pluck('id', 'name')->toArray();
-            $getJabatanPerancang = JabatanPerancang::whereIn('id', [$staff->jabatan_perancang_id, $superVisorStaff->jabatan_perancang_id])->pluck('id', 'name')->toArray();
-            $getUnitKerja = UnitKerja::where('id', $staff->unit_kerja_id)->first();
-
-            $userNip = $user->username;
-
-            $surat_pernyataan_info = SuratPernyataanInfo::where('ms_kegiatan_id', $getData->parent_id)->first();
-            $kegiatan = $getData->getKegiatan()->orderBy('tanggal', 'ASC')->get();
-
-            $user_folder = 'user_'.preg_replace("/[^A-Za-z0-9?!]/",'', $userNip);
-            $today_date = date('Y-m-d');
-            $folder_name = $user_folder.'/surat_pernyataan/'.$today_date.'/';
-            $set_file_name = 'surat_pernyataan_'.date('His').rand(10,99).'.pdf';
-            $folder_path = './uploads/'.$folder_name;
-            $destinationPath = './uploads/'.$folder_name.$set_file_name;
-            $destinationLink = 'uploads/'.$folder_name.$set_file_name;
-
-            if(!file_exists($folder_path)) {
-                mkdir($folder_path, 755, true);
-            }
-
-            $data = [
-                'title' => $getUnitKerja ? $getUnitKerja->name : '',
-                'superVisorUser' => $superVisorUser,
-                'superVisorStaff' => $superVisorStaff,
-                'superVisorJenjangPerancang' => isset($getJenjangPerancang[$superVisorStaff->jenjang_perancang_id]) ? $getJenjangPerancang[$superVisorStaff->jenjang_perancang_id] : '',
-                'superVisorJabatanPerancang' => isset($getJabatanPerancang[$superVisorStaff->jabatan_perancang_id]) ? $getJabatanPerancang[$superVisorStaff->jabatan_perancang_id] : '',
-                'user' => $user,
-                'staff' => $staff,
-                'staffJenjangPerancang' => isset($getJenjangPerancang[$staff->jenjang_perancang_id]) ? $getJenjangPerancang[$staff->jenjang_perancang_id] : '',
-                'staffJabatanPerancang' => isset($getJabatanPerancang[$staff->jabatan_perancang_id]) ? $getJabatanPerancang[$staff->jabatan_perancang_id] : '',
-                'surat_pernyataan' => $getData,
-                'surat_pernyataan_info' => $surat_pernyataan_info,
-                'kegiatan' => $kegiatan,
-            ];
-
-            $pdf = PDF::loadView('pdf.surat_pernyataan', $data);
-            $pdf->save($destinationPath);
-            return [
-                'name' => $set_file_name,
-                'location' => $destinationLink,
-            ];
-
-        }
-
-        return false;
-
-    }
-
-    protected function generatePDF($id) {
-
-        $getData = SuratPernyataan::where('id', $id)->first();
-        if($getData) {
-
-            $userId = $getData->user_id;
-
-            $staff = Users::where('id', $userId)->first();
-            $user = Users::where('id', $userId)->first();
-            $staffJenjangPerancang = $staff->getJenjangPerancang()->first();
-            $staffJabatanPerancang = $staff->getJabatanPerancang()->first();
-            $staffUnitKerja = $staff->getUnitKerja()->first();
-            $atasan_staff = Staffs::where('user_id', $getData->supervisor_id)->first();
-            $atasan_user = false;
-            $atasanJenjangPerancang = false;
-            $atasanJabatanPerancang = false;
-            $atasanUnitKerja = false;
-            if ($atasan_staff) {
-                $atasan_user = Users::where('id', $atasan_staff->user_id)->first();
-                $atasanJenjangPerancang = $staff->getJenjangPerancang()->first();
-                $atasanJabatanPerancang = $staff->getJabatanPerancang()->first();
-                $atasanUnitKerja = $staff->getUnitKerja()->first();
-            }
-
-            $surat_pernyataan_info = SuratPernyataanInfo::where('ms_kegiatan_id', $getData->parent_id)->first();
-            $kegiatan = $getData->getKegiatan()->orderBy('tanggal', 'ASC')->get();
-
-            $getUrl = explode('/', $getData->pdf_url);
-            $total = count($getUrl) - 2;
-            $oldPath = '';
-            foreach ($getUrl as $index => $list) {
-                if ($index >= $total)
-                    continue;
-                $oldPath .= '/'.$list;
-            }
-
-            $folder_path = '.'.$oldPath;
-            $destinationPath = './'.$getData->pdf_url;
-
-            if(!file_exists($folder_path)) {
-                mkdir($folder_path, 755, true);
-            }
-
-            $data = [
-                'surat_pernyataan' => $getData,
-                'surat_pernyataan_info' => $surat_pernyataan_info,
-                'staff' => $staff,
-                'user' => $user,
-                'staffJenjangPerancang' => $staffJenjangPerancang,
-                'staffJabatanPerancang' => $staffJabatanPerancang,
-                'staffUnitKerja' => $staffUnitKerja,
-                'atasan_staff' => $atasan_staff,
-                'atasan_user' => $atasan_user,
-                'atasanJenjangPerancang' => $atasanJenjangPerancang,
-                'atasanJabatanPerancang' => $atasanJabatanPerancang,
-                'atasanUnitKerja' => $atasanUnitKerja,
-                'kegiatan' => $kegiatan,
-            ];
-
-            $pdf = PDF::loadView('pdf.surat_pernyataan', $data);
-            $pdf->save($destinationPath);
-
-        }
-
-    }
-
-    public function getKegiatan($id)
-    {
-        $userId = session()->get('admin_id');
-
-        $ajax = Kegiatan::where("permen_id",$id)
-            ->where("user_id", $userId)
-            ->pluck("judul","id");
-        return response()->json($ajax);
     }
 
 }
