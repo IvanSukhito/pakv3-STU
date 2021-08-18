@@ -322,6 +322,17 @@ if ( ! function_exists('listAllMenu')) {
             ],
             //Surat Pernyataan
             [
+                'name' => __('general.surat_pernyataan'),
+                'icon' => '<i class="nav-icon fa fa-envelope"></i>',
+                'title' => __('general.surat_pernyataan'),
+                'active' => [
+                    'admin.surat-pernyataan.'
+                ],
+                'route' => 'admin.surat-pernyataan.index',
+                'key' => 'surat-pernyataan',
+                'type' => 1,
+            ],
+            [
                 'name' => __('general.persetujuan_surat_pernyataan'),
                 'icon' => '<i class="nav-icon fa fa-envelope"></i>',
                 'title' => __('general.persetujuan_surat_pernyataan'),
@@ -332,15 +343,28 @@ if ( ! function_exists('listAllMenu')) {
                 'key' => 'persetujuan-surat-pernyataan',
                 'type' => 1,
             ],
+
+            // DUPAK
             [
-                'name' => __('general.surat_pernyataan'),
+                'name' => __('general.dupak'),
                 'icon' => '<i class="nav-icon fa fa-envelope"></i>',
-                'title' => __('general.surat_pernyataan'),
+                'title' => __('general.dupak'),
                 'active' => [
-                    'admin.surat-pernyataan.index'
+                    'admin.dupak.'
                 ],
-                'route' => 'admin.surat-pernyataan.index',
-                'key' => 'surat-pernyataan',
+                'route' => 'admin.dupak.index',
+                'key' => 'dupak',
+                'type' => 1,
+            ],
+            [
+                'name' => __('general.persetujuan_dupak'),
+                'icon' => '<i class="nav-icon fa fa-envelope"></i>',
+                'title' => __('general.persetujuan_dupak'),
+                'active' => [
+                    'admin.persetujuan-dupak.index'
+                ],
+                'route' => 'admin.persetujuan-dupak.index',
+                'key' => 'persetujuan-dupak',
                 'type' => 1,
             ],
 
@@ -557,6 +581,8 @@ if ( ! function_exists('listAvailablePermission'))
 
         foreach ([
             'persetujuan-surat-pernyataan',
+            'dupak',
+            'persetujuan-dupak',
                  ] as $keyPermission) {
             $listPermission[$keyPermission] = [
                 'list' => [

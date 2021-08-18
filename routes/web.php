@@ -60,10 +60,10 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\SeketariatController' => 'seketariat',
                 'Admin\TimPenilaiController' => 'tim_penilai',
                 'Admin\KegiatanController' => 'kegiatan',
-                'Admin\PersetujuanSuratPernyataanController' => 'persetujuan-surat-pernyataan',
                 'Admin\SuratPernyataanController' => 'surat-pernyataan',
-
-
+                'Admin\PersetujuanSuratPernyataanController' => 'persetujuan-surat-pernyataan',
+                'Admin\DupakController' => 'dupak',
+                'Admin\PersetujuanDupakController' => 'persetujuan-dupak',
             ];
             foreach ($listRouter as $controller => $linkName) {
 
