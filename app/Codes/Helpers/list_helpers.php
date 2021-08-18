@@ -50,6 +50,7 @@ if ( ! function_exists('get_list_kegiatan')) {
             3 => __('Proses Surat DUPAK'),
             4 => __('Proses Surat BAPAK'),
             5 => __('Proses Surat PAK'),
+            88 => __('History'),
             99 => __('Di Tolak'),
         ];
     }
@@ -62,6 +63,7 @@ if ( ! function_exists('get_list_status_surat_pernyataan')) {
             1 => __('general.pending'),
             2 => __('Di Proses'),
             80 => __('Di Setujui'),
+            88 => __('History'),
             99 => __('Di Tolak'),
         ];
     }
