@@ -24,6 +24,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
     public function __construct(Request $request)
     {
         $passingData = [
+            'id' => [
+            ],
             'username' => [
                 'lang' => 'general.nip'
             ],
@@ -129,7 +131,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2,80])->first();
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2,80, 99])->first();
         if (!$getSuratPernyataan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
