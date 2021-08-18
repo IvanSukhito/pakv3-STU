@@ -138,6 +138,11 @@ class PersetujuanSuratPernyataanController extends _CrudController
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
+        if ($this->request->get('pdf') == 1) {
+            $getPAKLogic = new PakLogic();
+            $getPAKLogic->generateSuratPernyataan($id);
+        }
+
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();
