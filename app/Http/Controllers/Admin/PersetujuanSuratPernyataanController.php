@@ -24,16 +24,29 @@ class PersetujuanSuratPernyataanController extends _CrudController
     public function __construct(Request $request)
     {
         $passingData = [
+            'id' => [
+            ],
             'username' => [
                 'lang' => 'general.nip'
             ],
             'name' => [
+            ],
+            'total_kredit' => [
+                'type' => 'number'
             ],
             'kegiatan' => [
                 'custom' => ', name:"ms_kegiatan.name"'
             ],
             'status' => [
                 'type' => 'select'
+            ],
+            'created_at' => [
+                'lang' => 'DiKirim',
+                'type' => 'datetime'
+            ],
+            'updated_at' => [
+                'lang' => 'DiUpdate',
+                'type' => 'datetime'
             ],
             'action' => [
                 'create' => 0,
@@ -65,7 +78,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $dataTables = new DataTables();
 
         $builder = Users::selectRaw('tx_surat_pernyataan.id, users.username, users.name, ms_kegiatan.name AS kegiatan,
-            tx_surat_pernyataan.status')
+            tx_surat_pernyataan.status, tx_surat_pernyataan.total_kredit, tx_surat_pernyataan.created_at,
+            tx_surat_pernyataan.updated_at')
             ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
             ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')
             ->where('users.upline_id', $userId)
@@ -129,7 +143,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2,80])->first();
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2,80, 99])->first();
         if (!$getSuratPernyataan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -267,12 +281,18 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         DB::beginTransaction();
 
-        $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::where('surat_pernyataan_id', $id)->get();
+        $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::selectRaw('tx_surat_pernyataan_kegiatan.*, tx_kegiatan.kredit AS kredit')
+            ->join('tx_kegiatan', 'tx_kegiatan.id', '=', 'tx_surat_pernyataan_kegiatan.kegiatan_id')
+            ->where('surat_pernyataan_id', $id)->get();
+        $totalKredit = 0;
         foreach ($getSuratPernyataanKegiatan as $list) {
             $getAction = isset($actionKegiatan[$list->id]) ? $actionKegiatan[$list->id] : 1;
             $getMessage = '';
             if ($getAction == 99) {
                 $getMessage = isset($messageKegiatan[$list->id]) ? $messageKegiatan[$list->id] : '';
+            }
+            else {
+                $totalKredit += $list->kredit;
             }
             $list->message = $getMessage;
             $list->status = $getAction;
@@ -280,10 +300,10 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         }
 
+        $getData->total_kredit = $totalKredit;
+
         if ($getSaveFlag == 2) {
             $getData->status = 80;
-//            $pakLogic = new PakLogic();
-//            $pakLogic->generateSuratPernyataan($id);
         }
         else {
             $getData->status = 2;
