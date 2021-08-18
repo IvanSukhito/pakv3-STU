@@ -7,6 +7,7 @@ use App\Codes\Models\MsKegiatan;
 use App\Codes\Models\Permen;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\SuratPernyataanKegiatan;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class PakLogic
@@ -318,7 +319,26 @@ class PakLogic
 
             $sheet = $spreadsheet->getActiveSheet();
 
-            $sheet
+            $row = 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'List User Riddle');
+
+            // Redirect output to a client’s web browser (Xls)
+//            header('Content-Type: application/vnd.ms-excel');
+//            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.xlsx"');
+
+            // Redirect output to a client’s web browser (PDF)
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.pdf"');
+
+            header('Cache-Control: max-age=0');
+            // If you're serving to IE 9, then the following may be needed
+            header('Cache-Control: max-age=1');
+
+//            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $writer = IOFactory::createWriter($spreadsheet, 'Pdf');
+            $writer->save('php://output');
+            exit;
 
         }
     }
