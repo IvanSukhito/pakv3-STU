@@ -68,12 +68,23 @@ else {
 
                 <div class="card-footer">
 
-                    <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')" onclick="return checkConfirm()">
-                        <i class="fa fa-send"></i><span class=""> @lang('general.update')</span>
-                    </button>
-                    <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
-                        <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
-                    </button>
+                    @if(in_array($viewType, ['create']))
+                        <button type="submit" class="mb-2 mr-2 btn btn-success" title="@lang('general.save')">
+                            <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
+                        </button>
+                    @elseif (in_array($viewType, ['edit']))
+                        <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')" onclick="return checkConfirm()">
+                            <i class="fa fa-send"></i><span class=""> @lang('general.update')</span>
+                        </button>
+                        <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
+                            <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
+                        </button>
+                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true)
+                        <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
+                           class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
+                            <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
+                        </a>
+                    @endif
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
                         <i class="fa fa-arrow-circle-o-left"></i><span class=""> {{ __('general.back') }}</span>
@@ -81,34 +92,36 @@ else {
 
                 </div>
 
+                @if(!in_array($viewType, ['show']))
                 <div class="card-body">
                     <label for="all_ok_check"><input type="radio" class="all_ok_check" id="all_ok_check" name="flag_check_all"/> Setuju Semua</label>
                     <label for="all_cancel_check"><input type="radio" class="all_cancel_check" id="all_cancel_check" name="flag_check_all"/> Tolak Semua</label>
                 </div>
+                @endif
                 <div class="card-body">
                     <h3 class="form-section first-form">Kegiatan</h3>
                     <p>Perancang mengajukan:</p>
                     <ul>
-                     
+
                         <li>Surat Pernyataan:
                         @foreach($topId as $top)
 
-                    
-                        <?php $data = isset($dataTopKegiatan[$top]) ? $dataTopKegiatan[$top] : false;?>
+
+                        <?php $dataTop = isset($dataTopKegiatan[$top]) ? $dataTopKegiatan[$top] : false;?>
                         <?php $dataAk = isset($kredit[$top]) ? $kredit[$top] : false;?>
-                        
+
                            <ul>
                                <?php $sumAk = 0;?>
                                @foreach($dataAk as $dataAk)
                                <?php $sumAk += $dataAk?>
                                @endforeach
-                             
-                              <li>{!! $data ? $data['name'] : '' !!} - {!!number_format($sumAk,3)!!}</li> 
-                             
-                           </ul> 
+
+                              <li>{!! $dataTop ? $dataTop['name'] : '' !!} - {!!number_format($sumAk,3)!!}</li>
+
+                           </ul>
                            @endforeach
                         </li>
-                     
+
                         <li>Total AK yang di ajukan: {!! number_format($totalAk, 3) !!}</li>
                     </ul>
                 </div>
@@ -128,7 +141,7 @@ else {
 
                                         <div class="card-header"><h4>{!! $getJudul !!}</h4></div>
                                         <div class="card-body overflow">
-                                            {!! persetujuan_sp_kegiatan_v3($listKegiatan[0]['childs'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
+                                            {!! persetujuan_sp_kegiatan_v3($listKegiatan[0]['childs'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id, 1) !!}
                                         </div>
 
                                     @endforeach
@@ -143,12 +156,23 @@ else {
 
                 <div class="card-footer">
 
-                    <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')" onclick="return checkConfirm()">
-                        <i class="fa fa-send"></i><span class=""> @lang('general.update')</span>
-                    </button>
-                    <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
-                        <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
-                    </button>
+                    @if(in_array($viewType, ['create']))
+                        <button type="submit" class="mb-2 mr-2 btn btn-success" title="@lang('general.save')">
+                            <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
+                        </button>
+                    @elseif (in_array($viewType, ['edit']))
+                        <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')" onclick="return checkConfirm()">
+                            <i class="fa fa-send"></i><span class=""> @lang('general.update')</span>
+                        </button>
+                        <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
+                            <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
+                        </button>
+                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true)
+                        <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
+                           class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
+                            <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
+                        </a>
+                    @endif
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
                         <i class="fa fa-arrow-circle-o-left"></i><span class=""> {{ __('general.back') }}</span>

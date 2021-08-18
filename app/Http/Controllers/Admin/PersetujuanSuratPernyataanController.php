@@ -32,6 +32,9 @@ class PersetujuanSuratPernyataanController extends _CrudController
             'kegiatan' => [
                 'custom' => ', name:"ms_kegiatan.name"'
             ],
+            'status' => [
+                'type' => 'select'
+            ],
             'action' => [
                 'create' => 0,
                 'edit' => 0,
@@ -48,7 +51,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.persetujuan_surat_pernyataan.forms';
         $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.persetujuan_surat_pernyataan.forms';
 
-        $this->data['listSet']['approved'] = get_list_status_surat_pernyataan();
+        $this->data['listSet']['status'] = get_list_status_surat_pernyataan();
 
     }
 
@@ -60,7 +63,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('tx_surat_pernyataan.id, users.username, users.name, ms_kegiatan.name AS kegiatan')
+        $builder = Users::selectRaw('tx_surat_pernyataan.id, users.username, users.name, ms_kegiatan.name AS kegiatan,
+            tx_surat_pernyataan.status')
             ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
             ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')
             ->where('users.upline_id', $userId)
