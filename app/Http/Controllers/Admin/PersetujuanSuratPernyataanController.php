@@ -366,6 +366,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
                 DupakKegiatan::insert($saveDupakKegiatan);
             }
 
+            //Create PDF here
 
         }
         else {
