@@ -20,8 +20,8 @@ class SuratPernyataan extends Model
         'pdf',
         'pdf_url',
         'info_surat_pernyataan',
-        'status',
         'total_kredit',
+        'status',
         'alasan_menolak'
     ];
 

@@ -5,9 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
 use App\Codes\Models\Dupak;
+use App\Codes\Models\DupakKegiatan;
+use App\Codes\Models\Golongan;
+use App\Codes\Models\JabatanPerancang;
+use App\Codes\Models\Pangkat;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\SuratPernyataanKegiatan;
+use App\Codes\Models\UnitKerja;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -297,9 +302,70 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $getData->total_kredit = $totalKredit;
 
         if ($getSaveFlag == 2) {
+            $getData->tanggal = date('Y-m-d');
             $getData->status = 80;
 
+            $getUser = Users::where('id', $getData->user_id)->first();
+            $getAtasan = Users::where('id', $getData->upline_id)->first();
+            $getListPangkat = Pangkat::pluck('name', 'id')->toArray();
+            $getListGolongan = Golongan::pluck('name', 'id')->toArray();
+            $getListJabatan = JabatanPerancang::pluck('name', 'id')->toArray();
+            $getListUnitKerja = UnitKerja::pluck('name', 'id')->toArray();
+
+            $getUserPangkat = $getListPangkat[$getUser->pangkat_id] ?? '';
+            $getUserGolongan = $getListGolongan[$getUser->golongan_id] ?? '';
+            $getUserJabatan = $getListJabatan[$getUser->jenjang_perancang_id] ?? '';
+            $getUserUnitKerja = $getListUnitKerja[$getUser->unit_kerja_id] ?? '';
+            $getUserPangkatTms = $getUser->tmt_kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getUser->tmt_kenaikan_jenjang_terakhir)) : '';
+            $getUserJabatanTms = $getUser->kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getUser->kenaikan_jenjang_terakhir)) : '';
+
+            $getAtasanPangkat = $getListPangkat[$getAtasan->pangkat_id] ?? '';
+            $getAtasanGolongan = $getListGolongan[$getAtasan->golongan_id] ?? '';
+            $getAtasanJabatan = $getListJabatan[$getAtasan->jenjang_perancang_id] ?? '';
+            $getAtasanUnitKerja = $getListUnitKerja[$getAtasan->unit_kerja_id] ?? '';
+            $getAtasanPangkatTms = $getAtasan->tmt_kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getAtasan->tmt_kenaikan_jenjang_terakhir)) : '';
+            $getAtasanJabatanTms = $getAtasan->kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getAtasan->kenaikan_jenjang_terakhir)) : '';
+
             $saveDupak = new Dupak();
+            $saveDupak->user_id = $getData->user_id;
+            $saveDupak->upline_id = $getData->upline_id;
+            $saveDupak->top_kegiatan_id = $getData->top_kegiatan_id;
+            $saveDupak->sekretariat_id = 0;
+            $saveDupak->unit_kerja_id = 0;
+            $saveDupak->surat_pernyataan_id = $getData->id;
+            $saveDupak->info_dupak = json_encode([
+                'perancang_name' => $getUser->name,
+                'perancang_nip' => $getUser->username,
+                'perancang_pangkat' => $getUserPangkat.'/'.$getUserGolongan.'/'.$getUserPangkatTms,
+                'perancang_jabatan' => $getUserJabatan.'/'.$getUserJabatanTms,
+                'perancang_unit_kerja' => $getUserUnitKerja,
+                'atasan_name' => $getAtasan->name,
+                'atasan_nip' => $getAtasan->username,
+                'atasan_pangkat' => $getAtasanPangkat.'/'.$getAtasanGolongan.'/'.$getAtasanPangkatTms,
+                'atasan_jabatan' => $getAtasanJabatan.'/'.$getAtasanJabatanTms,
+                'atasan_unit_kerja' => $getAtasanUnitKerja
+            ]);
+            $saveDupak->total_kredit = $totalKredit;
+            $saveDupak->status = 1;
+
+            $saveDupak->save();
+
+            $dupakId = $saveDupak->id;
+
+            $saveDupakKegiatan = [];
+            foreach ($getSuratPernyataanKegiatan as $list) {
+                $saveDupakKegiatan[] = [
+                    'dupak_id' => $dupakId,
+                    'kegiatan_id' => $list->id,
+                    'ms_kegiatan_id' => $list->ms_kegiatan_id,
+                    'status' => 1
+                ];
+            }
+
+            if (count($saveDupakKegiatan) > 0) {
+                DupakKegiatan::insert($saveDupakKegiatan);
+            }
+
 
         }
         else {

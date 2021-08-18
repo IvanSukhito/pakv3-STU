@@ -26,8 +26,8 @@ class CreateTxSuratPernyataanTable extends Migration
             $table->text('pdf_url')->nullable();
             $table->longText('info_surat_pernyataan')->nullable();
             $table->float('total_kredit', 10, 3)->default(0)->nullable();
-            $table->text('alasan_menolak')->nullable();
             $table->integer('status')->default(0);
+            $table->text('alasan_menolak')->nullable();
             $table->timestamps();
         });
     }
