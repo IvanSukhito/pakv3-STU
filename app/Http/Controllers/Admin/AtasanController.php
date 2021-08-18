@@ -139,7 +139,6 @@ class AtasanController extends _CrudController
         $this->data['listSet']['gender'] = get_list_gender();
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.atasan.list';
         $this->listView['show'] = env('ADMIN_TEMPLATE') . '.page.atasan.forms';
-        //$this->passingData = Users::where('role_id',3);
     }
 
     public function show($id)
@@ -167,7 +166,6 @@ class AtasanController extends _CrudController
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
         $data['data'] = $getData;
         $data['getPerancang'] = $getPerancang;
-
 
         return view($this->listView[$data['viewType']], $data);
     }

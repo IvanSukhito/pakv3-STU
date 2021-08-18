@@ -337,20 +337,13 @@ if ( ! function_exists('listAllMenu')) {
                 'icon' => '<i class="nav-icon fa fa-envelope"></i>',
                 'title' => __('general.surat_pernyataan'),
                 'active' => [
-                    'admin.surat-pernyataan.'
+                    'admin.surat-pernyataan.index'
                 ],
-                'type' => 2,
-                'data' => [
-                    [
-                        'name' => __('general.surat_pernyataan'),
-                        'title' => __('general.surat_pernyataan'),
-                        'active' => ['admin.surat-pernyataan.'],
-                        'route' => 'admin.surat-pernyataan.index',
-                        'key' => 'surat-pernyataan',
-                        'type' => 1
-                    ]
-                ]
+                'route' => 'admin.surat-pernyataan.index',
+                'key' => 'surat-pernyataan',
+                'type' => 1,
             ],
+
             //PERMEN
             [
                 'name' => __('general.permen'),

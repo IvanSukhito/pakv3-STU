@@ -97,8 +97,8 @@ else {
                                 <td>{{ $list->golongan_id }}</td>
                                 <td>{{ $list->jenjang_perancang_id }}</td>
                                 <td>{{ $list->unit_kerja_id }}</td>
-                                <td>{{ $list->gender }}</td>
-                                <td>{{ $list->status }}</td>
+                                <td>{{ get_list_gender2($list->gender) }}</td>
+                                <td>{{ get_list_status2($list->status) }}</td>
                             </tr>
                         @endforeach
                         </tbody>
