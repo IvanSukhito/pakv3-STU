@@ -31,11 +31,22 @@ class PersetujuanSuratPernyataanController extends _CrudController
             ],
             'name' => [
             ],
+            'total_kredit' => [
+                'type' => 'number'
+            ],
             'kegiatan' => [
                 'custom' => ', name:"ms_kegiatan.name"'
             ],
             'status' => [
                 'type' => 'select'
+            ],
+            'created_at' => [
+                'lang' => 'DiKirim',
+                'type' => 'datetime'
+            ],
+            'updated_at' => [
+                'lang' => 'DiUpdate',
+                'type' => 'datetime'
             ],
             'action' => [
                 'create' => 0,
@@ -67,7 +78,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $dataTables = new DataTables();
 
         $builder = Users::selectRaw('tx_surat_pernyataan.id, users.username, users.name, ms_kegiatan.name AS kegiatan,
-            tx_surat_pernyataan.status')
+            tx_surat_pernyataan.status, tx_surat_pernyataan.total_kredit, tx_surat_pernyataan.created_at,
+            tx_surat_pernyataan.updated_at')
             ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
             ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')
             ->where('users.upline_id', $userId)
@@ -269,18 +281,26 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         DB::beginTransaction();
 
-        $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::where('surat_pernyataan_id', $id)->get();
+        $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::selectRaw('tx_surat_pernyataan_kegiatan.*, tx_kegiatan.kredit AS kredit')
+            ->join('tx_kegiatan', 'tx_kegiatan.id', '=', 'tx_surat_pernyataan_kegiatan.kegiatan_id')
+            ->where('surat_pernyataan_id', $id)->get();
+        $totalKredit = 0;
         foreach ($getSuratPernyataanKegiatan as $list) {
             $getAction = isset($actionKegiatan[$list->id]) ? $actionKegiatan[$list->id] : 1;
             $getMessage = '';
             if ($getAction == 99) {
                 $getMessage = isset($messageKegiatan[$list->id]) ? $messageKegiatan[$list->id] : '';
             }
+            else {
+                $totalKredit += $list->kredit;
+            }
             $list->message = $getMessage;
             $list->status = $getAction;
             $list->save();
 
         }
+
+        $getData->total_kredit = $totalKredit;
 
         if ($getSaveFlag == 2) {
             $getData->status = 80;

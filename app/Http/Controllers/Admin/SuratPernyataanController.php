@@ -29,8 +29,19 @@ class SuratPernyataanController extends _CrudController
             'kegiatan' => [
                 'custom' => ', name:"ms_kegiatan.name"'
             ],
+            'total_kredit' => [
+                'type' => 'number'
+            ],
             'status' => [
                 'type' => 'select'
+            ],
+            'created_at' => [
+                'lang' => 'DiKirim',
+                'type' => 'datetime'
+            ],
+            'updated_at' => [
+                'lang' => 'Disetujui',
+                'type' => 'datetime'
             ],
             'action' => [
                 'show' => 0,
@@ -58,7 +69,8 @@ class SuratPernyataanController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('tx_surat_pernyataan.id, ms_kegiatan.name AS kegiatan, tx_surat_pernyataan.status')
+        $builder = Users::selectRaw('tx_surat_pernyataan.id, ms_kegiatan.name AS kegiatan, tx_surat_pernyataan.status,
+            tx_surat_pernyataan.total_kredit, tx_surat_pernyataan.created_at, tx_surat_pernyataan.updated_at')
             ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
             ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')
             ->where('tx_surat_pernyataan.user_id', $userId)
@@ -106,6 +118,12 @@ class SuratPernyataanController extends _CrudController
                     return '<pre>' . json_encode(json_decode($query->$fieldName, true), JSON_PRETTY_PRINT) . '"</pre>';
                 });
             }
+            else if (in_array($list['type'], ['datetime'])) {
+                $listRaw[] = $fieldName;
+                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
+                    return date('d-M-Y', strtotime($query->$fieldName));
+                });
+            }
             else if (in_array($list['type'], ['texteditor'])) {
                 $listRaw[] = $fieldName;
             }
@@ -122,11 +140,11 @@ class SuratPernyataanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2,80,99])->first();
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [80,99])->first();
         if (!$getSuratPernyataan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
+        $getPerancang = Users::where('id', $userId)->where('upline_id', $getSuratPernyataan->upline_id)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
