@@ -412,35 +412,19 @@ if ( ! function_exists('persetujuan_sp_kegiatan_v3')) {
 
         $deep = 0;
 
-        if ($readonly == 1) {
-            $html = '<table class="table table-kegiatan table-bordered table-striped">
-                    <thead>
-                    <tr>
-                    <th width="45%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
-                    <th width="10%" class="text-center">'.__('general.date').'</th>
-                    <th width="15%" colspan="3" class="text-center">AK</th>
-                    <th width="10%" class="text-center">Satuan</th>
-                    <th width="15%" class="text-center">'.__('general.evidence').'</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    ';
-        }
-        else {
-            $html = '<table class="table table-kegiatan table-bordered table-striped">
-                    <thead>
-                    <tr>
-                    <th width="45%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
-                    <th width="10%" class="text-center">'.__('general.date').'</th>
-                    <th width="15%" colspan="3" class="text-center">AK</th>
-                    <th width="10%" class="text-center">Satuan</th>
-                    <th width="15%" class="text-center">'.__('general.evidence').'</th>
-                    <th width="5%" class="text-center">'.__('general.action').'</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    ';
-        }
+        $html = '<table class="table table-kegiatan table-bordered table-striped">
+            <thead>
+            <tr>
+            <th width="45%" colspan="'.$getDeep.'">'.__('general.butir_kegiatan').'</th>
+            <th width="10%" class="text-center">'.__('general.date').'</th>
+            <th width="15%" colspan="3" class="text-center">AK</th>
+            <th width="10%" class="text-center">Satuan</th>
+            <th width="15%" class="text-center">'.__('general.evidence').'</th>
+            <th width="5%" class="text-center">'.__('general.action').'</th>
+            </tr>
+            </thead>
+            <tbody>
+            ';
 
 
         $html .= render_persetujuan_sp_kegiatan_v3($ms_kegiatan, $listJenjangPerancangData, $deep, $getDeep, $jenjangPerancangId, $readonly);
@@ -552,19 +536,14 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
 
             if ($deep == 0 || $getAk > 0) {
 
+                $getListStatus = get_list_status_surat_pernyataan();
+
                 if ($totalColspan <= 0) {
 
-                    if ($readonly == 1) {
-                        $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
-                        <td colspan="' . ($newDeep + 6) . '">' . $addLabel . $getName . '</td>
-                        </tr>';
-                    }
-                    else {
-                        $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
+                    $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
                         <td colspan="' . ($newDeep + 6) . '">' . $addLabel . $getName . '</td>
                         <td width="5%" class="text-center">' . $getAction . '</td>
                         </tr>';
-                    }
 
                 }
                 else if ($totalColspan == 1) {
@@ -572,6 +551,7 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                     foreach ($listIds as $listDataKegiatan) {
 
                         $getKegId = $listDataKegiatan['sp_kegiatan_id'];
+                        $getKegStatus = $listDataKegiatan['sp_kegiatan_status'];
                         $getKegMessage = $listDataKegiatan['sp_kegiatan_message'];
                         $getAk = $listDataKegiatan['kredit_ak'];
                         $getNewAk = $listDataKegiatan['kredit'];
@@ -579,9 +559,16 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                         $dokument_fisik = $listDataKegiatan['dokument_fisik'];
                         $getBukti = 'Dokument Pendukung:<ul>';
 
-                        $getAction = '<label><input type="radio" class="radio_button_ok" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_2" name="action_kegiatan['.$getKegId.']" value="2"/> Disetujui</label>
-                            <label><input type="radio" class="radio_button_cancel" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_9" name="action_kegiatan['.$getKegId.']" value="9"/> Ditolak</label>
-                            <input type="hidden" class="message_kegiatan" id="message_kegiatan_'.$getKegId.'" name="message_kegiatan['.$getKegId.']" value="'.$getKegMessage.'">';
+                        if ($readonly == 1) {
+                            $getAction = $getListStatus[$getKegStatus] ?? '-';
+                        }
+                        else {
+                            $setStatusOk = $getKegStatus == 80 ? ' checked' : '';
+                            $setStatusCancel = $getKegStatus == 99 ? ' checked' : '';
+                            $getAction = '<label><input type="radio" class="radio_button_ok" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_80" name="action_kegiatan['.$getKegId.']" value="80"'.$setStatusOk.'/> Disetujui</label>
+                                <label><input type="radio" class="radio_button_cancel" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_99" name="action_kegiatan['.$getKegId.']" value="99"'.$setStatusCancel.'/> Ditolak</label>
+                                <input type="hidden" class="message_kegiatan" id="message_kegiatan_'.$getKegId.'" name="message_kegiatan['.$getKegId.']" value="'.$getKegMessage.'">';
+                        }
 
                         foreach ($dokument as $listDoc) {
                             $shortDocName = strlen($listDoc['name']) > 15 ? substr($listDoc['name'], 0, 15).'...' : $listDoc['name'];
@@ -607,25 +594,14 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                                 '<td width="5%" class="text-center">'.$getNewAk.'</td>';
                         }
 
-                        if ($readonly == 1) {
-                            $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
-                                <td colspan="' . $newDeep . '">' . $addLabel . $getName . '</td>
-                                <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
-                                ' . $addHtmlAk . '
-                                <td width="10%" class="text-center">' . $getSatuan . '</td>
-                                <td width="15%">' . $getBukti . '</td>
-                                </tr>';
-                        }
-                        else {
-                            $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
-                                <td colspan="' . $newDeep . '">' . $addLabel . $getName . '</td>
-                                <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
-                                ' . $addHtmlAk . '
-                                <td width="10%" class="text-center">' . $getSatuan . '</td>
-                                <td width="15%">' . $getBukti . '</td>
-                                <td width="5%" class="text-center">' . $getAction . '</td>
-                                </tr>';
-                        }
+                        $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
+                            <td colspan="' . $newDeep . '">' . $addLabel . $getName . '</td>
+                            <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
+                            ' . $addHtmlAk . '
+                            <td width="10%" class="text-center">' . $getSatuan . '</td>
+                            <td width="15%">' . $getBukti . '</td>
+                            <td width="5%" class="text-center">' . $getAction . '</td>
+                            </tr>';
 
                     }
 
@@ -635,6 +611,7 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                     foreach ($listIds as $indexing => $listDataKegiatan) {
 
                         $getKegId = $listDataKegiatan['sp_kegiatan_id'];
+                        $getKegStatus = $listDataKegiatan['sp_kegiatan_status'];
                         $getKegMessage = $listDataKegiatan['sp_kegiatan_message'];
                         $getAk = $listDataKegiatan['kredit_ak'];
                         $getNewAk = $listDataKegiatan['kredit'];
@@ -654,9 +631,16 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                         }
                         $getBukti .= '</ul>';
 
-                        $getAction = '<label><input type="radio" class="radio_button_ok" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_2" name="action_kegiatan['.$getKegId.']" value="2"/> Disetujui</label>
-                            <label><input type="radio" class="radio_button_cancel" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_9" name="action_kegiatan['.$getKegId.']" value="9"/> Ditolak</label>
-                            <input type="hidden" class="message_kegiatan" id="message_kegiatan_'.$getKegId.'" name="message_kegiatan['.$getKegId.']" value="'.$getKegMessage.'">';
+                        if ($readonly == 1) {
+                            $getAction = $getListStatus[$getKegStatus] ?? '-';
+                        }
+                        else {
+                            $setStatusOk = $getKegStatus == 80 ? ' checked' : '';
+                            $setStatusCancel = $getKegStatus == 99 ? ' checked' : '';
+                            $getAction = '<label><input type="radio" class="radio_button_ok" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_80" name="action_kegiatan['.$getKegId.']" value="80"'.$setStatusOk.'/> Disetujui</label>
+                                <label><input type="radio" class="radio_button_cancel" data-id="'.$getKegId.'" id="action_kegiatan_'.$getKegId.'_99" name="action_kegiatan['.$getKegId.']" value="99"'.$setStatusCancel.'> Ditolak</label>
+                                <input type="hidden" class="message_kegiatan" id="message_kegiatan_'.$getKegId.'" name="message_kegiatan['.$getKegId.']" value="'.$getKegMessage.'">';
+                        }
 
                         if ($getAk != $getNewAk) {
                             $addHtmlAk = '<td width="5%" class="text-center">'.$getAk.'</td>'.
@@ -669,49 +653,26 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
                                 '<td width="5%" class="text-center">'.$getNewAk.'</td>';
                         }
 
-                        if ($readonly == 1) {
-                            if ($indexing == 0) {
+                        if ($indexing == 0) {
 
-                                $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
-                                    <td' . $htmlColspan . ' colspan="' . $newDeep . '">' . $addLabel . $getName . '</td>
-                                    <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
-                                    ' . $addHtmlAk . '
-                                    <td' . $htmlColspan . ' width="10%" class="text-center">' . $getSatuan . '</td>
-                                    <td width="15%" class="text-center">' . $getBukti . '</td>
-                                    </tr>';
+                            $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
+                                <td' . $htmlColspan . ' colspan="' . $newDeep . '">' . $addLabel . $getName . '</td>
+                                <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
+                                ' . $addHtmlAk . '
+                                <td' . $htmlColspan . ' width="10%" class="text-center">' . $getSatuan . '</td>
+                                <td width="15%" class="text-center">' . $getBukti . '</td>
+                                <td width="5%" class="text-center">' . $getAction . '</td>
+                                </tr>';
 
-                            } else {
+                        } else {
 
-                                $html .= '<tr class="all-row' . $addClass . '">
-                                    <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
-                                    ' . $addHtmlAk . '
-                                    <td width="15%" class="text-center">' . $getBukti . '</td>
-                                    </tr>';
+                            $html .= '<tr class="all-row' . $addClass . '">
+                                <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
+                                ' . $addHtmlAk . '
+                                <td width="15%" class="text-center">' . $getBukti . '</td>
+                                <td width="5%" class="text-center">' . $getAction . '</td>
+                                </tr>';
 
-                            }
-                        }
-                        else {
-                            if ($indexing == 0) {
-
-                                $html .= '<tr class="all-row' . $addClass . '">' . $addHtmlTd . '
-                                    <td' . $htmlColspan . ' colspan="' . $newDeep . '">' . $addLabel . $getName . '</td>
-                                    <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
-                                    ' . $addHtmlAk . '
-                                    <td' . $htmlColspan . ' width="10%" class="text-center">' . $getSatuan . '</td>
-                                    <td width="15%" class="text-center">' . $getBukti . '</td>
-                                    <td width="5%" class="text-center">' . $getAction . '</td>
-                                    </tr>';
-
-                            } else {
-
-                                $html .= '<tr class="all-row' . $addClass . '">
-                                    <td width="10%" class="text-center">' . $listDataKegiatan['tanggal'] . '</td>
-                                    ' . $addHtmlAk . '
-                                    <td width="15%" class="text-center">' . $getBukti . '</td>
-                                    <td width="5%" class="text-center">' . $getAction . '</td>
-                                    </tr>';
-
-                            }
                         }
                     }
 

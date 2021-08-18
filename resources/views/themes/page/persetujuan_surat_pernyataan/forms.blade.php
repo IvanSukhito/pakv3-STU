@@ -8,10 +8,12 @@ if (in_array($viewType, ['show'])) {
     $addAttribute = [
         'disabled' => true
     ];
+    $flagReadonly = 1;
 }
 else {
     $addAttribute = [
     ];
+    $flagReadonly = 0;
 }
 ?>
 @extends(env('ADMIN_TEMPLATE').'._base.layout')
@@ -73,8 +75,8 @@ else {
                             <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
                         </button>
                     @elseif (in_array($viewType, ['edit']))
-                        <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')" onclick="return checkConfirm()">
-                            <i class="fa fa-send"></i><span class=""> @lang('general.update')</span>
+                        <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.send')" onclick="return checkConfirm()">
+                            <i class="fa fa-send"></i><span class=""> @lang('general.send')</span>
                         </button>
                         <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
                             <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
@@ -141,7 +143,7 @@ else {
 
                                         <div class="card-header"><h4>{!! $getJudul !!}</h4></div>
                                         <div class="card-body overflow">
-                                            {!! persetujuan_sp_kegiatan_v3($listKegiatan[0]['childs'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id, 1) !!}
+                                            {!! persetujuan_sp_kegiatan_v3($listKegiatan[0]['childs'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id, $flagReadonly) !!}
                                         </div>
 
                                     @endforeach
@@ -161,8 +163,8 @@ else {
                             <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
                         </button>
                     @elseif (in_array($viewType, ['edit']))
-                        <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.update')" onclick="return checkConfirm()">
-                            <i class="fa fa-send"></i><span class=""> @lang('general.update')</span>
+                        <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.send')" onclick="return checkConfirm()">
+                            <i class="fa fa-send"></i><span class=""> @lang('general.send')</span>
                         </button>
                         <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
                             <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
