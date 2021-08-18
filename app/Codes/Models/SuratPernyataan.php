@@ -13,8 +13,6 @@ class SuratPernyataan extends Model
         'user_id',
         'upline_id',
         'top_kegiatan_id',
-        'supervisor_id',
-        'dupak_id',
         'tanggal',
         'nomor',
         'tanggal_mulai',
@@ -23,19 +21,8 @@ class SuratPernyataan extends Model
         'pdf_url',
         'info_surat_pernyataan',
         'status',
-        'approved',
-        'connect',
         'total_kredit',
-        'lokasi',
         'alasan_menolak'
     ];
-
-    public function getUser() {
-        return $this->belongsTo(Users::class, 'user_id', 'id');
-    }
-
-    public function getUpline() {
-        return $this->belongsTo(Users::class, 'upline_id', 'id');
-    }
 
 }

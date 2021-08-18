@@ -18,6 +18,7 @@ class CreateTxDupakKegiatanTable extends Migration
             $table->unsignedBigInteger('dupak_id')->default(0);
             $table->unsignedBigInteger('kegiatan_id')->default(0);
             $table->unsignedBigInteger('ms_kegiatan_id')->default(0);
+            $table->string('message')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->index(['id', 'dupak_id', 'kegiatan_id'], 'dupak_kegiatan_index');

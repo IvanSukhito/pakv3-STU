@@ -17,9 +17,7 @@ class CreateTxSuratPernyataanTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->default(0);
             $table->unsignedBigInteger('upline_id')->default(0);
-            $table->unsignedBigInteger('supervisor_id')->default(0);
             $table->unsignedBigInteger('top_kegiatan_id')->default(0);
-            $table->unsignedBigInteger('dupak_id')->default(0);
             $table->date('tanggal')->nullable();
             $table->string('nomor')->nullable();
             $table->date('tanggal_mulai')->nullable();
@@ -27,10 +25,7 @@ class CreateTxSuratPernyataanTable extends Migration
             $table->string('pdf')->nullable();
             $table->text('pdf_url')->nullable();
             $table->longText('info_surat_pernyataan')->nullable();
-            $table->tinyInteger('approved')->default(0);
-            $table->tinyInteger('connect')->default(0);
             $table->float('total_kredit', 10, 3)->default(0)->nullable();
-            $table->string('lokasi')->nullable();
             $table->text('alasan_menolak')->nullable();
             $table->integer('status')->default(0);
             $table->timestamps();

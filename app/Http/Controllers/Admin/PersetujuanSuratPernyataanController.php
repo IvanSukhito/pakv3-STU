@@ -4,20 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
-use App\Codes\Models\JabatanPerancang;
-use App\Codes\Models\Kegiatan;
-use App\Codes\Models\MsKegiatan;
-
-use App\Codes\Models\Permen;
+use App\Codes\Models\Dupak;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\SuratPernyataanKegiatan;
-use App\Codes\Models\UnitKerja;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
-use PDF;
 
 class PersetujuanSuratPernyataanController extends _CrudController
 {
@@ -304,6 +298,9 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         if ($getSaveFlag == 2) {
             $getData->status = 80;
+
+            $saveDupak = new Dupak();
+
         }
         else {
             $getData->status = 2;
