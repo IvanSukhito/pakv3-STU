@@ -304,8 +304,6 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         if ($getSaveFlag == 2) {
             $getData->status = 80;
-//            $pakLogic = new PakLogic();
-//            $pakLogic->generateSuratPernyataan($id);
         }
         else {
             $getData->status = 2;
