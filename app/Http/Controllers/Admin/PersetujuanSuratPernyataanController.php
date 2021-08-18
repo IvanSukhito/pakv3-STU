@@ -265,7 +265,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         foreach ($getSuratPernyataanKegiatan as $list) {
             $getAction = isset($actionKegiatan[$list->id]) ? $actionKegiatan[$list->id] : 1;
             $getMessage = '';
-            if ($getAction == 9) {
+            if ($getAction == 99) {
                 $getMessage = isset($messageKegiatan[$list->id]) ? $messageKegiatan[$list->id] : '';
             }
             $list->message = $getMessage;
