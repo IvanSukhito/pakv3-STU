@@ -149,7 +149,7 @@ class AtasanController extends _CrudController
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        $getPerancang = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
+        $getPerancangData = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
             ->where('users.perancang', '=', 1)
             ->where('users.upline_id','=',$id)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
@@ -164,7 +164,7 @@ class AtasanController extends _CrudController
         $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
         $data['data'] = $getData;
-        $data['getPerancang'] = $getPerancang;
+        $data['getPerancangData'] = $getPerancangData;
 
         return view($this->listView[$data['viewType']], $data);
     }

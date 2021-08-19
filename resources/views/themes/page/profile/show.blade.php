@@ -56,6 +56,7 @@ else {
                 <div class="card-body">
                     @include(env('ADMIN_TEMPLATE').'._component.generate_forms')
                 </div>
+@if($getPerancangData)
                 <div class="card-body">
                     <table class="table table-bordered table-striped" id="data1">
                         <thead>
@@ -73,7 +74,7 @@ else {
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($getPerancang as $list)
+                        @foreach($getPerancangData as $list)
                             <tr>
                                 <td>{{ $list->id }}</td>
                                 <td>{{ $list->username }}</td>
@@ -90,6 +91,7 @@ else {
                         </tbody>
                     </table>
                 </div>
+@endif
                 <!-- /.card-body -->
 
                 <div class="card-footer">

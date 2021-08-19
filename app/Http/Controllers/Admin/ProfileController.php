@@ -239,10 +239,11 @@ class ProfileController extends _GlobalFunctionController
         if ($getPerancang == 1) {
             $getPassing = $this->passingPerancang;
             $data['listSet']['upline_id'] = Users::where('id', '!=', $adminId)->where('atasan', 1)->pluck('name', 'id')->toArray();
+            $getPerancangData = false;
         }
         elseif ($getAtasan == 1) {
             $getPassing = $this->passingAtasan;
-            $getPerancang = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
+            $getPerancangData = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
                 ->where('users.perancang', '=', 1)
                 ->where('users.upline_id','=',session()->get('admin_id'))
                 ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
@@ -250,16 +251,18 @@ class ProfileController extends _GlobalFunctionController
                 ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
                 ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
                 ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')->get();
-
         }
         elseif ($getSeketariat == 1) {
             $getPassing = $this->passingSeketariat;
+            $getPerancangData = false;
         }
         elseif ($getTim == 1) {
             $getPassing = $this->passingTimPerancang;
+            $getPerancangData = false;
         }
         else {
             $getPassing = $this->passing;
+            $getPerancangData = false;
         }
 
         $data['data'] = $getData;
@@ -268,7 +271,7 @@ class ProfileController extends _GlobalFunctionController
         $data['thisLabel'] = __('general.title_show', ['field' => __('general.profile') . ' ' . $getData->name]);
         $data['thisRoute'] = 'profile';
         $data['passing'] = generatePassingData($getPassing);
-        $data['getPerancang'] = $getPerancang;
+        $data['getPerancangData'] = $getPerancangData;
 
         return view(env('ADMIN_TEMPLATE').'.page.profile.show', $data);
     }

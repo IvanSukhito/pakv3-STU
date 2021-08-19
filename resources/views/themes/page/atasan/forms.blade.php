@@ -87,7 +87,7 @@ else {
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($getPerancang as $list)
+                        @foreach($getPerancangData as $list)
                             <tr>
                                 <td>{{ $list->id }}</td>
                                 <td>{{ $list->username }}</td>

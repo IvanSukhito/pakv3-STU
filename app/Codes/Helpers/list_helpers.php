@@ -25,19 +25,8 @@ if ( ! function_exists('get_list_status')) {
 if ( ! function_exists('get_list_status2')) {
     function get_list_status2($number)
     {
-        if ($number == 0) {
-            return ('Tidak Aktif');
-        } else if ($number == 1) {
-            return ('Aktif');
-        } else if ($number == 2) {
-            return ('Diberhentikan Sementara');
-        } else if ($number == 3) {
-            return ('Diberhentikan');
-        } else if ($number == 4) {
-            return ('Pensiun');
-        } else if ($number == 5) {
-            return ('Meninggal Dunia');
-        }
+        $getList = get_list_status();
+        return $getList[$number] ?? $number;
     }
 }
 
