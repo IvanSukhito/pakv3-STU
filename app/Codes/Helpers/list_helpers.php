@@ -757,12 +757,8 @@ if ( ! function_exists('get_list_gender')) {
 if ( ! function_exists('get_list_gender2')) {
     function get_list_gender2($number)
     {
-        if($number == 1) {
-            return 'Pria';
-        }
-        else {
-            return 'Wanita';
-        }
+        $getList = get_list_gender();
+        return $getList[$number] ?? $number;
     }
 }
 
