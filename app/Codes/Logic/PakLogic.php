@@ -377,13 +377,26 @@ class PakLogic
         $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
-
-        //dd($getSuratPernyataan);
         if($getSuratPernyataan) {
+            $getInfoSuratPernyataan = json_decode($getSuratPernyataan->info_surat_pernyataan, TRUE);
+            $getPerancangName = $getInfoSuratPernyataan['perancang_name'] ?? '';
+            $getPerancangNIP = $getInfoSuratPernyataan['perancang_nip'] ?? '';
+            $getPerancangPangkat = $getInfoSuratPernyataan['perancang_pangkat'] ?? '';
+            $getPerancangJabatan = $getInfoSuratPernyataan['perancang_jabatan'] ?? '';
+            $getPerancangUnitKerja = $getInfoSuratPernyataan['perancang_unit_kerja'] ?? '';
+            $getAtasanName = $getInfoSuratPernyataan['atasan_name'] ?? '';
+            $getAtasanNIP = $getInfoSuratPernyataan['atasan_nip'] ?? '';
+            $getAtasanPangkat = $getInfoSuratPernyataan['atasan_pangkat'] ?? '';
+            $getAtasanJabatan = $getInfoSuratPernyataan['atasan_jabatan'] ?? '';
+            $getAtasanUnitKerja = $getInfoSuratPernyataan['atasan_unit_kerja'] ?? '';
+
             $getData = $this->getSuratPernyataanUser($getSuratPernyataan);
+            $getDataKegiatan = $getData['data'] ?? [];
+            $getTotalTop = $getData['total_top'][0] ?? 0;
+            $getListTopKegiatan = $getData['top_kegiatan'];
+            $getTopKegiatan = $getListTopKegiatan[$getTotalTop] ?? false;
 
-
-
+            $getTitleSuratPernyataan = $getTopKegiatan && isset($getTopKegiatan['name']) ? $getTopKegiatan['name'] : '';
 
             $spreadsheet = new Spreadsheet();
             $spreadsheet->getProperties()->setCreator('Peraturan Perundang-undangan')
@@ -394,31 +407,109 @@ class PakLogic
 
             $sheet = $spreadsheet->getActiveSheet();
 
-            $row = 1;
+            $row = 3;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Surat Pernyataan');
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+
+            $row += 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Melakukan '.$getTitleSuratPernyataan);
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+
+            $row += 2;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Yang ber...');
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+
+            $row += 2;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'nama');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangName);
+
+            $row += 1;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'nama');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangName);
 
 
+            //ISI
+            foreach ($getDataKegiatan as $permenId => $listTopKegiatan) {
+                foreach ($listTopKegiatan as $topId => $listJudul) {
+                    $indexingJudul = 1;
+                    foreach ($listJudul as $nameJudul => $listKegiatan) {
 
+                        $totalKegiatan = count($listKegiatan);
+                        $indexingKegiatan = 1;
+
+                        foreach ($listKegiatan as $list) {
+                            $getName = $list['name'];
+                            if ($list['have_child'] == 1) {
+                                $row += 1;
+                                $row = $this->generateChildSuratPernyataan($sheet, $row, $indexingKegiatan, $list['childs'], $getName);
+                            }
+                            else {
+                                $row += 1;
+                                $column = 1;
+                                $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.','.$indexingKegiatan);
+                                $this->generateChildFillSuratPernyataan($sheet, $row, $column, $indexingKegiatan, $list);
+                            }
+
+                            $indexingKegiatan++;
+
+                        }
+
+                        $indexingJudul++;
+
+                    }
+
+                }
+            }
 
             // Redirect output to a client’s web browser (Xls)
-//            header('Content-Type: application/vnd.ms-excel');
-//            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.xlsx"');
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.xlsx"');
 
             // Redirect output to a client’s web browser (PDF)
-            header('Content-Type: application/pdf');
-            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.pdf"');
+//            header('Content-Type: application/pdf');
+//            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.pdf"');
 
             header('Cache-Control: max-age=0');
             // If you're serving to IE 9, then the following may be needed
             header('Cache-Control: max-age=1');
 
-//            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-            $writer = IOFactory::createWriter($spreadsheet, 'Pdf');
+            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+//            $writer = IOFactory::createWriter($spreadsheet, 'Pdf');
             $writer->save('php://output');
             exit;
 
         }
+    }
+
+    protected function generateChildSuratPernyataan($sheet, $row, $indexingKegiatan, $getChildKegiatan, $parentName)
+    {
+        foreach ($getChildKegiatan as $list) {
+            $getName = $list['name'];
+            if ($list['have_child'] == 1) {
+                $this->generateChildSuratPernyataan($sheet, $row, $indexingKegiatan, $list['childs'], $parentName);
+            }
+            else {
+                $row += 1;
+                $column = 2;
+                $this->generateChildFillSuratPernyataan($sheet, $row, $column, $indexingKegiatan, $list);
+            }
+            $indexingKegiatan++;
+        }
+
+        return $row;
+
+    }
+
+    protected function generateChildFillSuratPernyataan($sheet, $row, $column, $indexingKegiatan, $getChildKegiatan)
+    {
+        $getName = $getChildKegiatan['name'];
+        $sheet->setCellValueByColumnAndRow($column++, $row, $indexingKegiatan);
+        $sheet->setCellValueByColumnAndRow($column++, $row, $getName);
     }
 
     public function generateDupak($dupakId)
@@ -429,6 +520,7 @@ class PakLogic
         $getDupak = Dupak::where('id', $dupakId)->first();
         if($getDupak) {
             $getData = $this->getSuratPernyataanUser($getDupak);
+            dd($getData);
 
             $spreadsheet = new Spreadsheet();
             $spreadsheet->getProperties()->setCreator('Peraturan Perundang-undangan')
