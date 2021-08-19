@@ -374,6 +374,7 @@ class PakLogic
 
         $getSuratPernyataan = SuratPernyataan::where('id', $suratPernyataanId)->first();
         $userId = session()->get('admin_id');
+        $datenow = date("Y-m-d");
         $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
@@ -407,30 +408,192 @@ class PakLogic
 
             $sheet = $spreadsheet->getActiveSheet();
 
-            $row = 3;
+            $row = 2;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'Surat Pernyataan');
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'KEMENTERIAN HUKUM DAN HAK ASASI MANUSIA REPUBLIK INDONESIA
+            DIREKTORAT JENDERAL ADMINISTRASI HUKUM UMUM');
             $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+				'font' => array(
+					'bold' => true
+				),
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				),
+			
+			));
 
             $row += 1;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'Melakukan '.$getTitleSuratPernyataan);
+            $sheet->setCellValueByColumnAndRow($column++, $row,'DIREKTORAT JENDERAL ADMINISTRASI HUKUM UMUM');
             $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+				'font' => array(
+					'bold' => true
+				),
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				),
+			
+			));
+
+            $row += 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Jl. HR. Rasuna Said Kav. 6-7 Kuningan, Jakarta Selatan');
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				)
+                
+                
+			
+			));
+
+            $row += 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Telp. (021) 5221618, Fax. (021) 5265480');
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				)
+			
+			));
+
+            $row += 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'laman: www.ahu.go.id, Surel:humas@ahu.go.id');
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				),
+                
+                'borders' => array(
+					'bottom' => array(
+						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+						'color' => array('argb' => '00000000'),
+					)
+				)
+			
+			));
+
 
             $row += 2;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'Yang ber...');
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'SURAT PERNYATAAN');
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+				'font' => array(
+					'bold' => true
+				),
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				)
+			
+			));
+
+
+            $row += 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'MELAKUKAN '.$getTitleSuratPernyataan);
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+				'font' => array(
+					'bold' => true
+				),
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				),
+			
+			));
+         
+         
+            $row += 2;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Yang bertanda tangan dibawah ini');
             $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
 
             $row += 2;
             $column = 3;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'nama');
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Nama');
             $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangName);
 
             $row += 1;
             $column = 3;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'nama');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangName);
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Nip');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangNIP);
+
+            $row += 1;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Pangkat/golongan ruang/TMT');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangPangkat);
+
+            $row += 1;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Jabatan');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangJabatan);
+
+            $row += 1;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Unit Kerja');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangUnitKerja);
+
+            //Atasan
+            $row += 2;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Menyatakan bahwa');
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+
+            $row += 2;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Nama');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanName);
+
+            $row += 1;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Nip');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanNIP);
+
+            $row += 1;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Pangkat/golongan ruang/TMT');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanPangkat);
+
+            $row += 1;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Jabatan');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanJabatan);
+
+            $row += 1;
+            $column = 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Unit Kerja');
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanUnitKerja);
+
+            $row += 2;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Telah melakukan kegiatan penyusunan Peraturan Perundang-undangan sebagai berikut :');
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+
+
 
 
             //ISI
@@ -465,6 +628,91 @@ class PakLogic
 
                 }
             }
+
+            $row += 3;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Demikian pernyataan ini dibuat untuk dapat dipergunakan sebagaimana mestinya');
+            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+
+            $row += 3;
+            $column = 8;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Jakarta, '.$datenow);
+            $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				)
+			
+			));
+
+            $row += 2;
+            $column = 8;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Atasan Langsung');
+            $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				)
+			
+			));
+
+            $row += 1;
+            $column = 8;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Kepala Bagian Program dan Pelaporan');
+            $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				)
+			
+			));
+
+            $row += 1;
+            $column = 8;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Direktorat Jenderal Administrasi Hukum Umum');
+            $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				)
+			
+			));
+
+            $row += 4;
+            $column = 8;
+            $sheet->setCellValueByColumnAndRow($column++, $row, $getAtasanName);
+            $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				)
+			
+			));
+            
+            $row += 1;
+            $column = 8;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'NIP.'.$getAtasanNIP);
+            $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				)
+			
+			));
+
+
 
             // Redirect output to a client’s web browser (Xls)
             header('Content-Type: application/vnd.ms-excel');
