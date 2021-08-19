@@ -67,6 +67,7 @@ return [
     'etd' => 'ETD',
     'explain' => 'Explain',
     'export' => 'Export',
+    'download_pdf' => 'Download PDF',
     'fail' => 'Fail',
     'faqs' => 'FAQs',
     'feature' => 'Feature',

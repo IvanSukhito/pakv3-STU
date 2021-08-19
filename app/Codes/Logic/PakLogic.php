@@ -5,6 +5,8 @@ namespace App\Codes\Logic;
 use App\Codes\Models\Dupak;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
+use App\Codes\Models\Users;
+use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Permen;
 use App\Codes\Models\SuratPernyataan;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -371,8 +373,17 @@ class PakLogic
         ini_set('max_execution_time', -1);
 
         $getSuratPernyataan = SuratPernyataan::where('id', $suratPernyataanId)->first();
+        $userId = session()->get('admin_id');
+        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+
+
+        //dd($getSuratPernyataan);
         if($getSuratPernyataan) {
             $getData = $this->getSuratPernyataanUser($getSuratPernyataan);
+
+
+
 
             $spreadsheet = new Spreadsheet();
             $spreadsheet->getProperties()->setCreator('Peraturan Perundang-undangan')
@@ -385,7 +396,10 @@ class PakLogic
 
             $row = 1;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'List User Riddle');
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Surat Pernyataan');
+
+
+
 
             // Redirect output to a client’s web browser (Xls)
 //            header('Content-Type: application/vnd.ms-excel');
