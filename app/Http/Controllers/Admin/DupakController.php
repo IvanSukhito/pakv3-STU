@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
+use App\Codes\Models\UnitKerja;
 use App\Codes\Models\Dupak;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
@@ -49,7 +50,7 @@ class DupakController extends _CrudController
 
         $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.dupak.forms';
         $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.dupak.forms';
-        $this->listView['uploadSP'] = env('ADMIN_TEMPLATE').'.page.dupak.forms_upload_sp';
+  
         $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.dupak.list_button';
 
         $this->data['listSet']['status'] = get_list_status_dupak();
@@ -139,7 +140,7 @@ class DupakController extends _CrudController
         if (!$getDupak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $userId)->first();
+        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -196,19 +197,27 @@ class DupakController extends _CrudController
         return view($this->listView[$data['viewType']], $data);
     }
 
-    public function edit($id)
-    {
+    public function edit($id){
+        //return view($this->listView[$data['viewType']]);
         $this->callPermission();
 
         $userId = session()->get('admin_id');
 
-        $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2])->first();
+        $data = $this->data;
+
+        $unitkerja = UnitKerja::all();
+        $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2,3,80,99])->first();
         if (!$getDupak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $userId)->first();
+        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        if ($this->request->get('pdf') == 1) {
+            $getPAKLogic = new PakLogic();
+            $getPAKLogic->generateDupak($id);
         }
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
@@ -239,10 +248,9 @@ class DupakController extends _CrudController
 
         $data = $this->data;
 
-        $data['viewType'] = 'edit';
-        $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
-        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getDupak;
+      
+      
+       // $data['data'] = $getDupak;
         $data['dataUser'] = $getPerancang;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;
@@ -254,33 +262,22 @@ class DupakController extends _CrudController
         $data['totalAk'] = $totalAk;
         $data['topId'] = $topId;
         $data['kredit'] = $kredit;
-
-        return view($this->listView[$data['viewType']], $data);
-    }
-
-    public function uploadSP($id){
-        //return view($this->listView[$data['viewType']]);
-        $this->callPermission();
-
-
-
-        $data = $this->data;
-
-        $data['viewType'] = 'uploadSP';
+        $data['unitkerja'] = $unitkerja;
+        $data['viewType'] = 'edit';
         $data['formsTitle'] = __('general.title_dupak_uploadSP', ['field' => $data['thisLabel']]);
-
         $data['data'] = $this->crud->show($id);
 
-        return view($this->listView['uploadSP'], $data);
+        return view($this->listView['edit'], $data);
     }
 
-    public function storeSP($id){
+    public function update($id){
         //dd($this->request);
         $this->callPermission();
         $viewType = 'Upload Surat Pernyataan';
         $this->request->validate([
-
-            'file_upload_surat_pernyataan' => 'required'
+          
+            'file_upload_surat_pernyataan' => 'required',
+            'unit_kerja_id' => 'required'
         ]);
 
         $getData = Dupak::findOrFail($id);
@@ -292,9 +289,10 @@ class DupakController extends _CrudController
         $todayDate = date('Y-m-d');
         $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
         $dokument = $this->request->file('file_upload_surat_pernyataan');
-
+        $unitkerja = $this->request->get('unit_kerja_id');
+      
         $totalDokument = [];
-
+     
 
         foreach ($dokument as $listDoc) {
             if ($listDoc->getError() == 0) {
@@ -316,6 +314,7 @@ class DupakController extends _CrudController
 
         $getData->update([
             'file_upload_surat_pernyataan' => json_encode($totalDokument),
+            'unit_kerja_id' => $unitkerja,
             'status' => 2
         ]);
 
@@ -328,7 +327,7 @@ class DupakController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
-
+       
 
     }
 }

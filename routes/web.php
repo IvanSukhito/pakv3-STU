@@ -79,8 +79,8 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                         break;
 
                     case 'dupak':
-                        $router->get($linkName . '/upload-SP/{id}', $controller . '@uploadSP')->name('admin.' . $linkName . '.uploadSP');
-                        $router->post($linkName . '/submit-SP/{id}', $controller . '@storeSP')->name('admin.' . $linkName . '.storeSP');
+                        $router->get($linkName . '/upload-SP/{id}', $controller . '@edit')->name('admin.' . $linkName . '.uploadSP');
+                        $router->post($linkName . '/submit-SP/{id}', $controller . '@update')->name('admin.' . $linkName . '.storeSP');
                         break;
                 }
 

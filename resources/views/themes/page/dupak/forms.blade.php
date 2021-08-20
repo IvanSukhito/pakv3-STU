@@ -75,11 +75,8 @@ else {
                             <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
                         </button>
                     @elseif (in_array($viewType, ['edit']))
-                        <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.send')" onclick="return checkConfirm()">
-                            <i class="fa fa-send"></i><span class=""> @lang('general.send')</span>
-                        </button>
-                        <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
-                            <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
+                    <button type="submit" class="mb-2 mr-2 btn btn-success" title="@lang('general.save')">
+                            <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
                         </button>
                     @elseif (in_array($viewType, ['show']) && $permission['edit'] == true && in_array($data->status, [1,2]))
                         <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
@@ -94,11 +91,42 @@ else {
 
                 </div>
 
-                @if(!in_array($viewType, ['show']))
+      
+                @if(in_array($viewType, ['edit']))
                 <div class="card-body">
-                    <label for="all_ok_check"><input type="radio" class="all_ok_check" id="all_ok_check" name="flag_check_all"/> Setuju Semua</label>
-                    <label for="all_cancel_check"><input type="radio" class="all_cancel_check" id="all_cancel_check" name="flag_check_all"/> Tolak Semua</label>
-                </div>
+              
+              @csrf
+              <div class="modal-body">
+            
+                  <div class="form-group">
+               
+                    
+                      <div class="form-group">
+                            <label for="judul">Unit Kerja</label>
+                            <div class="input-group">
+                                <select class="form-control" data-width="100%" name="unit_kerja_id" id="unit_kerja_id" required>
+                                    <option value="0">kosong</option>
+                                    @foreach($unitkerja as $list)
+                                        <option value="{{$list->id}}">{{$list->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <label>File Surat Pernyataan</label>
+                      <br/>
+                      <div class="form-group">
+                          <div class="d-flex align-items-center">
+                              <div class="p-2">
+                                  <input type="file" data-width="100%" name="file_upload_surat_pernyataan[]" class="dropify" accept=".pdf"
+                                         data-allowed-file-extensions="pdf" data-max-file-size="10M">
+                              </div>
+                          </div>
+                      </div>
+                    
+                  </div>
+              </div>     
+          </div>
+
                 @endif
                 <div class="card-body">
                     <h3 class="form-section first-form">Kegiatan</h3>
@@ -143,7 +171,7 @@ else {
 
                                         <div class="card-header"><h4>{!! $getJudul !!}</h4></div>
                                         <div class="card-body overflow">
-                                            {!! persetujuan_dupak_kegiatan_v3($listKegiatan[0]['child'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id, $flagReadonly) !!}
+                                            {!! persetujuan_dupak_kegiatan_v3($listKegiatan[0]['child'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id, $flagReadonly = 1) !!}
                                         </div>
 
                                     @endforeach
@@ -163,11 +191,8 @@ else {
                             <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
                         </button>
                     @elseif (in_array($viewType, ['edit']))
-                        <button type="submit" name="save" value="2" class="mb-2 mr-2 btn btn-primary" title="@lang('general.send')" onclick="return checkConfirm()">
-                            <i class="fa fa-send"></i><span class=""> @lang('general.send')</span>
-                        </button>
-                        <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
-                            <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
+                    <button type="submit" class="mb-2 mr-2 btn btn-success" title="@lang('general.save')">
+                            <i class="fa fa-save"></i><span class=""> @lang('general.save')</span>
                         </button>
                     @elseif (in_array($viewType, ['show']) && $permission['edit'] == true && in_array($data->status, [1,2]))
                         <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
@@ -196,6 +221,10 @@ else {
     <script type="text/javascript">
         'use strict';
         $(document).ready(function (e) {
+            $('.dropify').dropify();
+            $("#unit_kerja_id").select2({
+                tags: true
+            });
 
         });
 
