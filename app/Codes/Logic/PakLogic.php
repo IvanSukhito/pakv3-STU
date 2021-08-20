@@ -407,12 +407,14 @@ class PakLogic
 
             $sheet = $spreadsheet->getActiveSheet();
 
+            $totalColumn = 13;
+
             $row = 2;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'KEMENTERIAN HUKUM DAN HAK ASASI MANUSIA REPUBLIK INDONESIA
             DIREKTORAT JENDERAL ADMINISTRASI HUKUM UMUM');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
 				'font' => array(
 					'bold' => true
 				),
@@ -427,8 +429,8 @@ class PakLogic
             $row += 1;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row,'DIREKTORAT JENDERAL ADMINISTRASI HUKUM UMUM');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
 				'font' => array(
 					'bold' => true
 				),
@@ -442,8 +444,8 @@ class PakLogic
             $row += 1;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jl. HR. Rasuna Said Kav. 6-7 Kuningan, Jakarta Selatan');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
@@ -454,8 +456,8 @@ class PakLogic
             $row += 1;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Telp. (021) 5221618, Fax. (021) 5265480');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
@@ -466,8 +468,8 @@ class PakLogic
             $row += 1;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'laman: www.ahu.go.id, Surel:humas@ahu.go.id');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
@@ -485,8 +487,8 @@ class PakLogic
             $row += 2;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'SURAT PERNYATAAN');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
 				'font' => array(
 					'bold' => true
 				),
@@ -501,8 +503,8 @@ class PakLogic
             $row += 1;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'MELAKUKAN '.$getTitleSuratPernyataan);
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
 				'font' => array(
 					'bold' => true
 				),
@@ -517,7 +519,7 @@ class PakLogic
             $row += 2;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Yang bertanda tangan dibawah ini');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
 
             $row += 2;
             $column = 3;
@@ -548,7 +550,7 @@ class PakLogic
             $row += 2;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Menyatakan bahwa');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
 
             $row += 2;
             $column = 3;
@@ -578,7 +580,7 @@ class PakLogic
             $row += 2;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Telah melakukan kegiatan penyusunan Peraturan Perundang-undangan sebagai berikut :');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
 
             $row += 2;
             $column = 1;
@@ -588,7 +590,7 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Tanggal');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jumlah Volume Kegiatan');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jumlah AK');
-            $column += 3;
+            $column += 4;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Keterangan/ Bukti Fisik');
 
             $row += 1;
@@ -599,7 +601,7 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, '3');
             $sheet->setCellValueByColumnAndRow($column++, $row, '4');
             $sheet->setCellValueByColumnAndRow($column++, $row, '5');
-            $column += 3;
+            $column += 4;
             $sheet->setCellValueByColumnAndRow($column++, $row, '6');
 
             //ISI
@@ -618,12 +620,19 @@ class PakLogic
                             foreach ($listKegiatan[0]['child'] as $list) {
                                 $getName = $list['name'];
                                 $row += 1;
-                                $column = 1;
-                                $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.'. '.$nameJudul);
+                                $column = 3;
+                                $sheet->setCellValueByColumnAndRow($column++, $row, $getName);
 
+                                $startRow = $row + 1;
                                 if ($list['have_child'] == 1) {
                                     $row = $this->generateChilduratPernyataan($sheet, $row, $list['child'], $getName, 1);
                                 }
+
+                                $endRow = $row;
+                                $sheet->setCellValueByColumnAndRow(1, $startRow, $indexingJudul.",".$indexingKegiatan);
+                                $sheet->mergeCellsByColumnAndRow(1, $startRow, 1, $endRow);
+
+                                $indexingKegiatan++;
                             }
                             $indexingJudul++;
                         }
@@ -635,7 +644,7 @@ class PakLogic
             $row += 3;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Demikian pernyataan ini dibuat untuk dapat dipergunakan sebagaimana mestinya');
-            $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
 
             $row += 3;
             $column = 8;
@@ -728,26 +737,56 @@ class PakLogic
         foreach ($getChildKegiatan as $list) {
             $getName = $list['name'];
             if ($list['have_child'] == 1) {
-                $this->generateChilduratPernyataan($sheet, $row, $list['child'], $getName, $deep+1);
+                $row = $this->generateChilduratPernyataan($sheet, $row, $list['child'], $getName, $deep+1);
             }
             else {
                 $row += 1;
-                $this->generateChildFillSuratPernyataan($sheet, $row, $list, $parentName);
+                $this->generateChildFillSuratPernyataan($sheet, $row, $list, $parentName, $deep);
             }
-            $indexingKegiatan++;
         }
 
         return $row;
 
     }
 
-    protected function generateChildFillSuratPernyataan($sheet, $row, $getChildKegiatan, $getParentName)
+    protected function generateChildFillSuratPernyataan($sheet, $row, $getChildKegiatan, $getParentName, $deep)
     {
         $column = 2;
-        $getName = $getChildKegiatan['name'];
-        $getIndexData = substr($getName, 0, 2);
+        if ($deep > 1 && strlen($getParentName) > 0 && strlen($getChildKegiatan['name']) <= 100) {
+            $getIndexData = substr($getParentName, 0, 2);
+            $getKegiatanName = substr($getParentName, 2, strlen($getParentName)).": \n".$getChildKegiatan['name'];
+        }
+        else {
+            $getName = $getChildKegiatan['name'];
+            $getIndexData = substr($getName, 0, 2);
+            $getKegiatanName = substr($getName, 2, strlen($getName));
+        }
+
+        $getAk = $getChildKegiatan['ak'];
+
         $sheet->setCellValueByColumnAndRow($column++, $row, $getIndexData);
-        $sheet->setCellValueByColumnAndRow($column++, $row, $getName);
+        $sheet->setCellValueByColumnAndRow($column++, $row, $getKegiatanName);
+        foreach ($getChildKegiatan['data'] as $listData) {
+            $getNewAk = $listData['kredit'];
+            if ($getAk != $getNewAk) {
+                $setPercentage = '80%';
+                $setPercentage2 = 'X';
+            }
+            else {
+                $setPercentage = '';
+                $setPercentage2 = '';
+            }
+
+            $setPercentage3 = '=';
+            $sheet->setCellValueByColumnAndRow($column++, $row, date('d-M-Y', strtotime($listData['tanggal'])));
+            $sheet->setCellValueByColumnAndRow($column++, $row, "1");
+            $sheet->setCellValueByColumnAndRow($column++, $row, $getAk);
+            $sheet->setCellValueByColumnAndRow($column++, $row, $setPercentage);
+            $sheet->setCellValueByColumnAndRow($column++, $row, $setPercentage2);
+            $sheet->setCellValueByColumnAndRow($column++, $row, $setPercentage3);
+            $sheet->setCellValueByColumnAndRow($column++, $row, $getNewAk);
+
+        }
     }
 
     public function generateDupak($dupakId)
