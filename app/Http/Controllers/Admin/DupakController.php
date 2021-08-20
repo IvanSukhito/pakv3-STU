@@ -139,7 +139,7 @@ class DupakController extends _CrudController
         if (!$getDupak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
+        $getPerancang = Users::where('id', $userId)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -206,7 +206,7 @@ class DupakController extends _CrudController
         if (!$getDupak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
+        $getPerancang = Users::where('id', $userId)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -262,7 +262,7 @@ class DupakController extends _CrudController
         //return view($this->listView[$data['viewType']]);
         $this->callPermission();
 
-      
+
 
         $data = $this->data;
 
@@ -279,7 +279,7 @@ class DupakController extends _CrudController
         $this->callPermission();
         $viewType = 'Upload Surat Pernyataan';
         $this->request->validate([
-          
+
             'file_upload_surat_pernyataan' => 'required'
         ]);
 
@@ -292,9 +292,9 @@ class DupakController extends _CrudController
         $todayDate = date('Y-m-d');
         $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
         $dokument = $this->request->file('file_upload_surat_pernyataan');
-      
+
         $totalDokument = [];
-     
+
 
         foreach ($dokument as $listDoc) {
             if ($listDoc->getError() == 0) {
@@ -328,7 +328,7 @@ class DupakController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
-       
+
 
     }
 }

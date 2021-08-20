@@ -151,7 +151,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         if (!$getSuratPernyataan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
+        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -218,7 +218,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         if (!$getSuratPernyataan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
+        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
