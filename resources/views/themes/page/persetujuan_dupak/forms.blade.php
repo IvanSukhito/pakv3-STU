@@ -111,14 +111,15 @@ else {
 
 
                 <?php if($fileSP): ?>
-                   
+                   <?php $no = 0;?>
                    @foreach($fileSP as $dataSP)
-                 
-                                    <div class="form-group">
-                                        <h3><a href="{{asset($dataSP['path'])}}" target="_blank">View Surat Pernyataan</a></h3>
+                   <?php $no++;?>
+                                <div class="form-group">
+                                    <h3><a href="{{asset($dataSP['path'])}}" target="_blank">View Surat Pernyataan - {!! $no !!}</a></h3>
                                 </div>
                                 
                     @endforeach
+                    
                   
                             <?php else: ?>
                         <h3>No File</h3>
