@@ -375,8 +375,6 @@ class PakLogic
         $getSuratPernyataan = SuratPernyataan::where('id', $suratPernyataanId)->first();
         $userId = session()->get('admin_id');
         $datenow = date("Y-m-d");
-        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->where('upline_id', $userId)->first();
-        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
         if($getSuratPernyataan) {
             $getInfoSuratPernyataan = json_decode($getSuratPernyataan->info_surat_pernyataan, TRUE);
             $getPerancangName = $getInfoSuratPernyataan['perancang_name'] ?? '';
