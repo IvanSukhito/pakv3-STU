@@ -5,25 +5,36 @@ namespace App\Http\Controllers\Admin;
 use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
 use App\Codes\Models\Dupak;
+use App\Codes\Models\DupakKegiatan;
+use App\Codes\Models\Golongan;
+use App\Codes\Models\JabatanPerancang;
+use App\Codes\Models\Pangkat;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
+use App\Codes\Models\SuratPernyataanKegiatan;
+use App\Codes\Models\UnitKerja;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
-class DupakController extends _CrudController
+class PersetujuanDupakController extends _CrudController
 {
     public function __construct(Request $request)
     {
         $passingData = [
             'id' => [
-                'edit' => 0
             ],
-            'kegiatan' => [
-                'custom' => ', name:"ms_kegiatan.name"'
+            'username' => [
+                'lang' => 'general.nip'
+            ],
+            'name' => [
             ],
             'total_kredit' => [
                 'type' => 'number'
+            ],
+            'kegiatan' => [
+                'custom' => ', name:"ms_kegiatan.name"'
             ],
             'status' => [
                 'type' => 'select'
@@ -33,29 +44,31 @@ class DupakController extends _CrudController
                 'type' => 'datetime'
             ],
             'updated_at' => [
-                'lang' => 'Disetujui',
+                'lang' => 'DiUpdate',
                 'type' => 'datetime'
             ],
             'action' => [
+                'create' => 0,
+                'edit' => 0,
                 'show' => 0,
                 'lang' => 'Aksi',
             ]
         ];
 
         parent::__construct(
-            $request, 'general.dupak', 'dupak', 'Dupak', 'dupak',
+            $request, 'general.persetujuan_dupak', 'persetujuan-dupak', 'Dupak', 'persetujuan-dupak',
             $passingData
         );
 
-        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.dupak.forms';
-        $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.dupak.forms';
-        $this->listView['uploadSP'] = env('ADMIN_TEMPLATE').'.page.dupak.forms_upload_sp';
-        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.dupak.list_button';
+        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.persetujuan_dupak.forms';
+        $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.persetujuan_dupak.forms';
+        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.persetujuan_dupak.list_button';
 
-        $this->data['listSet']['status'] = get_list_status_dupak();
+        $this->data['listSet']['status'] =  get_list_status_dupak();
 
     }
 
+ 
     public function dataTable()
     {
         $this->callPermission();
@@ -64,7 +77,7 @@ class DupakController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('tx_dupak.id, ms_kegiatan.name AS kegiatan, tx_dupak.status,
+        $builder = Users::selectRaw('tx_dupak.id, users.username, users.name, ms_kegiatan.name AS kegiatan, tx_dupak.status,
             tx_dupak.total_kredit, tx_dupak.created_at, tx_dupak.updated_at')
             ->join('tx_dupak', 'tx_dupak.user_id', '=', 'users.id')
             ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_dupak.top_kegiatan_id')
@@ -129,6 +142,77 @@ class DupakController extends _CrudController
             ->make(true);
     }
 
+    public function edit($id)
+    {
+        $this->callPermission();
+
+        $userId = session()->get('admin_id');
+
+        $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2])->first();
+        //dd($getDupak->file_upload_surat_pernyataan);
+        $fileSP = json_decode($getDupak->file_upload_surat_pernyataan, true);
+
+        //dd($fileSP);
+        if (!$getDupak) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
+        if (!$getPerancang) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+
+        $getNewLogic = new PakLogic();
+        $getData = $getNewLogic->getDupakUser($getDupak);
+
+        $dataPermen = [];
+        $dataKegiatan = [];
+        $dataTopKegiatan = [];
+        $getFilterKegiatan = [];
+        $totalPermen = 0 ;
+        $totalTop = 0 ;
+        $totalAk = 0 ;
+        $topId = [];
+        $kredit = [];
+
+        if (count($getData['data']) > 0) {
+            $totalPermen = count($getData['total_permen']);
+            $totalTop = count($getData['total_top']);
+            $totalAk = $getData['total_ak'];
+            $dataPermen = $getData['permen'];
+            $dataKegiatan = $getData['data'];
+            $dataTopKegiatan = $getData['top_kegiatan'];
+            $topId = $getData['total_top'];
+            $kredit = $getData['kredit'];
+           
+        }
+
+      
+       
+        $data = $this->data;
+
+        $data['viewType'] = 'edit';
+        $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
+        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
+        $data['data'] = $getDupak;
+        $data['dataUser'] = $getPerancang;
+        $data['dataJenjangPerancang'] = $getJenjangPerancang;
+        $data['dataPermen'] = $dataPermen;
+        $data['dataFilterKegiatan'] = $getFilterKegiatan;
+        $data['dataKegiatan'] = $dataKegiatan;
+        $data['dataTopKegiatan'] = $dataTopKegiatan;
+        $data['totalPermen'] = $totalPermen;
+        $data['totalTop'] = $totalTop;
+        $data['totalAk'] = $totalAk;
+        $data['topId'] = $topId;
+        $data['kredit'] = $kredit;
+        $data['fileSP'] = $fileSP;
+
+        
+        return view($this->listView[$data['viewType']], $data);
+    }
+
     public function show($id)
     {
         $this->callPermission();
@@ -136,6 +220,7 @@ class DupakController extends _CrudController
         $userId = session()->get('admin_id');
 
         $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2,3,80,99])->first();
+     
         if (!$getDupak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -196,139 +281,68 @@ class DupakController extends _CrudController
         return view($this->listView[$data['viewType']], $data);
     }
 
-    public function edit($id)
+    public function update($id)
     {
         $this->callPermission();
 
-        $userId = session()->get('admin_id');
-
-        $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2])->first();
-        if (!$getDupak) {
-            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
-        }
-        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
-        if (!$getPerancang) {
+        $getData = Dupak::where('id', $id)->whereIn('status', [1,2])->first();
+        if (!$getData) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
+        $actionKegiatan = $this->request->get('action_kegiatan');
+        $messageKegiatan = $this->request->get('message_kegiatan');
+        $getSaveFlag = $this->request->get('save');
 
-        $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getDupakUser($getDupak);
+        DB::beginTransaction();
 
-        $dataPermen = [];
-        $dataKegiatan = [];
-        $dataTopKegiatan = [];
-        $getFilterKegiatan = [];
-        $totalPermen = 0 ;
-        $totalTop = 0 ;
-        $totalAk = 0 ;
-        $topId = [];
-        $kredit = [];
+        $getDupakKegiatan = DupakKegiatan::selectRaw('tx_dupak_kegiatan.*, tx_kegiatan.kredit AS kredit')
+            ->join('tx_kegiatan', 'tx_kegiatan.id', '=', 'tx_dupak_kegiatan.kegiatan_id')
+            ->where('dupak_id', $id)->get();
 
-        if (count($getData['data']) > 0) {
-            $totalPermen = count($getData['total_permen']);
-            $totalTop = count($getData['total_top']);
-            $totalAk = $getData['total_ak'];
-            $dataPermen = $getData['permen'];
-            $dataKegiatan = $getData['data'];
-            $dataTopKegiatan = $getData['top_kegiatan'];
-            $topId = $getData['total_top'];
-            $kredit = $getData['kredit'];
-        }
-
-        $data = $this->data;
-
-        $data['viewType'] = 'edit';
-        $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
-        $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getDupak;
-        $data['dataUser'] = $getPerancang;
-        $data['dataJenjangPerancang'] = $getJenjangPerancang;
-        $data['dataPermen'] = $dataPermen;
-        $data['dataFilterKegiatan'] = $getFilterKegiatan;
-        $data['dataKegiatan'] = $dataKegiatan;
-        $data['dataTopKegiatan'] = $dataTopKegiatan;
-        $data['totalPermen'] = $totalPermen;
-        $data['totalTop'] = $totalTop;
-        $data['totalAk'] = $totalAk;
-        $data['topId'] = $topId;
-        $data['kredit'] = $kredit;
-
-        return view($this->listView[$data['viewType']], $data);
-    }
-
-    public function uploadSP($id){
-        //return view($this->listView[$data['viewType']]);
-        $this->callPermission();
-
-      
-
-        $data = $this->data;
-
-        $data['viewType'] = 'uploadSP';
-        $data['formsTitle'] = __('general.title_dupak_uploadSP', ['field' => $data['thisLabel']]);
-
-        $data['data'] = $this->crud->show($id);
-
-        return view($this->listView['uploadSP'], $data);
-    }
-
-    public function storeSP($id){
-        //dd($this->request);
-        $this->callPermission();
-        $viewType = 'Upload Surat Pernyataan';
-        $this->request->validate([
-          
-            'file_upload_surat_pernyataan' => 'required'
-        ]);
-
-        $getData = Dupak::findOrFail($id);
-
-        $userId = session()->get('admin_id');
-        $getUser = Users::where('id', $userId)->first();
-        $userNip = $getUser->username;
-        $userFolder = 'user_' . preg_replace("/[^A-Za-z0-9?!]/", '', $userNip);
-        $todayDate = date('Y-m-d');
-        $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
-        $dokument = $this->request->file('file_upload_surat_pernyataan');
-      
-        $totalDokument = [];
-     
-
-        foreach ($dokument as $listDoc) {
-            if ($listDoc->getError() == 0) {
-                $getFileName = $listDoc->getClientOriginalName();
-                $ext = explode('.', $getFileName);
-                $fileName = reset($ext);
-                $ext = end($ext);
-                $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
-                $destinationPath = './uploads/' . $folderName . $getData->id . '/';
-                $destinationLink = 'uploads/' . $folderName . $getData->id . '/' . $setFileName;
-                $listDoc->move($destinationPath, $setFileName);
-
-                $totalDokument[] = [
-                    'name' => $setFileName,
-                    'path' => $destinationLink
-                ];
+        $totalKredit = 0;
+        foreach ($getDupakKegiatan as $list) {
+            $getAction = isset($actionKegiatan[$list->id]) ? $actionKegiatan[$list->id] : 1;
+            $getMessage = '';
+            if ($getAction == 99) {
+                $getMessage = isset($messageKegiatan[$list->id]) ? $messageKegiatan[$list->id] : '';
             }
+            else {
+                $totalKredit += $list->kredit;
+            }
+            $list->message = $getMessage;
+            $list->status = $getAction;
+            $list->save();
+
         }
 
-        $getData->update([
-            'file_upload_surat_pernyataan' => json_encode($totalDokument),
-            'status' => 2
-        ]);
+        $getData->total_kredit = $totalKredit;
 
-        if($this->request->ajax()){
-            return response()->json(['result' => 1, 'message' => __('general.success_add')]);
+        if ($getSaveFlag == 2) {
+            $getData->tanggal = date('Y-m-d');
+            $getData->status = $getAction;
+            $getData->update();
+    
+
+            //Create PDF here
+
         }
         else {
-            session()->flash('message', __('general.success_dupak_uploadSP'));
-            session()->flash('message_alert', 2);
-            return redirect()->route('admin.' . $this->route . '.index');
+            $getData->status = 2;
         }
 
-       
+        $getData->save();
 
+        DB::commit();
+
+        if($this->request->ajax()){
+            return response()->json(['result' => 1, 'message' => __('general.success_edit_', ['field' => $this->data['thisLabel']])]);
+        }
+        else {
+            session()->flash('message', __('general.success_edit_', ['field' => $this->data['thisLabel']]));
+            session()->flash('message_alert', 2);
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.show', $id);
+        }
     }
+
 }

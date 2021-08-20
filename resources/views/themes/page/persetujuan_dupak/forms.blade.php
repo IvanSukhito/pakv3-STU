@@ -65,7 +65,7 @@ else {
                 @elseif(in_array($viewType, ['edit']))
                     {{ Form::open(['route' => ['admin.' . $thisRoute . '.update', $data->{$masterId}], 'method' => 'PUT', 'files' => true, 'id'=>'form', 'role' => 'form'])  }}
                 @else
-                    {{ Form::open(['id'=>'form', 'role' => 'form'])  }}
+                    {{ Form::open(['route' => ['admin.' . $thisRoute . '.show', $data->{$masterId}], 'method' => 'GET', 'files' => true, 'id'=>'form', 'role' => 'form'])  }}
                 @endif
 
                 <div class="card-footer">
@@ -86,21 +86,45 @@ else {
                            class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
                             <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
                         </a>
+                    @elseif (in_array($viewType, ['show']) && in_array($data->status, [80]))
+                    <button type="submit" name="pdf" value="1" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
+                        <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
+                    </button>
                     @endif
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
                         <i class="fa fa-arrow-circle-o-left"></i><span class=""> {{ __('general.back') }}</span>
                     </a>
-
                 </div>
 
                 @if(!in_array($viewType, ['show']))
+
+
                 <div class="card-body">
                     <label for="all_ok_check"><input type="radio" class="all_ok_check" id="all_ok_check" name="flag_check_all"/> Setuju Semua</label>
                     <label for="all_cancel_check"><input type="radio" class="all_cancel_check" id="all_cancel_check" name="flag_check_all"/> Tolak Semua</label>
                 </div>
                 @endif
+
                 <div class="card-body">
+                @if(in_array($viewType, ['edit']))
+
+
+                <?php if($fileSP): ?>
+                   
+                   @foreach($fileSP as $dataSP)
+                 
+                                    <div class="form-group">
+                                        <h3><a href="{{asset($dataSP['path'])}}" target="_blank">View Surat Pernyataan</a></h3>
+                                </div>
+                                
+                    @endforeach
+                  
+                            <?php else: ?>
+                        <h3>No File</h3>
+                 <?php endif ?>
+
+                 @endif
                     <h3 class="form-section first-form">Kegiatan</h3>
                     <p>Perancang mengajukan:</p>
                     <ul>
@@ -125,10 +149,15 @@ else {
                         </li>
 
                         <li>Total AK yang di ajukan: {!! number_format($totalAk, 3) !!}</li>
+                        @if(in_array($data->status, [80,88,99]))
+                        <li>Total AK yang di setujui: {!! number_format($data->total_kredit, 3) !!}</li>
+                        @endif
                     </ul>
                 </div>
+          
                 <div class="card-body">
                     @if(isset($dataKegiatan))
+
                         @foreach($dataKegiatan as $getPermen => $listTopKegiatan)
                             @foreach($listTopKegiatan as $getTop => $listJudul)
                                 <?php
@@ -174,6 +203,11 @@ else {
                            class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
                             <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
                         </a>
+                    @elseif (in_array($viewType, ['show']) && in_array($data->status, [80]))
+                    <button type="submit" name="pdf" value="1" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
+                        <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
+                    </button>
+
                     @endif
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
@@ -234,7 +268,7 @@ else {
         });
 
         function checkConfirm() {
-            return confirm("Menyetujui Surat Pernyataan?");
+            return confirm("Menyetujui Dupak?");
         }
 
     </script>

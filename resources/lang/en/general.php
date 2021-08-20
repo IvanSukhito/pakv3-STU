@@ -68,6 +68,8 @@ return [
     'explain' => 'Explain',
     'export' => 'Export',
     'download_pdf' => 'Download PDF',
+    'upload_sp' => 'Upload SP',
+    'title_dupak_uploadSP' => 'Upload Surat Pernyataan',
     'fail' => 'Fail',
     'faqs' => 'FAQs',
     'feature' => 'Feature',
@@ -555,6 +557,7 @@ return [
     'success_delete_' => 'Berhasil Hapus :field',
     'success_approve' => ':field di setujui',
     'success_reject' => ':field di tolak',
+    'success_dupak_uploadSP' => 'Sukses Upload Surat Pernyataan',
 
     'error_old_password' => 'Old Password not match',
     'error_max_file' => 'Upload size is to big, just allow :bytes',

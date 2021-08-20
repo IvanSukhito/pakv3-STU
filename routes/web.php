@@ -77,6 +77,11 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                         $router->get($linkName . '/submit-kegiatan', $controller . '@submitKegiatan')->name('admin.' . $linkName . '.submitKegiatan');
                         $router->post($linkName . '/submit-kegiatan', $controller . '@storeSubmitKegiatan')->name('admin.' . $linkName . '.storeSubmitKegiatan');
                         break;
+
+                    case 'dupak':
+                        $router->get($linkName . '/upload-SP/{id}', $controller . '@uploadSP')->name('admin.' . $linkName . '.uploadSP');
+                        $router->post($linkName . '/submit-SP/{id}', $controller . '@storeSP')->name('admin.' . $linkName . '.storeSP');
+                        break;
                 }
 
                 $router->get($linkName . '/data', $controller . '@dataTable')->name('admin.' . $linkName . '.dataTable');

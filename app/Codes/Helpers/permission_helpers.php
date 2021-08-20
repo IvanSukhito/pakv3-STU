@@ -619,6 +619,10 @@ if ( ! function_exists('listAvailablePermission'))
         $listPermission['kegiatan']['create'][] = 'admin.kegiatan.submitKegiatan';
         $listPermission['kegiatan']['create'][] = 'admin.kegiatan.storeSubmitKegiatan';
 
+        $listPermission['dupak']['create'][] = 'admin.dupak.uploadSP';
+        $listPermission['dupak']['create'][] = 'admin.dupak.storeSP';
+
+
         $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
         $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';
         $listPermission['permen']['edit'][] = 'admin.mskegiatan.edit';

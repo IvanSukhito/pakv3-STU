@@ -11,7 +11,7 @@
         <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
 </a>
 @endif
-@if ($permission['edit'] && in_array($query->status, [1,2]))
+@if ($permission['edit'] && in_array($query->status, [2]))
     <a href="{{ route('admin.' . $thisRoute . '.edit', $query->{$masterId}) }}" class="mb-1 btn btn-primary btn-sm"
        title="@lang('general.edit')">
         <i class="fa fa-pencil"></i>
