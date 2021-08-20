@@ -65,7 +65,7 @@ else {
                 @elseif(in_array($viewType, ['edit']))
                     {{ Form::open(['route' => ['admin.' . $thisRoute . '.update', $data->{$masterId}], 'method' => 'PUT', 'files' => true, 'id'=>'form', 'role' => 'form'])  }}
                 @else
-                    {{ Form::open(['id'=>'form', 'role' => 'form'])  }}
+                    {{ Form::open(['route' => ['admin.' . $thisRoute . '.show', $data->{$masterId}], 'method' => 'GET', 'files' => true, 'id'=>'form', 'role' => 'form'])  }}
                 @endif
 
                 <div class="card-footer">
@@ -86,6 +86,10 @@ else {
                            class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
                             <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
                         </a>
+                        @elseif (in_array($viewType, ['show']) && in_array($data->status, [80]))
+                    <button type="submit" name="pdf" value="1" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
+                        <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
+                    </button>
                     @endif
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
@@ -174,6 +178,10 @@ else {
                            class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
                             <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
                         </a>
+                        @elseif (in_array($viewType, ['show']) && in_array($data->status, [80]))
+                    <button type="submit" name="pdf" value="1" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
+                        <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
+                    </button>
                     @endif
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
