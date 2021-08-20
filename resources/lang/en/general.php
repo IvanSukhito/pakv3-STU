@@ -526,8 +526,11 @@ return [
     'kartu_pegawai' => 'Kartu Pegawai',
     'masa_penilaian_terkahir' => 'Masa Penilaian Terakhir',
     'status_diangkat' => 'Status Diangkat',
+    'kenaikan_jenjang_terakhir' => 'TMT Kenaikan Jenjang Terakhir',
     'unggah' => 'Unggah File',
     'kirim' =>'Kirim',
+    'total_kredit' => 'Total Kredit',
+    'persetujuan_dupak' => 'Persetujuan Dupak',
 
     'ask_save' => 'Do you want to save this? ',
     'ask_delete' => 'Do you want to delete this? ',
