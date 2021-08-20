@@ -602,15 +602,15 @@ class KegiatanController extends _CrudController
         $getUserGolongan = $getListGolongan[$getUser->golongan_id] ?? '';
         $getUserJabatan = $getListJabatan[$getUser->jenjang_perancang_id] ?? '';
         $getUserUnitKerja = $getListUnitKerja[$getUser->unit_kerja_id] ?? '';
-        $getUserPangkatTms = $getUser->tmt_kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getUser->tmt_kenaikan_jenjang_terakhir)) : '';
-        $getUserJabatanTms = $getUser->kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getUser->kenaikan_jenjang_terakhir)) : '';
+        $getUserPangkatTms = $getUser->tmt_pangkat ? date('d-M-Y', strtotime($getUser->tmt_pangkat)) : '';
+        $getUserJabatanTms = $getUser->tmt_jabatan ? date('d-M-Y', strtotime($getUser->tmt_jabatan)) : '';
 
         $getAtasanPangkat = $getListPangkat[$getAtasan->pangkat_id] ?? '';
         $getAtasanGolongan = $getListGolongan[$getAtasan->golongan_id] ?? '';
         $getAtasanJabatan = $getListJabatan[$getAtasan->jenjang_perancang_id] ?? '';
         $getAtasanUnitKerja = $getListUnitKerja[$getAtasan->unit_kerja_id] ?? '';
-        $getAtasanPangkatTms = $getAtasan->tmt_kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getAtasan->tmt_kenaikan_jenjang_terakhir)) : '';
-        $getAtasanJabatanTms = $getAtasan->kenaikan_jenjang_terakhir ? date('d-M-Y', strtotime($getAtasan->kenaikan_jenjang_terakhir)) : '';
+        $getAtasanPangkatTms = $getAtasan->tmt_pangkat ? date('d-M-Y', strtotime($getAtasan->tmt_pangkat)) : '';
+        $getAtasanJabatanTms = $getAtasan->tmt_jabatan ? date('d-M-Y', strtotime($getAtasan->tmt_jabatan)) : '';
 
         $getDateRange = $this->request->get('daterange1');
         $getSplitDate = explode(' | ', $getDateRange);
