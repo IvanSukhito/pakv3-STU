@@ -542,6 +542,8 @@ class KegiatanController extends _CrudController
         $totalPermen = 0 ;
         $totalTop = 0 ;
         $totalAk = 0 ;
+        $topId = [];
+        $kredit = [];
 
         if (count($getData['data']) > 0) {
             $totalPermen = count($getData['total_permen']);

@@ -565,27 +565,27 @@ class PakLogic
             $row += 2;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Nama');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerangkatName);
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangName);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Nip');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerangkatNIP);
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangNIP);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Pangkat/golongan ruang/TMT');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerangkatPangkat);
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangPangkat);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jabatan');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerangkatJabatan);
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangJabatan);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Unit Kerja');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerangkatUnitKerja);
+            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangUnitKerja);
 
             $row += 2;
             $column = 1;
