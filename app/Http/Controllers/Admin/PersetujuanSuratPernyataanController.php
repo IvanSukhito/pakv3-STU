@@ -364,12 +364,14 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
             $saveDupakKegiatan = [];
             foreach ($getSuratPernyataanKegiatan as $list) {
-                $saveDupakKegiatan[] = [
-                    'dupak_id' => $dupakId,
-                    'kegiatan_id' => $list->id,
-                    'ms_kegiatan_id' => $list->ms_kegiatan_id,
-                    'status' => 1
-                ];
+                if ($getAction != 99) {
+                    $saveDupakKegiatan[] = [
+                        'dupak_id' => $dupakId,
+                        'kegiatan_id' => $list->id,
+                        'ms_kegiatan_id' => $list->ms_kegiatan_id,
+                        'status' => 1
+                    ];
+                }
             }
 
             if (count($saveDupakKegiatan) > 0) {

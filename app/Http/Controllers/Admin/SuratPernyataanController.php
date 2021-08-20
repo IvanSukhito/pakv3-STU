@@ -136,7 +136,7 @@ class SuratPernyataanController extends _CrudController
         if (!$getSuratPernyataan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $userId)->where('upline_id', $getSuratPernyataan->upline_id)->first();
+        $getPerancang = Users::where('id', $userId)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
