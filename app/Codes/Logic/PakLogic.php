@@ -404,6 +404,19 @@ class PakLogic
 
             $sheet = $spreadsheet->getActiveSheet();
 
+            $column = 1;
+			//$sheet->getRowDimension('2')->setRowHeight(90.23);
+			$sheet->getColumnDimensionByColumn($column++)->setWidth(5.43);
+            $sheet->getColumnDimensionByColumn($column++)->setWidth(2.43);
+			$sheet->getColumnDimensionByColumn($column++)->setWidth(50.00);
+            $sheet->getColumnDimensionByColumn($column++)->setWidth(18.57);
+            $sheet->getColumnDimensionByColumn($column++)->setWidth(18.57);
+			for($i=0;$i<5/2; $i++) {
+				$sheet->getColumnDimensionByColumn($column++)->setWidth(8.71);
+				$sheet->getColumnDimensionByColumn($column++)->setWidth(6.71);
+			}
+			$sheet->getColumnDimensionByColumn($column++)->setWidth(10.86);
+
             $totalColumn = 13;
 
             $row = 2;
@@ -587,8 +600,24 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Tanggal');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jumlah Volume Kegiatan');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jumlah AK');
+            $sheet->mergeCellsByColumnAndRow($column-1,$row, 10, $row);  
+        
             $column += 4;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Keterangan/ Bukti Fisik');
+            $sheet->mergeCellsByColumnAndRow($column-1,$row, $totalColumn, $row);  
+    
+            $row = 29;
+            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
+				'font' => array(
+					'bold' => true
+				),
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				),
+			));
+
 
             $row += 1;
             $column = 1;
@@ -598,8 +627,22 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, '3');
             $sheet->setCellValueByColumnAndRow($column++, $row, '4');
             $sheet->setCellValueByColumnAndRow($column++, $row, '5');
+            $sheet->mergeCellsByColumnAndRow($column-1,$row, 10, $row);  
+        
             $column += 4;
             $sheet->setCellValueByColumnAndRow($column++, $row, '6');
+            $sheet->mergeCellsByColumnAndRow($column-1,$row, $totalColumn, $row);  
+
+            $row = 30;
+            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
+				
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+					'wrapText' => true
+				),
+			));
+    
 
             //ISI
             foreach ($getDataKegiatan as $permenId => $listTopKegiatan) {
@@ -619,6 +662,7 @@ class PakLogic
                                 $row += 1;
                                 $column = 3;
                                 $sheet->setCellValueByColumnAndRow($column++, $row, $getName);
+                                
 
                                 $startRow = $row + 1;
                                 if ($list['have_child'] == 1) {
@@ -628,6 +672,14 @@ class PakLogic
                                 $endRow = $row;
                                 $sheet->setCellValueByColumnAndRow(1, $startRow, $indexingJudul.",".$indexingKegiatan);
                                 $sheet->mergeCellsByColumnAndRow(1, $startRow, 1, $endRow);
+                                $sheet->getStyleByColumnAndRow(1,$startRow, 1, $endRow)->applyFromArray(array(
+				
+                                    'alignment' => array(
+                                        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                                        'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+                                      
+                                    ),
+                                ));
 
                                 $indexingKegiatan++;
                             }
@@ -763,6 +815,15 @@ class PakLogic
 
         $sheet->setCellValueByColumnAndRow($column++, $row, $getIndexData);
         $sheet->setCellValueByColumnAndRow($column++, $row, $getKegiatanName);
+        $sheet->getStyleByColumnAndRow($column-1,$row)->applyFromArray(array(
+				
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+        ));
+
         foreach ($getChildKegiatan['data'] as $listData) {
             $getNewAk = $listData['kredit'];
             if ($getAk != $getNewAk) {
