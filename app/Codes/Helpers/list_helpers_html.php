@@ -60,7 +60,7 @@ if ( ! function_exists('render_create_kegiatan_v3')) {
             $getJenjangKegiatan = $list['jenjang_perancang_id'];
             $getSatuan = strlen($list['satuan']) > 0 ? $list['satuan'] : '';
             $getPelaksana = isset($listJenjangPerancang[$list['jenjang_perancang_id']]) ? $listJenjangPerancang[$list['jenjang_perancang_id']]->name : '';
-            $getChilds = $list['have_child'] == 1 ? $list['childs'] : [];
+            $getChild = $list['have_child'] == 1 ? $list['child'] : [];
             $addClass = $parentClass.' kegiatan-'.$getId;
 
             $addHtmlAk = '<td width="15%" colspan="3">&nbsp;</td>';
@@ -94,8 +94,8 @@ if ( ! function_exists('render_create_kegiatan_v3')) {
                     <td width="15%" class="text-center">'.$getPelaksana.'</td>
                     </tr>';
 
-            if ($getChilds) {
-                $html .= render_create_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass);
+            if ($getChild) {
+                $html .= render_create_kegiatan_v3($getChild, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass);
             }
 
         }
@@ -171,7 +171,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
             $getBukti = '';
             $getStatus = '';
             $getCreated = '';
-            $getChilds = $list['have_child'] == 1 ? $list['childs'] : [];
+            $getChild = $list['have_child'] == 1 ? $list['child'] : [];
             $addClass = $parentClass.' kegiatan-'.$getId;
             $addLabel = '';
 
@@ -382,8 +382,8 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
 
             $getOldName = $getName;
 
-            if ($getChilds) {
-                $html .= render_view_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass, $getOldName);
+            if ($getChild) {
+                $html .= render_view_kegiatan_v3($getChild, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass, $getOldName);
             }
 
         }
@@ -457,7 +457,7 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
             $getAk = $list['ak'] > 0 ? $list['ak'] : '';
             $getSatuan = strlen($list['satuan']) > 0 ? $list['satuan'] : '';
             $getAction = '';
-            $getChilds = $list['have_child'] == 1 ? $list['childs'] : [];
+            $getChild = $list['have_child'] == 1 ? $list['child'] : [];
             $addClass = $parentClass.' kegiatan-'.$getId;
             $addLabel = '';
 
@@ -685,8 +685,8 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
 
             $getOldName = $getName;
 
-            if ($getChilds) {
-                $html .= render_persetujuan_sp_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $readonly, $addClass, $getOldName, $step + 1);
+            if ($getChild) {
+                $html .= render_persetujuan_sp_kegiatan_v3($getChild, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $readonly, $addClass, $getOldName, $step + 1);
             }
 
         }

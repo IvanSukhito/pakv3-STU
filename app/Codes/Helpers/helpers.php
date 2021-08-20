@@ -209,7 +209,7 @@ if ( ! function_exists('set_deep_ms_kegiatan')) {
         $getChildDeep = 0;
         foreach ($data as $list) {
             if ($list['have_child'] == 1) {
-                $tempDeep = set_deep_ms_kegiatan($list['childs'], $getDeep + 1);
+                $tempDeep = set_deep_ms_kegiatan($list['child'], $getDeep + 1);
                 if ($getChildDeep < $tempDeep) {
                     $getChildDeep = $tempDeep;
                 }

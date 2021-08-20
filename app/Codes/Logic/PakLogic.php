@@ -74,9 +74,9 @@ class PakLogic
         if (isset($msKegiatan[$parentId])) {
             foreach ($msKegiatan[$parentId] as $list) {
                 if (isset($msKegiatan[$list['id']])) {
-                    $childs = $this->getCreateChildTreeKegiatan($msKegiatan, $list['id']);
+                    $child = $this->getCreateChildTreeKegiatan($msKegiatan, $list['id']);
                     $list['have_child'] = 1;
-                    $list['childs'] = $childs;
+                    $list['child'] = $child;
                 }
                 else {
                     $list['have_child'] = 0;
@@ -612,38 +612,23 @@ class PakLogic
                         $column = 1;
                         $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.'. '.$nameJudul);
 
-                        $row += 1;
-                        $column = 3;
-                        $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.'. '.$nameJudul);
-
-                        $totalKegiatan = count($listKegiatan);
                         $indexingKegiatan = 1;
 
-                        foreach ($listKegiatan as $list) {
-                            $getName = $list['name'];
-                            if ($list['have_child'] == 1) {
+                        if ($listKegiatan[0]['have_child'] == 1) {
+                            foreach ($listKegiatan[0]['child'] as $list) {
+                                $getName = $list['name'];
                                 $row += 1;
                                 $column = 1;
-                                $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.','.$indexingKegiatan);
-                                $this->generateChildFillSuratPernyataan($sheet, $row, $column, $indexingKegiatan, $list);
-                                $row += 1;
-                                $row = $this->generateChildSuratPernyataan($sheet, $row, $indexingKegiatan, $list['childs'], $getName);
-                            }
-                            else {
-                                $row += 1;
-                                $column = 1;
-                                $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.','.$indexingKegiatan);
-                                $this->generateChildFillSuratPernyataan($sheet, $row, $column, $indexingKegiatan, $list);
-                            }
+                                $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.'. '.$nameJudul);
 
-                            $indexingKegiatan++;
-
+                                if ($list['have_child'] == 1) {
+                                    $row = $this->generateChilduratPernyataan($sheet, $row, $list['child'], $getName, 1);
+                                }
+                            }
+                            $indexingJudul++;
                         }
 
-                        $indexingJudul++;
-
                     }
-
                 }
             }
 
@@ -656,81 +641,67 @@ class PakLogic
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jakarta, '.$datenow);
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-
 			));
 
             $row += 2;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Atasan Langsung');
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-
 			));
 
             $row += 1;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Kepala Bagian Program dan Pelaporan');
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-
 			));
 
             $row += 1;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Direktorat Jenderal Administrasi Hukum Umum');
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-
 			));
 
             $row += 4;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, $getAtasanName);
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-
 			));
 
             $row += 1;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'NIP.'.$getAtasanNIP);
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-
 			));
-
-
 
             // Redirect output to a client’s web browser (Xls)
             header('Content-Type: application/vnd.ms-excel');
@@ -752,17 +723,16 @@ class PakLogic
         }
     }
 
-    protected function generateChildSuratPernyataan($sheet, $row, $indexingKegiatan, $getChildKegiatan, $parentName)
+    protected function generateChilduratPernyataan($sheet, $row, $getChildKegiatan, $parentName, $deep)
     {
         foreach ($getChildKegiatan as $list) {
             $getName = $list['name'];
             if ($list['have_child'] == 1) {
-                $this->generateChildSuratPernyataan($sheet, $row, $indexingKegiatan, $list['childs'], $parentName);
+                $this->generateChilduratPernyataan($sheet, $row, $list['child'], $getName, $deep+1);
             }
             else {
                 $row += 1;
-                $column = 2;
-                $this->generateChildFillSuratPernyataan($sheet, $row, $column, $indexingKegiatan, $list);
+                $this->generateChildFillSuratPernyataan($sheet, $row, $list, $parentName);
             }
             $indexingKegiatan++;
         }
@@ -771,10 +741,12 @@ class PakLogic
 
     }
 
-    protected function generateChildFillSuratPernyataan($sheet, $row, $column, $indexingKegiatan, $getChildKegiatan)
+    protected function generateChildFillSuratPernyataan($sheet, $row, $getChildKegiatan, $getParentName)
     {
+        $column = 2;
         $getName = $getChildKegiatan['name'];
-        $sheet->setCellValueByColumnAndRow($column++, $row, $indexingKegiatan);
+        $getIndexData = substr($getName, 0, 2);
+        $sheet->setCellValueByColumnAndRow($column++, $row, $getIndexData);
         $sheet->setCellValueByColumnAndRow($column++, $row, $getName);
     }
 
