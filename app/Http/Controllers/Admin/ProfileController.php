@@ -84,12 +84,26 @@ class ProfileController extends _GlobalFunctionController
                 'type' => 'select2',
                 'lang' => 'general.golongan'
             ],
+            'tmt_pangkat' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.kenaikan_jenjang_terakhir'
+            ],
             'jenjang_perancang_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
                 'type' => 'select2',
                 'lang' => 'general.jenjang_perancang'
+            ],
+            'tmt_jabatan' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.tmt_jabatan'
             ],
             'unit_kerja_id' => [
                 'validation' => [
@@ -139,12 +153,26 @@ class ProfileController extends _GlobalFunctionController
                 'type' => 'select2',
                 'lang' => 'general.golongan'
             ],
+            'tmt_pangkat' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.kenaikan_jenjang_terakhir'
+            ],
             'jenjang_perancang_id' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
                 'type' => 'select2',
                 'lang' => 'general.jenjang_perancang'
+            ],
+            'tmt_jabatan' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.tmt_jabatan'
             ],
             'unit_kerja_id' => [
                 'validation' => [
@@ -243,7 +271,7 @@ class ProfileController extends _GlobalFunctionController
         }
         elseif ($getAtasan == 1) {
             $getPassing = $this->passingAtasan;
-            $getPerancangData = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
+            $getPerancangData = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status, users.tmt_pangkat, users.tmt_jabatan')
                 ->where('users.perancang', '=', 1)
                 ->where('users.upline_id','=',session()->get('admin_id'))
                 ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')

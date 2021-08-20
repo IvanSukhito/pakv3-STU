@@ -72,6 +72,13 @@ class AtasanController extends _CrudController
                 'type' => 'select2',
                 'lang' => 'general.jenjang_perancang'
             ],
+            'tmt_jabatan' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.tmt_jabatan'
+            ],
             'unit_kerja_id' => [
                 'validation' => [
                     'edit' => 'required'
@@ -184,7 +191,7 @@ class AtasanController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role,users.gender, users.status,users.tmt_pangkat')
+        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role,users.gender, users.status,users.tmt_pangkat,users.tmt_jabatan')
             ->where('users.atasan', '=', 1)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
             ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
@@ -256,8 +263,9 @@ class AtasanController extends _CrudController
         $getEmail = $this->request->get('email');
         $getPangkat = $this->request->get('pangkat_id');
         $getGolongan = $this->request->get('golongan_id');
+        $getTmtPangkat = $this->request->get('tmt_pangkat');
         $getJenjangPerancang = $this->request->get('jenjang_perancang_id');
-        $getKenaikanJenjangTerakhir = $this->request->get('tmt_kenaikan_jenjang_terakhir');
+        $getTmtJabatan = $this->request->get('tmt_jabatan');
         $getUnitKerja = $this->request->get('unit_kerja_id');
         $getStatus = $this->request->get('status');
         $getGender = $this->request->get('gender');
@@ -269,8 +277,9 @@ class AtasanController extends _CrudController
         $atasan->password = Hash::make('123');
         $atasan->pangkat_id = $getPangkat;
         $atasan->golongan_id = $getGolongan;
+        $atasan->tmt_pangkat = $getTmtPangkat;
         $atasan->jenjang_perancang_id = $getJenjangPerancang;
-        $atasan->tmt_kenaikan_jenjang_terakhir = $getKenaikanJenjangTerakhir;
+        $atasan->tmt_jabatan = $getTmtJabatan;
         $atasan->unit_kerja_id = $getUnitKerja;
         $atasan->status = $getStatus;
         $atasan->gender = $getGender;

@@ -527,6 +527,7 @@ return [
     'masa_penilaian_terkahir' => 'Masa Penilaian Terakhir',
     'status_diangkat' => 'Status Diangkat',
     'kenaikan_jenjang_terakhir' => 'TMT Kenaikan Jenjang Terakhir',
+    'tmt_jabatan' => 'TMT Jabatan',
     'unggah' => 'Unggah File',
     'kirim' =>'Kirim',
     'total_kredit' => 'Total Kredit',
