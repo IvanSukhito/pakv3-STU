@@ -373,7 +373,6 @@ class PakLogic
         ini_set('max_execution_time', -1);
 
         $getSuratPernyataan = SuratPernyataan::where('id', $suratPernyataanId)->first();
-        $userId = session()->get('admin_id');
         $datenow = date("Y-m-d");
         if($getSuratPernyataan) {
             $getInfoSuratPernyataan = json_decode($getSuratPernyataan->info_surat_pernyataan, TRUE);
