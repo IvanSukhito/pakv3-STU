@@ -108,6 +108,11 @@ class PersetujuanSuratPernyataanController extends _CrudController
                     return number_format($query->$fieldName, 0);
                 });
             }
+            else if (in_array($list['type'], ['number'])) {
+                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
+                    return number_format($query->$fieldName, 3);
+                });
+            }
             else if (in_array($list['type'], ['image'])) {
                 $listRaw[] = $fieldName;
                 $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
@@ -218,17 +223,11 @@ class PersetujuanSuratPernyataanController extends _CrudController
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-
-       // $exportPDF = $this->request->get('pdf');
-       // dd($exportPDF);
         if($this->request->get('pdf') == 1){
             $getPAKLogic = new PakLogic();
             $getPAKLogic->generateSuratPernyataan($id);
-
-            //$getPAKLogic->exportPDF();
         }
 
-        //dd($this->request->get('pdf'));
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();

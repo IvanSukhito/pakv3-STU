@@ -447,7 +447,7 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
      * @param string $prevName
      * @return string
      */
-    function render_persetujuan_sp_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $readonly, $parentClass = '', $prevName = '') {
+    function render_persetujuan_sp_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $readonly, $parentClass = '', $prevName = '', $step = 0) {
         $html = '';
 
         foreach ($ms_kegiatan as $list) {
@@ -466,8 +466,8 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
             $listIds = [];
             if ($getAk > 0) {
 
-                if ($deep > 1 && strlen($getName) <= 100 && strlen($prevName) > 0) {
-                    $getName = $prevName.': '.$getName;
+                if ($step > 1 && strlen($getName) <= 100 && strlen($prevName) > 0) {
+                    $getName = $prevName.': <br/> &nbsp;'.$getName;
                 }
 
                 $getDataInput = $list['data'] ?? false;
@@ -686,7 +686,7 @@ if ( ! function_exists('render_persetujuan_sp_kegiatan_v3')) {
             $getOldName = $getName;
 
             if ($getChilds) {
-                $html .= render_persetujuan_sp_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $readonly, $addClass, $getOldName);
+                $html .= render_persetujuan_sp_kegiatan_v3($getChilds, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $readonly, $addClass, $getOldName, $step + 1);
             }
 
         }

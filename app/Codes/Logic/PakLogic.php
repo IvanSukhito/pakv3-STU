@@ -421,7 +421,7 @@ class PakLogic
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				),
-			
+
 			));
 
             $row += 1;
@@ -437,7 +437,6 @@ class PakLogic
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				),
-			
 			));
 
             $row += 1;
@@ -445,15 +444,11 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jl. HR. Rasuna Said Kav. 6-7 Kuningan, Jakarta Selatan');
             $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
             $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
-				
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-                
-                
-			
 			));
 
             $row += 1;
@@ -461,13 +456,11 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Telp. (021) 5221618, Fax. (021) 5265480');
             $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
             $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
-				
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-			
 			));
 
             $row += 1;
@@ -475,20 +468,17 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'laman: www.ahu.go.id, Surel:humas@ahu.go.id');
             $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
             $sheet->getStyleByColumnAndRow(1,$row, 12, $row)->applyFromArray(array(
-				
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				),
-                
                 'borders' => array(
 					'bottom' => array(
 						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
 						'color' => array('argb' => '00000000'),
 					)
 				)
-			
 			));
 
 
@@ -505,7 +495,6 @@ class PakLogic
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-			
 			));
 
 
@@ -522,10 +511,9 @@ class PakLogic
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				),
-			
 			));
-         
-         
+
+
             $row += 2;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Yang bertanda tangan dibawah ini');
@@ -592,8 +580,27 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Telah melakukan kegiatan penyusunan Peraturan Perundang-undangan sebagai berikut :');
             $sheet->mergeCellsByColumnAndRow(1,$row, 12, $row);
 
+            $row += 2;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'No');
+            $column += 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Uraian Kegiatan Penyusunan Peraturan Perundang-undangan');
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Tanggal');
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Jumlah Volume Kegiatan');
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Jumlah AK');
+            $column += 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Keterangan/ Bukti Fisik');
 
-
+            $row += 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, '1');
+            $column += 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, '2');
+            $sheet->setCellValueByColumnAndRow($column++, $row, '3');
+            $sheet->setCellValueByColumnAndRow($column++, $row, '4');
+            $sheet->setCellValueByColumnAndRow($column++, $row, '5');
+            $column += 3;
+            $sheet->setCellValueByColumnAndRow($column++, $row, '6');
 
             //ISI
             foreach ($getDataKegiatan as $permenId => $listTopKegiatan) {
@@ -601,12 +608,24 @@ class PakLogic
                     $indexingJudul = 1;
                     foreach ($listJudul as $nameJudul => $listKegiatan) {
 
+                        $row += 1;
+                        $column = 1;
+                        $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.'. '.$nameJudul);
+
+                        $row += 1;
+                        $column = 3;
+                        $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.'. '.$nameJudul);
+
                         $totalKegiatan = count($listKegiatan);
                         $indexingKegiatan = 1;
 
                         foreach ($listKegiatan as $list) {
                             $getName = $list['name'];
                             if ($list['have_child'] == 1) {
+                                $row += 1;
+                                $column = 1;
+                                $sheet->setCellValueByColumnAndRow($column++, $row, $indexingJudul.','.$indexingKegiatan);
+                                $this->generateChildFillSuratPernyataan($sheet, $row, $column, $indexingKegiatan, $list);
                                 $row += 1;
                                 $row = $this->generateChildSuratPernyataan($sheet, $row, $indexingKegiatan, $list['childs'], $getName);
                             }
@@ -637,78 +656,78 @@ class PakLogic
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jakarta, '.$datenow);
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-				
+
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-			
+
 			));
 
             $row += 2;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Atasan Langsung');
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-				
+
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-			
+
 			));
 
             $row += 1;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Kepala Bagian Program dan Pelaporan');
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-				
+
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-			
+
 			));
 
             $row += 1;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Direktorat Jenderal Administrasi Hukum Umum');
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-				
+
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-			
+
 			));
 
             $row += 4;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, $getAtasanName);
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-				
+
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-			
+
 			));
-            
+
             $row += 1;
             $column = 8;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'NIP.'.$getAtasanNIP);
             $sheet->getStyleByColumnAndRow($column++, $row)->applyFromArray(array(
-				
+
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				)
-			
+
 			));
 
 
