@@ -92,9 +92,11 @@
 
                                         <div class="card-header"><h4>{!! $getJudul !!}</h4></div>
 
+                                        @if(isset($listKegiatan[0]['child']))
                                         <div class="card-body overflow">
                                             {!! view_kegiatan_v3($listKegiatan[0]['child'], $dataJenjangPerancang, $dataUser->jenjang_perancang_id) !!}
                                         </div>
+                                        @endif
 
                                     @endforeach
 
