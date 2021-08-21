@@ -112,7 +112,6 @@ class KegiatanController extends _CrudController
 
         $getNewLogic = new PakLogic();
         $getData = $getNewLogic->getKegiatanUser($userId, '', [1,2]);
-        dd($getData);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -347,7 +346,7 @@ class KegiatanController extends _CrudController
         $data['user_jenjang_id'] = $getUser->jenjang_perancang_id;
         $data['upline_id'] = $getUser->upline_id;
         $data['upline_name'] = $getAtasan ? $getAtasan->name : '';
-        $data['permen_id'] = $userId;
+        $data['permen_id'] = $getMsKegiatan->permen_id;
         $data['kredit_ori'] = $getMsKegiatan->ak;
         $data['kegiatan_jenjang_id'] = $getMsKegiatan->jenjang_perancang_id;
         $data['satuan'] = $getMsKegiatan->satuan;
