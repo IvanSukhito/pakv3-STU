@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
-use App\Codes\Models\Dupak;
-use App\Codes\Models\DupakKegiatan;
+use App\Codes\Models\Pak;
+use App\Codes\Models\PakKegiatan;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
-class PersetujuanDupakController extends _CrudController
+class PersetujuanPakController extends _CrudController
 {
     public function __construct(Request $request)
     {
@@ -50,15 +50,15 @@ class PersetujuanDupakController extends _CrudController
         ];
 
         parent::__construct(
-            $request, 'general.persetujuan_dupak', 'persetujuan-dupak', 'Dupak', 'persetujuan-dupak',
+            $request, 'general.persetujuan_pak', 'persetujuan-pak', 'Pak', 'persetujuan-pak',
             $passingData
         );
 
-        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.persetujuan_dupak.forms';
-        $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.persetujuan_dupak.forms';
-        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.persetujuan_dupak.list_button';
+        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.persetujuan_pak.forms';
+        $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.persetujuan_pak.forms';
+        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.persetujuan_pak.list_button';
 
-        $this->data['listSet']['status'] =  get_list_status_dupak();
+        $this->data['listSet']['status'] =  get_list_status_pak();
 
     }
 
@@ -71,12 +71,12 @@ class PersetujuanDupakController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('tx_dupak.id, users.username, users.name, ms_kegiatan.name AS kegiatan, tx_dupak.status,
-            tx_dupak.total_kredit, tx_dupak.created_at, tx_dupak.updated_at')
-            ->join('tx_dupak', 'tx_dupak.user_id', '=', 'users.id')
-            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_dupak.top_kegiatan_id')
-            ->where('tx_dupak.user_id', $userId)
-            ->whereIn('tx_dupak.status', [1,2,3,80,99]);
+        $builder = Users::selectRaw('tx_pak.id, users.username, users.name, ms_kegiatan.name AS kegiatan, tx_pak.status,
+            tx_pak.total_kredit, tx_pak.created_at, tx_pak.updated_at')
+            ->join('tx_pak', 'tx_pak.user_id', '=', 'users.id')
+            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_pak.top_kegiatan_id')
+            ->where('tx_pak.user_id', $userId)
+            ->whereIn('tx_pak.status', [1,2,3,80,99]);
 
         $dataTables = $dataTables->eloquent($builder)
             ->addColumn('action', function ($query) {
@@ -142,15 +142,15 @@ class PersetujuanDupakController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2])->first();
-        //dd($getDupak->file_upload_surat_pernyataan);
-        $fileSP = json_decode($getDupak->file_upload_surat_pernyataan, true);
+        $getPak = Pak::where('id', $id)->whereIn('status', [1,2])->first();
+        //dd($getPak->file_upload_surat_pernyataan);
+        $fileSP = json_decode($getPak->file_upload_surat_pernyataan, true);
 
         //dd($fileSP);
-        if (!$getDupak) {
+        if (!$getPak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
+        $getPerancang = Users::where('id', $userId)->where('upline_id', $getPak->upline_id)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -158,7 +158,7 @@ class PersetujuanDupakController extends _CrudController
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getDupakUser($getDupak);
+        $getData = $getNewLogic->getPakUser($getPak);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -189,7 +189,7 @@ class PersetujuanDupakController extends _CrudController
         $data['viewType'] = 'edit';
         $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getDupak;
+        $data['data'] = $getPak;
         $data['dataUser'] = $getPerancang;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;
@@ -213,25 +213,25 @@ class PersetujuanDupakController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2,3,80,99])->first();
+        $getPak = Pak::where('id', $id)->whereIn('status', [1,2,3,80,99])->first();
 
-        if (!$getDupak) {
+        if (!$getPak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
+        $getPerancang = Users::where('id', $userId)->where('upline_id', $getPak->upline_id)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
         if ($this->request->get('pdf') == 1) {
             $getPAKLogic = new PakLogic();
-            $getPAKLogic->generateDupak($id);
+            $getPAKLogic->generatePak($id);
         }
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getDupakUser($getDupak);
+        $getData = $getNewLogic->getPakUser($getPak);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -259,7 +259,7 @@ class PersetujuanDupakController extends _CrudController
         $data['viewType'] = 'show';
         $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getDupak;
+        $data['data'] = $getPak;
         $data['dataUser'] = $getPerancang;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;
@@ -279,7 +279,7 @@ class PersetujuanDupakController extends _CrudController
     {
         $this->callPermission();
 
-        $getData = Dupak::where('id', $id)->whereIn('status', [1,2])->first();
+        $getData = Pak::where('id', $id)->whereIn('status', [1,2])->first();
         if (!$getData) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -290,12 +290,12 @@ class PersetujuanDupakController extends _CrudController
 
         DB::beginTransaction();
 
-        $getDupakKegiatan = DupakKegiatan::selectRaw('tx_dupak_kegiatan.*, tx_kegiatan.kredit AS kredit')
-            ->join('tx_kegiatan', 'tx_kegiatan.id', '=', 'tx_dupak_kegiatan.kegiatan_id')
-            ->where('dupak_id', $id)->get();
+        $getPakKegiatan = PakKegiatan::selectRaw('tx_pak_kegiatan.*, tx_kegiatan.kredit AS kredit')
+            ->join('tx_kegiatan', 'tx_kegiatan.id', '=', 'tx_pak_kegiatan.kegiatan_id')
+            ->where('pak_id', $id)->get();
 
         $totalKredit = 0;
-        foreach ($getDupakKegiatan as $list) {
+        foreach ($getPakKegiatan as $list) {
             $getAction = isset($actionKegiatan[$list->id]) ? $actionKegiatan[$list->id] : 1;
             $getMessage = '';
             if ($getAction == 99) {

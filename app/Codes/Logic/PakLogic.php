@@ -303,6 +303,70 @@ class PakLogic
         return [];
     }
 
+    public function getPakUser($pak)
+    {
+        $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_pak_kegiatan.id AS sp_kegiatan_id, tx_pak_kegiatan.message AS sp_kegiatan_message, tx_pak_kegiatan.status AS sp_kegiatan_status')
+            ->join('tx_pak_kegiatan', 'tx_pak_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
+            ->where('tx_pak_kegiatan.pak_id', '=', $pak->id)
+            ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
+
+        if ($getKegiatan) {
+            $getJudul = [];
+            $getDataKegiatan = [];
+            $permenIds = [];
+            $topIds = [];
+            $totalAk = 0;
+            $kredit = [];
+
+            foreach ($getKegiatan as $list) {
+                $permenIds[] = $list->permen_id;
+                $topIds[] = $list->top_id;
+                $kredit[$list->top_id][] = $list->kredit;
+                $getJudul[$list->permen_id][$list->top_id][$list->judul][] = $list->ms_kegiatan_id;
+                $getDataKegiatan[$list->permen_id][$list->top_id][$list->judul][$list->ms_kegiatan_id][] = $list->toArray();
+                $totalAk += $list->kredit;
+            }
+
+            if (count($permenIds) > 0) {
+                $permenIds = array_unique($permenIds);
+            }
+            if (count($topIds) > 0) {
+                $topIds = array_unique($topIds);
+            }
+
+            $getMsKegiatan = MsKegiatan::whereIn('permen_id', $permenIds)->get();
+            $temp = [];
+            $getListTopKegiatan = [];
+            foreach ($getMsKegiatan->toArray() as $list) {
+                if ($list['parent_id'] <= 0) {
+                    $getListTopKegiatan[$list['id']] = $list;
+                }
+                $temp[$list['id']] = $list;
+            }
+
+            $getMsKegiatan = $temp;
+
+            $getPermen = Permen::whereIn('id', $permenIds)->get();
+            $listPermen = [];
+            foreach ($getPermen as $list) {
+                $listPermen[$list->id] = $list->name;
+            }
+
+            return [
+                'data' => $this->getParentTreeKegiatan($getMsKegiatan, $getJudul, $getDataKegiatan),
+                'total_permen' => $permenIds,
+                'total_top' => $topIds,
+                'total_ak' => $totalAk,
+                'permen' => $listPermen,
+                'top_kegiatan' => $getListTopKegiatan,
+                'kredit' => $kredit
+            ];
+
+        }
+
+        return [];
+    }
+
     /**
      * @param $msKegiatan
      * @param $listJudulKegiatan
@@ -600,12 +664,12 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Tanggal');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jumlah Volume Kegiatan');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jumlah AK');
-            $sheet->mergeCellsByColumnAndRow($column-1,$row, 10, $row);  
-        
+            $sheet->mergeCellsByColumnAndRow($column-1,$row, 10, $row);
+
             $column += 4;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Keterangan/ Bukti Fisik');
-            $sheet->mergeCellsByColumnAndRow($column-1,$row, $totalColumn, $row);  
-    
+            $sheet->mergeCellsByColumnAndRow($column-1,$row, $totalColumn, $row);
+
             $row = 29;
             $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
 				'font' => array(
@@ -627,22 +691,22 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, '3');
             $sheet->setCellValueByColumnAndRow($column++, $row, '4');
             $sheet->setCellValueByColumnAndRow($column++, $row, '5');
-            $sheet->mergeCellsByColumnAndRow($column-1,$row, 10, $row);  
-        
+            $sheet->mergeCellsByColumnAndRow($column-1,$row, 10, $row);
+
             $column += 4;
             $sheet->setCellValueByColumnAndRow($column++, $row, '6');
-            $sheet->mergeCellsByColumnAndRow($column-1,$row, $totalColumn, $row);  
+            $sheet->mergeCellsByColumnAndRow($column-1,$row, $totalColumn, $row);
 
             $row = 30;
             $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
-				
+
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
 					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
 					'wrapText' => true
 				),
 			));
-    
+
 
             //ISI
             foreach ($getDataKegiatan as $permenId => $listTopKegiatan) {
@@ -662,7 +726,7 @@ class PakLogic
                                 $row += 1;
                                 $column = 3;
                                 $sheet->setCellValueByColumnAndRow($column++, $row, $getName);
-                                
+
 
                                 $startRow = $row + 1;
                                 if ($list['have_child'] == 1) {
@@ -673,11 +737,11 @@ class PakLogic
                                 $sheet->setCellValueByColumnAndRow(1, $startRow, $indexingJudul.",".$indexingKegiatan);
                                 $sheet->mergeCellsByColumnAndRow(1, $startRow, 1, $endRow);
                                 $sheet->getStyleByColumnAndRow(1,$startRow, 1, $endRow)->applyFromArray(array(
-				
+
                                     'alignment' => array(
                                         'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                                         'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
-                                      
+
                                     ),
                                 ));
 
@@ -816,7 +880,7 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column++, $row, $getIndexData);
         $sheet->setCellValueByColumnAndRow($column++, $row, $getKegiatanName);
         $sheet->getStyleByColumnAndRow($column-1,$row)->applyFromArray(array(
-				
+
             'alignment' => array(
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,

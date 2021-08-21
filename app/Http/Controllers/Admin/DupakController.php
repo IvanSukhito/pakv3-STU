@@ -6,7 +6,6 @@ use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
 use App\Codes\Models\UnitKerja;
 use App\Codes\Models\Dupak;
-use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Users;
 use Illuminate\Http\Request;
@@ -50,7 +49,7 @@ class DupakController extends _CrudController
 
         $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.dupak.forms';
         $this->listView['edit'] = env('ADMIN_TEMPLATE').'.page.dupak.forms';
-  
+
         $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.dupak.list_button';
 
         $this->data['listSet']['status'] = get_list_status_dupak();
@@ -248,8 +247,8 @@ class DupakController extends _CrudController
 
         $data = $this->data;
 
-      
-      
+
+
        // $data['data'] = $getDupak;
         $data['dataUser'] = $getPerancang;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
@@ -275,7 +274,7 @@ class DupakController extends _CrudController
         $this->callPermission();
         $viewType = 'Upload Surat Pernyataan';
         $this->request->validate([
-          
+
             'file_upload_surat_pernyataan' => 'required',
             'unit_kerja_id' => 'required'
         ]);
@@ -290,9 +289,9 @@ class DupakController extends _CrudController
         $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
         $dokument = $this->request->file('file_upload_surat_pernyataan');
         $unitkerja = $this->request->get('unit_kerja_id');
-      
+
         $totalDokument = [];
-     
+
 
         foreach ($dokument as $listDoc) {
             if ($listDoc->getError() == 0) {
@@ -327,7 +326,7 @@ class DupakController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
-       
+
 
     }
 }

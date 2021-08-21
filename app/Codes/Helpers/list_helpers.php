@@ -78,7 +78,7 @@ if ( ! function_exists('get_list_status_pak')) {
         return [
             0 => __('general.pending'),
             1 => __('Di Proses'),
-            2 => __('Di Setujui'),
+            80 => __('Di Setujui'),
             99 => __('Di Tolak'),
         ];
     }
