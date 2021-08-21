@@ -112,6 +112,7 @@ class KegiatanController extends _CrudController
 
         $getNewLogic = new PakLogic();
         $getData = $getNewLogic->getKegiatanUser($userId, '', [1,2]);
+        dd($getData);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -544,7 +545,7 @@ class KegiatanController extends _CrudController
         $totalPermen = 0 ;
         $totalTop = 0 ;
         $totalAk = 0 ;
-     
+
 
         if (count($getData['data']) > 0) {
             $totalPermen = count($getData['total_permen']);
