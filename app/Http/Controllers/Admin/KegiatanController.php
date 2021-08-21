@@ -413,25 +413,6 @@ class KegiatanController extends _CrudController
         $getDok = json_decode($getData->dokument_pendukung, true);
         $getDokFisik = json_decode($getData->dokument_pendukung, true);
 
-        //$getListDokument = [];
-        //$getListDokumentFisik = [];
-        //if ($getDok) {
-        //    foreach ($getDok as $listDokument) {
-        //
-        //        $getDokLoc = asset($listDokument['location']);
-        //        $getDokName = $listDokument['name'];
-        //    }
-        //}
-        //if ($getDokFisik) {
-        //    foreach ($getDokFisik as $listDokument) {
-        //        $getDokFisikLoc = asset($listDokument['location']);
-        //        $getDokFisikName = $listDokument['name'];
-        //    }
-        //}
-
-
-       // dd($getDok);
-
            $getPermen = Permen::where('id', $getDataPermen)->where('tanggal_start', '<=', $getTanggal)
         ->where('tanggal_end', '>=', $getTanggal)->first();
 
