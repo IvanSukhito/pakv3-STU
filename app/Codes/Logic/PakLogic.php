@@ -473,13 +473,14 @@ class PakLogic
 			$sheet->getColumnDimensionByColumn($column++)->setWidth(5.43);
             $sheet->getColumnDimensionByColumn($column++)->setWidth(2.43);
 			$sheet->getColumnDimensionByColumn($column++)->setWidth(50.00);
-            $sheet->getColumnDimensionByColumn($column++)->setWidth(18.57);
-            $sheet->getColumnDimensionByColumn($column++)->setWidth(18.57);
-			for($i=0;$i<5/2; $i++) {
-				$sheet->getColumnDimensionByColumn($column++)->setWidth(8.71);
-				$sheet->getColumnDimensionByColumn($column++)->setWidth(6.71);
-			}
-			$sheet->getColumnDimensionByColumn($column++)->setWidth(10.86);
+            $sheet->getColumnDimensionByColumn($column++)->setWidth(12.00);
+            $sheet->getColumnDimensionByColumn($column++)->setWidth(12.00);
+			$sheet->getColumnDimensionByColumn($column++)->setWidth(6);
+			$sheet->getColumnDimensionByColumn($column++)->setWidth(5);
+			$sheet->getColumnDimensionByColumn($column++)->setWidth(5);
+			$sheet->getColumnDimensionByColumn($column++)->setWidth(5);
+			$sheet->getColumnDimensionByColumn($column++)->setWidth(7);
+			$sheet->getColumnDimensionByColumn($column++)->setWidth(15);
 
             $totalColumn = 11;
 
@@ -595,30 +596,35 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Yang bertanda tangan dibawah ini');
             $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
 
-            $row += 2;
+            $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Nama');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanName);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getAtasanName);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Nip');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanNIP);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getAtasanNIP);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Pangkat/golongan ruang/TMT');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanPangkat);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getAtasanPangkat);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jabatan');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanJabatan);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getAtasanJabatan);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Unit Kerja');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getAtasanUnitKerja);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getAtasanUnitKerja);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             //Atasan
             $row += 2;
@@ -626,30 +632,35 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Menyatakan bahwa');
             $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
 
-            $row += 2;
+            $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Nama');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangName);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getPerancangName);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Nip');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangNIP);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getPerancangNIP);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Pangkat/golongan ruang/TMT');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangPangkat);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getPerancangPangkat);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jabatan');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangJabatan);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getPerancangJabatan);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             $row += 1;
             $column = 3;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Unit Kerja');
-            $sheet->setCellValueByColumnAndRow($column++, $row, ': '.$getPerancangUnitKerja);
+            $sheet->setCellValueByColumnAndRow($column, $row, ': '.$getPerancangUnitKerja);
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             $row += 2;
             $column = 1;
