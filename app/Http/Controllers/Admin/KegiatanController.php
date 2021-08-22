@@ -304,39 +304,43 @@ class KegiatanController extends _CrudController
         $totalDokument = [];
         $totalDokumentFisik = [];
 
-        foreach ($dokument as $listDoc) {
-            if ($listDoc->getError() == 0) {
-                $getFileName = $listDoc->getClientOriginalName();
-                $ext = explode('.', $getFileName);
-                $fileName = reset($ext);
-                $ext = end($ext);
-                $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
-                $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
-                $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
-                $listDoc->move($destinationPath, $setFileName);
+        if ($dokument) {
+            foreach ($dokument as $listDoc) {
+                if ($listDoc->getError() == 0) {
+                    $getFileName = $listDoc->getClientOriginalName();
+                    $ext = explode('.', $getFileName);
+                    $fileName = reset($ext);
+                    $ext = end($ext);
+                    $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
+                    $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
+                    $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
+                    $listDoc->move($destinationPath, $setFileName);
 
-                $totalDokument[] = [
-                    'name' => $setFileName,
-                    'location' => $destinationLink
-                ];
+                    $totalDokument[] = [
+                        'name' => $setFileName,
+                        'location' => $destinationLink
+                    ];
+                }
             }
         }
 
-        foreach ($dokumentFisik as $listDoc) {
-            if ($listDoc->getError() == 0) {
-                $getFileName = $listDoc->getClientOriginalName();
-                $ext = explode('.', $getFileName);
-                $fileName = reset($ext);
-                $ext = end($ext);
-                $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
-                $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
-                $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
-                $listDoc->move($destinationPath, $setFileName);
+        if ($dokumentFisik) {
+            foreach ($dokumentFisik as $listDoc) {
+                if ($listDoc->getError() == 0) {
+                    $getFileName = $listDoc->getClientOriginalName();
+                    $ext = explode('.', $getFileName);
+                    $fileName = reset($ext);
+                    $ext = end($ext);
+                    $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
+                    $destinationPath = './uploads/' . $folderName . $msKegiatanId . '/';
+                    $destinationLink = 'uploads/' . $folderName . $msKegiatanId . '/' . $getFileName;
+                    $listDoc->move($destinationPath, $setFileName);
 
-                $totalDokumentFisik[] = [
-                    'name' => $setFileName,
-                    'location' => $destinationLink
-                ];
+                    $totalDokumentFisik[] = [
+                        'name' => $setFileName,
+                        'location' => $destinationLink
+                    ];
+                }
             }
         }
 

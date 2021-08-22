@@ -158,7 +158,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
      * @param string $prevName
      * @return string
      */
-    function render_view_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $parentClass = '', $prevName = '') {
+    function render_view_kegiatan_v3($ms_kegiatan, $listJenjangPerancang, $deep, $getDeep, $jenjangPerancangId, $parentClass = '', $prevName = '', $step = 0) {
         $html = '';
 
         foreach ($ms_kegiatan as $list) {
@@ -181,7 +181,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
             $listIds = [];
             if ($getAk > 0) {
 
-                if ($deep > 1 && strlen($getName) <= 100 && strlen($prevName) > 0) {
+                if ($step > 1 && strlen($getName) <= 100 && strlen($prevName) > 0) {
                     $getName = $prevName.': '.$getName;
                 }
 
@@ -197,7 +197,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
                         $getDokument = json_decode($listInput['dokument_pendukung'], true);
                         $getDokumentFisik = json_decode($listInput['dokument_fisik'], true);
                         $getStatus = $getListStatus[$listInput['status']] ?? '-';
-                        $getCreated = date('d-M-y', strtotime(strtotime($listInput['created_at'])));
+                        $getCreated = date('d-M-y', strtotime($listInput['created_at']));
                         $getListDokument = [];
                         $getListDokumentFisik = [];
                         if ($getDokument) {
@@ -383,7 +383,7 @@ if ( ! function_exists('render_view_kegiatan_v3')) {
             $getOldName = $getName;
 
             if ($getChild) {
-                $html .= render_view_kegiatan_v3($getChild, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass, $getOldName);
+                $html .= render_view_kegiatan_v3($getChild, $listJenjangPerancang, $deep + 1, $getDeep, $jenjangPerancangId, $addClass, $getOldName, $step + 1);
             }
 
         }
@@ -781,8 +781,8 @@ if ( ! function_exists('render_persetujuan_dupak_kegiatan_v3')) {
 
                     $totalColspan = count($getDataInput);
                     foreach ($getDataInput as $listInput) {
-                        
-                        
+
+
                         $getKegId = $listInput['sp_kegiatan_id'];
                         $getKegiatanAk = $listInput['kredit'];
                         $getDokument = json_decode($listInput['dokument_pendukung'], true);

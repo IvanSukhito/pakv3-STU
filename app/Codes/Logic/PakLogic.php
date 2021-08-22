@@ -481,7 +481,7 @@ class PakLogic
 			}
 			$sheet->getColumnDimensionByColumn($column++)->setWidth(10.86);
 
-            $totalColumn = 13;
+            $totalColumn = 11;
 
             $row = 2;
             $column = 1;
@@ -730,7 +730,7 @@ class PakLogic
 
                                 $startRow = $row + 1;
                                 if ($list['have_child'] == 1) {
-                                    $row = $this->generateChilduratPernyataan($sheet, $row, $list['child'], $getName, 1);
+                                    $row = $this->generateChildSuratPernyataan($sheet, $row, $list['child'], $getName, 1);
                                 }
 
                                 $endRow = $row;
@@ -845,12 +845,12 @@ class PakLogic
         }
     }
 
-    protected function generateChilduratPernyataan($sheet, $row, $getChildKegiatan, $parentName, $deep)
+    protected function generateChildSuratPernyataan($sheet, $row, $getChildKegiatan, $parentName, $deep)
     {
         foreach ($getChildKegiatan as $list) {
             $getName = $list['name'];
             if ($list['have_child'] == 1) {
-                $row = $this->generateChilduratPernyataan($sheet, $row, $list['child'], $getName, $deep+1);
+                $row = $this->generateChildSuratPernyataan($sheet, $row, $list['child'], $getName, $deep+1);
             }
             else {
                 $row += 1;
@@ -1166,7 +1166,7 @@ class PakLogic
 
                                 $startRow = $row + 1;
                                 if ($list['have_child'] == 1) {
-                                    $row = $this->generateChilduratPernyataan($sheet, $row, $list['child'], $getName, 1);
+                                    $row = $this->generateChildSuratPernyataan($sheet, $row, $list['child'], $getName, 1);
                                 }
 
                                 $endRow = $row;
@@ -1274,25 +1274,3 @@ class PakLogic
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

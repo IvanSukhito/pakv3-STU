@@ -51,7 +51,7 @@ else {
                 </div>
                 <!-- /.card-header -->
 
-                {{ Form::open(['route' => ['admin.' . $thisRoute . '.storeSubmitKegiatan'], 'files' => true, 'id'=>'form', 'role' => 'form', 'method' => 'post'])  }}
+                {{ Form::open(['route' => ['admin.' . $thisRoute . '.storeSubmitKegiatan'], 'onsubmit' => 'return askingSubmit()', 'files' => true, 'id'=>'form', 'role' => 'form', 'method' => 'post'])  }}
                 <input type="hidden" value="{!! $getDateRange !!}" name="daterange1">
 
                 <div class="card-footer">
@@ -71,22 +71,22 @@ else {
                     <li>Surat Pernyataan:
                         @foreach($topId as $top)
 
-                    
+
                         <?php $data = isset($dataTopKegiatan[$top]) ? $dataTopKegiatan[$top] : false;?>
                         <?php $dataAk = isset($kredit[$top]) ? $kredit[$top] : false;?>
-                        
+
                            <ul>
                                <?php $sumAk = 0;?>
                                @foreach($dataAk as $dataAk)
                                <?php $sumAk += $dataAk?>
                                @endforeach
-                             
-                              <li>{!! $data ? $data['name'] : '' !!} - {!!number_format($sumAk,3)!!}</li> 
-                             
-                           </ul> 
+
+                              <li>{!! $data ? $data['name'] : '' !!} - {!!number_format($sumAk,3)!!}</li>
+
+                           </ul>
                            @endforeach
                         </li>
-                     
+
                         <li>Total AK yang di ajukan: {!! number_format($totalAk, 3) !!}</li>
                     </ul>
                 </div>
@@ -141,5 +141,10 @@ else {
     @include(env('ADMIN_TEMPLATE').'._component.generate_forms_script')
     <script type="text/javascript">
         'use strict';
+
+        function askingSubmit() {
+            return confirm("Mengirim Kegiatan ke atasan?");
+        }
+
     </script>
 @stop
