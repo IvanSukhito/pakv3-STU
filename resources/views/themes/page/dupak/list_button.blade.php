@@ -13,14 +13,9 @@
     </a>
 @endif
 @if ($permission['edit']  && in_array($query->status, [1,2]) )
-<a href="{{ route('admin.' . $thisRoute . '.uploadSP', $query->{$masterId}) }}" class="mb-1 btn btn-success btn-sm"
+<a href="{{ route('admin.' . $thisRoute . '.edit', $query->{$masterId}) }}" class="mb-1 btn btn-success btn-sm"
        title="@lang('general.upload_sp')">
         <i class="fa fa-plus"></i>
         <span class="d-none d-md-inline"> @lang('general.upload_sp')</span>
-</a>
-@endif
-@if ($permission['show']  && in_array($query->status, [80]) )
-<a href="{{ route('admin.' . $thisRoute . '.show', $query->{$masterId}).'?pdf=1' }}"  name="pdf" value="1" class="mb-1 btn btn-primary btn-sm" title="@lang('general.download_pdf')">
-        <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
 </a>
 @endif

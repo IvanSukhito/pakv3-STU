@@ -19,9 +19,6 @@ class DupakController extends _CrudController
             'id' => [
                 'edit' => 0
             ],
-            'kegiatan' => [
-                'custom' => ', name:"ms_kegiatan.name"'
-            ],
             'total_kredit' => [
                 'type' => 'number'
             ],
@@ -64,11 +61,7 @@ class DupakController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('tx_dupak.id, ms_kegiatan.name AS kegiatan, tx_dupak.status,
-            tx_dupak.total_kredit, tx_dupak.created_at, tx_dupak.updated_at')
-            ->join('tx_dupak', 'tx_dupak.user_id', '=', 'users.id')
-            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_dupak.top_kegiatan_id')
-            ->where('tx_dupak.user_id', $userId)
+        $builder = $this->model::where('tx_dupak.user_id', $userId)
             ->whereIn('tx_dupak.status', [1,2,3,80,99]);
 
         $dataTables = $dataTables->eloquent($builder)
@@ -93,6 +86,11 @@ class DupakController extends _CrudController
             else if (in_array($list['type'], ['money'])) {
                 $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
                     return number_format($query->$fieldName, 0);
+                });
+            }
+            else if (in_array($list['type'], ['number'])) {
+                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
+                    return number_format($query->$fieldName, 3);
                 });
             }
             else if (in_array($list['type'], ['image'])) {
