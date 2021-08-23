@@ -660,7 +660,8 @@ if ( ! function_exists('listAvailablePermission'))
                     'admin.'.$keyPermission.'.update'
                 ],
                 'show' => [
-                    'admin.'.$keyPermission.'.show'
+                    'admin.'.$keyPermission.'.show',
+                    'admin.'.$keyPermission.'.showPdf'
                 ],
             ];
         }

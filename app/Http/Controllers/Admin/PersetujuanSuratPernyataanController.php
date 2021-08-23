@@ -158,24 +158,21 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $status = 0;
         $totalKredit = 0;
         $perancangId = 0;
+        $listSuratPernyataan = [];
         foreach ($getSuratPernyataan as $list) {
             $getSuratPernyataanIds[] = $list->id;
             $status = $list->status;
             $totalKredit += $list->total_kredit;
             $perancangId = $list->user_id;
+            $listSuratPernyataan[$list->top_kegiatan_id] = $list->id;
         }
 
         $getPerancang = Users::where('id', $perancangId)->first();
 
-        if ($this->request->get('pdf') == 1) {
-            $getPAKLogic = new PakLogic();
-            $getPAKLogic->generateSuratPernyataan($getSuratPernyataanIds);
-        }
+        $getPAKLogic = new PakLogic();
+        $getData = $getPAKLogic->getSuratPernyataanUser($getSuratPernyataanIds);
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
-
-        $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataanIds);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -215,12 +212,32 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $data['dataKegiatan'] = $dataKegiatan;
         $data['dataTopKegiatan'] = $dataTopKegiatan;
         $data['totalPermen'] = $totalPermen;
+        $data['listSuratPernyataan'] = $listSuratPernyataan;
         $data['totalTop'] = $totalTop;
         $data['totalAk'] = $totalAk;
         $data['topId'] = $topId;
         $data['kredit'] = $kredit;
 
         return view($this->listView[$data['viewType']], $data);
+    }
+
+    public function showPdf($id)
+    {
+        $this->callPermission();
+
+        $userId = session()->get('admin_id');
+
+        $getAtasan = Users::where('id', $userId)->first();
+        if (!$getAtasan) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [80,88,99])->first();
+        if ($getSuratPernyataan) {
+            $getPAKLogic = new PakLogic();
+            $getPAKLogic->generateSuratPernyataan($id);
+        }
+        return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
     }
 
     public function edit($id)
@@ -250,8 +267,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
-        $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataanIds);
+        $getPAKLogic = new PakLogic();
+        $getData = $getPAKLogic->getSuratPernyataanUser($getSuratPernyataanIds);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -446,6 +463,5 @@ class PersetujuanSuratPernyataanController extends _CrudController
             return redirect()->route($this->rootRoute.'.' . $this->route . '.show', $id);
         }
     }
-
 
 }

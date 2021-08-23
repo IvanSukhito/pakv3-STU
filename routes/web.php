@@ -33,15 +33,6 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
             $router->get('/', ['uses'=>'Admin\ProfileController@profile'])->name('admin.profile');
         });
 
-//        $router->group(['prefix' => 'profile'], function () use ($router) {
-//            $router->get('edit', ['uses'=>'Admin\ProfileController@getProfile'])->name('admin.getProfile');
-//            $router->post('edit', ['uses'=>'Admin\ProfileController@postProfile'])->name('admin.postProfile');
-//            $router->get('password', ['uses'=>'Admin\ProfileController@getPassword'])->name('admin.getPassword');
-//            $router->post('password', ['uses'=>'Admin\ProfileController@postPassword'])->name('admin.postPassword');
-//        //    $router->get('dashboard', ['uses'=>'Admin\ProfileController@dashboard'])->name('admin.dashboard');
-//            $router->get('/', ['uses'=>'Admin\ProfileController@profile'])->name('admin.profile');
-//        });
-
         $router->group(['middleware' => ['admin_access_permission']], function () use ($router) {
             $listRouter = [
                 'Admin\SettingsController' => 'settings',
@@ -80,9 +71,8 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                         $router->post($linkName . '/submit-kegiatan', $controller . '@storeSubmitKegiatan')->name('admin.' . $linkName . '.storeSubmitKegiatan');
                         break;
 
-                    case 'dupak':
-                        $router->get($linkName . '/upload-SP/{id}', $controller . '@edit')->name('admin.' . $linkName . '.uploadSP');
-                        $router->post($linkName . '/submit-SP/{id}', $controller . '@update')->name('admin.' . $linkName . '.storeSP');
+                    case 'persetujuan-surat-pernyataan':
+                        $router->get($linkName . '/{id}/show-pdf', $controller . '@showPdf')->name('admin.' . $linkName . '.showPdf');
                         break;
 
                     case 'persetujuan-pemuktahiran':
