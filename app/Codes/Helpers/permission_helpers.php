@@ -623,6 +623,30 @@ if ( ! function_exists('listAvailablePermission'))
         }
 
         foreach ([
+        
+            'pemuktahiran-perancang',
+        
+                 ] as $keyPermission) {
+            $listPermission[$keyPermission] = [
+                'list' => [
+                    'admin.'.$keyPermission.'.index',
+                    'admin.'.$keyPermission.'.dataTable'
+                ],
+                'create' => [
+                    'admin.'.$keyPermission.'.create',
+                    'admin.'.$keyPermission.'.store'
+                ],
+            
+                'show' => [
+                    'admin.'.$keyPermission.'.show'
+                ],
+//                'destroy' => [
+//                    'admin.'.$keyPermission.'.destroy'
+//                ]
+            ];
+        }
+
+        foreach ([
             'persetujuan-surat-pernyataan',
             'persetujuan-pemuktahiran',
             'dupak',
