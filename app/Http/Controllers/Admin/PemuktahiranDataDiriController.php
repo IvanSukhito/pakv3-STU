@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
-class PemuktahiranPerancangController extends _CrudController
+class PemuktahiranDataDiriController extends _CrudController
 {
     public function __construct(Request $request)
     {
@@ -30,7 +30,7 @@ class PemuktahiranPerancangController extends _CrudController
                 'edit' => 0,
                 'show' => 0
             ],
-         
+
             'upline_id' => [
                 'validation' => [
                     'edit' => 'required'
@@ -80,7 +80,7 @@ class PemuktahiranPerancangController extends _CrudController
                 'type' => 'select2',
                 'lang' => 'general.unit_kerja'
             ],
-           
+
             'status_pemuktahiran' => [
                 'create' => false,
                 'edit' => false,
@@ -95,11 +95,11 @@ class PemuktahiranPerancangController extends _CrudController
         ];
 
         parent::__construct(
-            $request, 'general.pemuktahiran-perancang', 'pemuktahiran-perancang', 'UpdateUsers', 'pemuktahiran-perancang',
+            $request, 'general.pemuktahiran-data-diri', 'pemuktahiran-data-diri', 'UpdateUsers', 'pemuktahiran-data-diri',
             $passingData
         );
 
- 
+
         $getGolongan = Golongan::where('status', 1)->pluck('name', 'id')->toArray();
         $listGolongan = [0 => 'Kosong'];
         if($getGolongan) {
@@ -139,15 +139,33 @@ class PemuktahiranPerancangController extends _CrudController
         $this->data['listSet']['upline_id'] = Users::where('atasan', 1)->pluck('name', 'id')->toArray();
 
 
-        $this->listView['index'] = env('ADMIN_TEMPLATE').'.page.pemuktahiran-perancang.list';
-        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.pemuktahiran-perancang.forms';
-        $this->listView['create'] = env('ADMIN_TEMPLATE').'.page.pemuktahiran-perancang.forms';
-        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.pemuktahiran-perancang.list_button';
+        $this->listView['index'] = env('ADMIN_TEMPLATE').'.page.pemuktahiran-data-diri.list';
+        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.pemuktahiran-data-diri.forms';
+        $this->listView['create'] = env('ADMIN_TEMPLATE').'.page.pemuktahiran-data-diri.forms';
+        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.pemuktahiran-data-diri.list_button';
 
         $this->data['listSet']['status_pemuktahiran'] = get_list_status_permuktahiran();
-        
 
 
+
+    }
+    public function index()
+    {
+        $this->callPermission();
+        $userId = session()->get('admin_id');
+        $getData = UpdateUsers::where('user_id', $userId)->first();
+
+
+        $getStatusPemuktahiran = $getData->status_pemuktahiran;
+
+
+
+        $data = $this->data;
+
+        $data['passing'] = collectPassingData($this->passingData);
+        $data['status'] = $getStatusPemuktahiran;
+
+        return view($this->listView['index'], $data);
     }
 
     public function create()
@@ -193,7 +211,7 @@ class PemuktahiranPerancangController extends _CrudController
 
         $adminId = session()->get('admin_id');
         $getData = Users::where('id', $adminId)->first();
-        
+
         $getUsername = $getData->username;
         $getName = $getData->name;
         $getEmail = $getData->email;
@@ -212,7 +230,7 @@ class PemuktahiranPerancangController extends _CrudController
         $getPassword = $getData->password;
         $getUserId = $getData->id;
 
-      
+
         $userFolder = 'user_' . preg_replace("/[^A-Za-z0-9?!]/", '', $getUsername);
         $todayDate = date('Y-m-d');
         $folderName = $userFolder . '/pemuktahiran/' . $todayDate . '/';
@@ -293,70 +311,72 @@ class PemuktahiranPerancangController extends _CrudController
         return view($this->listView[$data['viewType']], $data);
     }
 
-    public function approve($id){
+    public function dataTable()
+    {
         $this->callPermission();
-        $getData = UpdateUsers::where('id', $id)->first();
-        $User = Users::where('id', $getData->user_id)->first();
-       
-        $getUplineId = $getData->upline_id;
-        $getPangkat = $getData->pangkat_id;
-        $getJenjangPerancang = $getData->jenjang_perancang_id;
-        $getUnitKerja = $getData->unit_kerja_id;
-        $getGolongan = $getData->golongan_id;
-        $getTmtJabatan = $getData->tmt_jabatan;
-        $getTmtPangkat = $getData->tmt_pangkat;
+
+        $userId = session()->get('admin_id');
+
+        $dataTables = new DataTables();
+
+        $builder = $this->model::query()->selectRaw('tx_update_users.id, tx_update_users.upline_id, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, tx_update_users.tmt_pangkat, tx_update_users.tmt_jabatan, tx_update_users.status_pemuktahiran')
+            ->where('tx_update_users.perancang', '=', 1)
+            ->leftJoin('role AS B', 'B.id', '=', 'tx_update_users.role_id')
+            ->leftJoin('pangkat AS C', 'C.id', '=', 'tx_update_users.pangkat_id')
+            ->leftJoin('golongan as D', 'D.id','=', 'tx_update_users.golongan_id')
+            ->leftJoin('jenjang_perancang as E','E.id','=','tx_update_users.jenjang_perancang_id')
+            ->leftJoin('unit_kerja as F','F.id','=','tx_update_users.unit_kerja_id')
+            ->where('user_id', $userId);
 
 
-        $getData->update([
-            'status_pemuktahiran' => 80
-        
-        ]);
 
-        $User->update([
-            'upline_id' => $getUplineId,
-            'pangkat_id' => $getPangkat,
-            'golongan_id' => $getGolongan,
-            'jenjang_perancang_id' => $getJenjangPerancang,
-            'unit_kerja_id' => $getUnitKerja,
-            'tmt_jabatan' => $getTmtJabatan,
-            'tmt_pangkat' => $getTmtPangkat
+        $dataTables = $dataTables->eloquent($builder)
+            ->addColumn('action', function ($query) {
+                return view($this->listView['dataTable'], [
+                    'query' => $query,
+                    'thisRoute' => $this->route,
+                    'permission' => $this->permission,
+                    'masterId' => $this->masterId
+                ]);
+            });
 
-        ]);
-
-
-        if($this->request->ajax()){
-            return response()->json(['result' => 1, 'message' => __('general.success_add')]);
+        $listRaw = [];
+        $listRaw[] = 'action';
+        foreach (collectPassingData($this->passingData) as $fieldName => $list) {
+            if (in_array($list['type'], ['select', 'select2'])) {
+                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName) {
+                    $getList = isset($this->data['listSet'][$fieldName]) ? $this->data['listSet'][$fieldName] : [];
+                    return isset($getList[$query->$fieldName]) ? $getList[$query->$fieldName] : $query->$fieldName;
+                });
+            } else if (in_array($list['type'], ['money'])) {
+                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
+                    return number_format($query->$fieldName, 0);
+                });
+            } else if (in_array($list['type'], ['image'])) {
+                $listRaw[] = $fieldName;
+                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
+                    return '<img src="' . asset($list['path'] . $query->$fieldName) . '" class="img-responsive max-image-preview"/>';
+                });
+            } else if (in_array($list['type'], ['image_preview'])) {
+                $listRaw[] = $fieldName;
+                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
+                    return '<img src="' . $query->$fieldName . '" class="img-responsive max-image-preview"/>';
+                });
+            } else if (in_array($list['type'], ['code'])) {
+                $listRaw[] = $fieldName;
+                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
+                    return '<pre>' . json_encode(json_decode($query->$fieldName, true), JSON_PRETTY_PRINT) . '"</pre>';
+                });
+            } else if (in_array($list['type'], ['texteditor'])) {
+                $listRaw[] = $fieldName;
+            }
         }
-        else {
-            session()->flash('message', __('general.success_approve_pemuktahiran'));
-            session()->flash('message_alert', 2);
-            return redirect()->route('admin.' . $this->route . '.index');
-        }
 
+        return $dataTables
+            ->rawColumns($listRaw)
+            ->make(true);
     }
 
-    public function reject($id){
-        //dd($this->request->all());
-        $this->callPermission();
-        $getData = UpdateUsers::where('id', $id)->first();
-        $message = $this->request->get('alasan');
 
-        $getData->update([
-            'status_pemuktahiran' => 99,
-            'alasan' => $message
-        
-        ]);
-
-        if($this->request->ajax()){
-            return response()->json(['result' => 1, 'message' => __('general.success_add')]);
-        }
-        else {
-            session()->flash('message', __('general.success_reject'));
-            session()->flash('message_alert', 2);
-            return redirect()->route('admin.' . $this->route . '.index');
-        }
-    }
-
- 
 
 }

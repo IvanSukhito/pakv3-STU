@@ -30,7 +30,13 @@ class PersetujuanPemuktahiranController extends _CrudController
                 'edit' => 0,
                 'show' => 0
             ],
-         
+            'username' => [
+                'create' => false,
+                'lang' => 'NIP'
+            ],
+            'name' => [
+                'create' => false,
+            ],
             'upline_id' => [
                 'validation' => [
                     'edit' => 'required'
@@ -80,7 +86,7 @@ class PersetujuanPemuktahiranController extends _CrudController
                 'type' => 'select2',
                 'lang' => 'general.unit_kerja'
             ],
-           
+
             'status_pemuktahiran' => [
                 'create' => false,
                 'edit' => false,
@@ -99,7 +105,7 @@ class PersetujuanPemuktahiranController extends _CrudController
             $passingData
         );
 
- 
+
         $getGolongan = Golongan::where('status', 1)->pluck('name', 'id')->toArray();
         $listGolongan = [0 => 'Kosong'];
         if($getGolongan) {
@@ -145,7 +151,7 @@ class PersetujuanPemuktahiranController extends _CrudController
         $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran.list_button';
 
         $this->data['listSet']['status_pemuktahiran'] = get_list_status_permuktahiran();
-        
+
 
 
     }
@@ -184,7 +190,7 @@ class PersetujuanPemuktahiranController extends _CrudController
         //dd($getUsers->name);
         $getData = UpdateUsers::where('id', $id)->first();
         $User = Users::where('id', $getData->user_id)->first();
-       
+
         $getUplineId = $getData->upline_id;
         $getPangkat = $getData->pangkat_id;
         $getJenjangPerancang = $getData->jenjang_perancang_id;
@@ -197,8 +203,8 @@ class PersetujuanPemuktahiranController extends _CrudController
         $getData->update([
             'status_pemuktahiran' => 80,
             'approved_id' => $getUsers->id,
-            'approved_by' => $getUsers->name 
-        
+            'approved_by' => $getUsers->name
+
         ]);
 
         $User->update([
@@ -237,7 +243,7 @@ class PersetujuanPemuktahiranController extends _CrudController
             'rejected_id' => $getUsers->id,
             'rejected_by' => $getUsers->name,
             'alasan' => $message
-        
+
         ]);
 
         if($this->request->ajax()){
@@ -250,6 +256,6 @@ class PersetujuanPemuktahiranController extends _CrudController
         }
     }
 
- 
+
 
 }

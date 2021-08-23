@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?php echo route('admin.pemuktahiran-perancang.index') ?>"><i class="fa fa-user"></i> {{ __('general.pemuktahiran') }}</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo route('admin.pemuktahiran-data-diri.index') ?>"><i class="fa fa-user"></i> {{ __('general.pemuktahiran') }}</a></li>
                         <li class="breadcrumb-item active">{{ __('general.title_home', ['field' => $thisLabel]) }}</li>
                     </ol>
                 </div>
@@ -29,7 +29,8 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                @if ($permission['create'])
+                @if ($permission['create'] && in_array($status, [0, 80, 99]))
+
                     <div class="card-header">
                         <a href="<?php echo route('admin.' . $thisRoute . '.create') ?>" class="mb-2 mr-2 btn btn-primary"
                            title="@lang('general.create')">

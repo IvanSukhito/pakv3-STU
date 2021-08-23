@@ -45,7 +45,7 @@ else {
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-         
+
                 <!-- /.card-header -->
                 @if(in_array($viewType, ['create']))
                 {{ Form::open(['route' => ['admin.' . $thisRoute . '.store'], 'method' => 'POST', 'files' => true, 'id'=>'form', 'role' => 'form'])  }}
@@ -61,7 +61,7 @@ else {
                     @include(env('ADMIN_TEMPLATE').'._component.generate_forms')
                 </div>
                 </div>
-                
+
                 @if(in_array($viewType, ['create']) )
                 <div class="card card-primary">
                 <div class="card-header">
@@ -80,7 +80,7 @@ else {
                             </div>
                             <a href="#" onclick="return add_other1()" class="btn btn-warning">Tambah</a>
                             <br>
-                    
+
                 </div>
                 </div>
                 @else
@@ -95,15 +95,15 @@ else {
                    <?php $no++;?>
                                 <div class="form-group">
                                     <p><i class="fa fa-cloud-download" aria-hidden="true"> <a href="{{asset($data['path'])}}" target="_blank">@lang('general.view_berkas_pemuktahiran') - {!! $no !!}</a></i></p>
-                                </div>  
+                                </div>
                     @endforeach
                             <?php else: ?>
                         <h3>No File</h3>
                  <?php endif ?>
                 </div>
                 </div>
-               
-                
+
+
 
                 @endif
                 <!-- /.card-body -->
@@ -128,7 +128,7 @@ else {
 
                 {{ Form::close() }}
 
-          
+
         </div>
     </section>
 
@@ -182,6 +182,6 @@ else {
             return false;
         }
 
-     
+
         </script>
 @stop

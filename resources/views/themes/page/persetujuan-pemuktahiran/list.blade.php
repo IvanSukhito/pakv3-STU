@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="<?php echo route('admin.pemuktahiran-perancang.index') ?>"><i class="fa fa-user"></i> {{ __('general.pemuktahiran') }}</a></li>
+                        <li class="breadcrumb-item"><a href="<?php echo route('admin.pemuktahiran-data-diri.index') ?>"><i class="fa fa-user"></i> {{ __('general.pemuktahiran') }}</a></li>
                         <li class="breadcrumb-item active">{{ __('general.title_home', ['field' => $thisLabel]) }}</li>
                     </ol>
                 </div>

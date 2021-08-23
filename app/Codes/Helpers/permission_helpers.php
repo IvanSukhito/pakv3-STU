@@ -320,23 +320,32 @@ if ( ! function_exists('listAllMenu')) {
                     ]
                 ]
             ],
-             //KEGIATAN
+             //Persetujuan Mutakhir
              [
                 'name' => __('general.pemuktahiran'),
                 'icon' => '<i class="nav-icon fa fa-edit"></i>',
                 'title' => __('general.pemuktahiran'),
                 'active' => [
-                    'admin.pemuktahiran-perancang.',
+                    'admin.pemuktahiran-data-diri.',
+                    'admin.persetujuan-pemuktahiran.',
                     'admin.pemuktahiran-ak.'
                 ],
                 'type' => 2,
                 'data' => [
                     [
-                        'name' => __('general.perancang'),
-                        'title' => __('general.perancang'),
-                        'active' => ['admin.pemuktahiran-perancang.'],
-                        'route' => 'admin.pemuktahiran-perancang.index',
-                        'key' => 'pemuktahiran-perancang',
+                        'name' => __('general.data-diri'),
+                        'title' => __('general.data-diri'),
+                        'active' => ['admin.pemuktahiran-data-diri.'],
+                        'route' => 'admin.pemuktahiran-data-diri.index',
+                        'key' => 'pemuktahiran-data-diri',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.persetujuan_pemuktahiran'),
+                        'title' => __('general.persetujuan_pemuktahiran'),
+                        'active' => ['admin.persetujuan-pemuktahiran.'],
+                        'route' => 'admin.persetujuan-pemuktahiran.index',
+                        'key' => 'persetujuan-pemuktahiran',
                         'type' => 1
                     ],
                     [
@@ -350,17 +359,7 @@ if ( ! function_exists('listAllMenu')) {
                 ]
             ],
             // Persetujuan Permuktahiran
-            [
-                'name' => __('general.persetujuan_pemuktahiran'),
-                'icon' => '<i class="nav-icon fa fa-edit"></i>',
-                'title' => __('general.persetujuan_pemuktahiran'),
-                'active' => [
-                    'admin.persetujuan-pemuktahiran.'
-                ],
-                'route' => 'admin.persetujuan-pemuktahiran.index',
-                'key' => 'persetujuan-pemuktahiran',
-                'type' => 1,
-            ],
+
             //Surat Pernyataan
             [
                 'name' => __('general.surat_pernyataan'),
@@ -594,7 +593,6 @@ if ( ! function_exists('listAvailablePermission'))
             'golongan',
             'jenjang-perancang',
             'pendidikan',
-            'pemuktahiran-perancang',
             'pemuktahiran-ak',
             'unit-kerja',
             'role',
@@ -623,9 +621,9 @@ if ( ! function_exists('listAvailablePermission'))
         }
 
         foreach ([
-        
-            'pemuktahiran-perancang',
-        
+
+            'pemuktahiran-data-diri',
+
                  ] as $keyPermission) {
             $listPermission[$keyPermission] = [
                 'list' => [
@@ -636,7 +634,7 @@ if ( ! function_exists('listAvailablePermission'))
                     'admin.'.$keyPermission.'.create',
                     'admin.'.$keyPermission.'.store'
                 ],
-            
+
                 'show' => [
                     'admin.'.$keyPermission.'.show'
                 ],
@@ -693,7 +691,7 @@ if ( ! function_exists('listAvailablePermission'))
         $listPermission['persetujuan-pemuktahiran']['edit'][] = 'admin.persetujuan-pemuktahiran.approve';
         $listPermission['persetujuan-pemuktahiran']['edit'][] = 'admin.persetujuan-pemuktahiran.reject';
 
-        
+
 
         $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
         $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';

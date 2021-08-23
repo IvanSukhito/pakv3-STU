@@ -64,7 +64,7 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\PersetujuanSuratPernyataanController' => 'persetujuan-surat-pernyataan',
                 'Admin\DupakController' => 'dupak',
                 'Admin\PersetujuanDupakController' => 'persetujuan-dupak',
-                'Admin\PemuktahiranPerancangController' => 'pemuktahiran-perancang',
+                'Admin\PemuktahiranDataDiriController' => 'pemuktahiran-data-diri',
                 'Admin\PersetujuanPemuktahiranController' => 'persetujuan-pemuktahiran',
             ];
             foreach ($listRouter as $controller => $linkName) {
