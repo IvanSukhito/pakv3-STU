@@ -64,6 +64,7 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\PersetujuanSuratPernyataanController' => 'persetujuan-surat-pernyataan',
                 'Admin\DupakController' => 'dupak',
                 'Admin\PersetujuanDupakController' => 'persetujuan-dupak',
+                'Admin\PemuktahiranPerancangController' => 'pemuktahiran-perancang',
             ];
             foreach ($listRouter as $controller => $linkName) {
 
@@ -82,6 +83,12 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                         $router->get($linkName . '/upload-SP/{id}', $controller . '@edit')->name('admin.' . $linkName . '.uploadSP');
                         $router->post($linkName . '/submit-SP/{id}', $controller . '@update')->name('admin.' . $linkName . '.storeSP');
                         break;
+
+                    case 'pemuktahiran-perancang':
+                        $router->get($linkName . '/approve/{id}', $controller . '@approve')->name('admin.' . $linkName . '.approve');
+                        $router->get($linkName . '/reject/{id}', $controller . '@reject')->name('admin.' . $linkName . '.reject');
+                        break;
+
                 }
 
                 $router->get($linkName . '/data', $controller . '@dataTable')->name('admin.' . $linkName . '.dataTable');

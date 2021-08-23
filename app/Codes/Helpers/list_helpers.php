@@ -83,6 +83,18 @@ if ( ! function_exists('get_list_status_pak')) {
         ];
     }
 }
+
+if ( ! function_exists('get_list_status_permuktahiran')) {
+    function get_list_status_permuktahiran()
+    {
+        return [
+            1 => __('general.pending'),
+            80 => __('Di Setujui'),
+            99 => __('Di Tolak'),
+        ];
+    }
+}
+
 if ( ! function_exists('get_list_bulan')) {
     function get_list_bulan($bulan)
     {

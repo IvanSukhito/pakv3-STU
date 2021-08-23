@@ -320,6 +320,35 @@ if ( ! function_exists('listAllMenu')) {
                     ]
                 ]
             ],
+             //KEGIATAN
+             [
+                'name' => __('general.pemuktahiran'),
+                'icon' => '<i class="nav-icon fa fa-edit"></i>',
+                'title' => __('general.pemuktahiran'),
+                'active' => [
+                    'admin.pemuktahiran-perancang.',
+                    'admin.pemuktahiran-ak.'
+                ],
+                'type' => 2,
+                'data' => [
+                    [
+                        'name' => __('general.perancang'),
+                        'title' => __('general.perancang'),
+                        'active' => ['admin.pemuktahiran-perancang.'],
+                        'route' => 'admin.pemuktahiran-perancang.index',
+                        'key' => 'pemuktahiran-perancang',
+                        'type' => 1
+                    ],
+                    [
+                        'name' => __('general.pemuktahiran-ak'),
+                        'title' => __('general.pemuktahiran-ak'),
+                        'active' => ['admin.pemuktahiran-ak'],
+                        'route' => 'admin.pemuktahiran-ak.index',
+                        'key' => 'pemuktahiran-ak',
+                        'type' => 1
+                    ]
+                ]
+            ],
             //Surat Pernyataan
             [
                 'name' => __('general.surat_pernyataan'),
@@ -553,6 +582,8 @@ if ( ! function_exists('listAvailablePermission'))
             'golongan',
             'jenjang-perancang',
             'pendidikan',
+            'pemuktahiran-perancang',
+            'pemuktahiran-ak',
             'unit-kerja',
             'role',
             'admin'
@@ -621,6 +652,9 @@ if ( ! function_exists('listAvailablePermission'))
 
         $listPermission['dupak']['edit'][] = 'admin.dupak.uploadSP';
         $listPermission['dupak']['edit'][] = 'admin.dupak.storeSP';
+
+        $listPermission['pemuktahiran-perancang']['edit'][] = 'admin.pemuktahiran-perancang.approve';
+        $listPermission['pemuktahiran-perancang']['edit'][] = 'admin.pemuktahiran-perancang.reject';
 
 
         $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
