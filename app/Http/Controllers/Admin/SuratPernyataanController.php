@@ -99,6 +99,11 @@ class SuratPernyataanController extends _CrudController
                     return number_format($query->$fieldName, 0);
                 });
             }
+            else if (in_array($list['type'], ['number'])) {
+                $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
+                    return number_format($query->$fieldName, 3);
+                });
+            }
             else if (in_array($list['type'], ['image'])) {
                 $listRaw[] = $fieldName;
                 $dataTables = $dataTables->editColumn($fieldName, function ($query) use ($fieldName, $list, $listRaw) {
