@@ -303,9 +303,17 @@ class PersetujuanSuratPernyataanController extends _CrudController
     {
         $this->callPermission();
 
-        $getData = SuratPernyataan::where('id', $id)->whereIn('status', [1,2])->first();
-        if (!$getData) {
+        $userId = session()->get('admin_id');
+
+        $getAtasan = Users::where('id', $userId)->first();
+        if (!$getAtasan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2])->get();
+        $getSuratPernyataanIds = [];
+        foreach ($getSuratPernyataan as $list) {
+            $getSuratPernyataanIds[] = $list->id;
         }
 
         $actionKegiatan = $this->request->get('action_kegiatan');
@@ -315,10 +323,9 @@ class PersetujuanSuratPernyataanController extends _CrudController
         DB::beginTransaction();
         $dateNow = date('Y-m-d H:i:s');
 
-        $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::selectRaw('tx_surat_pernyataan_kegiatan.*, tx_kegiatan.kredit AS kredit')
-            ->join('tx_kegiatan', 'tx_kegiatan.id', '=', 'tx_surat_pernyataan_kegiatan.kegiatan_id')
-            ->where('surat_pernyataan_id', $id)->get();
-        $totalKredit = 0;
+        $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::whereIn('surat_pernyataan_id', $getSuratPernyataanIds)->get();
+        $totalKredit = [];
+        $allTotalKredit = 0;
         foreach ($getSuratPernyataanKegiatan as $list) {
             $getAction = isset($actionKegiatan[$list->id]) ? $actionKegiatan[$list->id] : 1;
             $getMessage = '';
@@ -326,23 +333,43 @@ class PersetujuanSuratPernyataanController extends _CrudController
                 $getMessage = isset($messageKegiatan[$list->id]) ? $messageKegiatan[$list->id] : '';
             }
             else {
-                $totalKredit += $list->kredit;
+                if (isset($totalKredit[$list->surat_pernyataan_id])) {
+                    $totalKredit[$list->surat_pernyataan_id] += $list->kredit;
+                }
+                else {
+                    $totalKredit[$list->surat_pernyataan_id] = $list->kredit;
+                }
+                $allTotalKredit += $list->kredit;
             }
             $list->message = $getMessage;
             $list->status = $getAction;
             $list->save();
-
         }
 
-        $getData->total_kredit = $totalKredit;
-        $getData->updated_at = $dateNow;
+        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2])->get();
+        $getUserId = 0;
+        $getUpLineId = 0;
+        foreach ($getSuratPernyataan as $list) {
+            $getTotalKredit = isset($totalKredit[$list->id]) ? $totalKredit[$list->id] : 0;
+            $list->total_kredit = $getTotalKredit;
+            $list->updated_at = $dateNow;
+            $getUserId = $list->user_id;
+            $getUpLineId = $list->upline_id;
+            if ($getSaveFlag == 2) {
+                $list->tanggal = date('Y-m-d');
+                $list->status = 80;
+            }
+            else {
+                $list->status = 2;
+            }
+
+            $list->save();
+        }
 
         if ($getSaveFlag == 2) {
-            $getData->tanggal = date('Y-m-d');
-            $getData->status = 80;
 
-            $getUser = Users::where('id', $getData->user_id)->first();
-            $getAtasan = Users::where('id', $getData->upline_id)->first();
+            $getUser = Users::where('id', $getUserId)->first();
+            $getAtasan = Users::where('id', $getUpLineId)->first();
             $getListPangkat = Pangkat::pluck('name', 'id')->toArray();
             $getListGolongan = Golongan::pluck('name', 'id')->toArray();
             $getListJabatan = JabatanPerancang::pluck('name', 'id')->toArray();
@@ -363,12 +390,10 @@ class PersetujuanSuratPernyataanController extends _CrudController
             $getAtasanJabatanTms = $getAtasan->tmt_jabatan ? date('d-M-Y', strtotime($getAtasan->tmt_jabatan)) : '';
 
             $saveDupak = new Dupak();
-            $saveDupak->user_id = $getData->user_id;
-            $saveDupak->upline_id = $getData->upline_id;
-            $saveDupak->top_kegiatan_id = $getData->top_kegiatan_id;
+            $saveDupak->user_id = $getUserId;
+            $saveDupak->upline_id = $getUpLineId;
             $saveDupak->sekretariat_id = 0;
             $saveDupak->unit_kerja_id = 0;
-            $saveDupak->surat_pernyataan_id = $getData->id;
             $saveDupak->info_dupak = json_encode([
                 'perancang_name' => $getUser->name,
                 'perancang_nip' => $getUser->username,
@@ -381,7 +406,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
                 'atasan_jabatan' => $getAtasanJabatan.'/'.$getAtasanJabatanTms,
                 'atasan_unit_kerja' => $getAtasanUnitKerja
             ]);
-            $saveDupak->total_kredit = $totalKredit;
+            $saveDupak->total_kredit = $allTotalKredit;
             $saveDupak->status = 1;
 
             $saveDupak->save();
@@ -407,11 +432,6 @@ class PersetujuanSuratPernyataanController extends _CrudController
             //Create PDF here
 
         }
-        else {
-            $getData->status = 2;
-        }
-
-        $getData->save();
 
         DB::commit();
 
