@@ -323,7 +323,9 @@ class PersetujuanSuratPernyataanController extends _CrudController
         DB::beginTransaction();
         $dateNow = date('Y-m-d H:i:s');
 
-        $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::whereIn('surat_pernyataan_id', $getSuratPernyataanIds)->get();
+        $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::selectRaw('tx_surat_pernyataan_kegiatan.*, tx_kegiatan.kredit')
+            ->join('tx_kegiatan', 'tx_kegiatan.id', '=', 'tx_surat_pernyataan_kegiatan.kegiatan_id')
+            ->whereIn('surat_pernyataan_id', $getSuratPernyataanIds)->get();
         $totalKredit = [];
         $allTotalKredit = 0;
         foreach ($getSuratPernyataanKegiatan as $list) {
