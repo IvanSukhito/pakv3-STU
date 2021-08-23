@@ -349,6 +349,18 @@ if ( ! function_exists('listAllMenu')) {
                     ]
                 ]
             ],
+            // Persetujuan Permuktahiran
+            [
+                'name' => __('general.persetujuan_pemuktahiran'),
+                'icon' => '<i class="nav-icon fa fa-edit"></i>',
+                'title' => __('general.persetujuan_pemuktahiran'),
+                'active' => [
+                    'admin.persetujuan-pemuktahiran.'
+                ],
+                'route' => 'admin.persetujuan-pemuktahiran.index',
+                'key' => 'persetujuan-pemuktahiran',
+                'type' => 1,
+            ],
             //Surat Pernyataan
             [
                 'name' => __('general.surat_pernyataan'),
@@ -612,6 +624,7 @@ if ( ! function_exists('listAvailablePermission'))
 
         foreach ([
             'persetujuan-surat-pernyataan',
+            'persetujuan-pemuktahiran',
             'dupak',
             'persetujuan-dupak',
                  ] as $keyPermission) {
@@ -653,9 +666,10 @@ if ( ! function_exists('listAvailablePermission'))
         $listPermission['dupak']['edit'][] = 'admin.dupak.uploadSP';
         $listPermission['dupak']['edit'][] = 'admin.dupak.storeSP';
 
-        $listPermission['pemuktahiran-perancang']['edit'][] = 'admin.pemuktahiran-perancang.approve';
-        $listPermission['pemuktahiran-perancang']['edit'][] = 'admin.pemuktahiran-perancang.reject';
+        $listPermission['persetujuan-pemuktahiran']['edit'][] = 'admin.persetujuan-pemuktahiran.approve';
+        $listPermission['persetujuan-pemuktahiran']['edit'][] = 'admin.persetujuan-pemuktahiran.reject';
 
+        
 
         $listPermission['permen']['list'][] = 'admin.mskegiatan.index';
         $listPermission['permen']['list'][] = 'admin.mskegiatan.dataTable';

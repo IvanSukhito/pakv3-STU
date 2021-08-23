@@ -46,7 +46,11 @@ class UpdateUsers extends Model
         'tim_penilai',
         'status',
         'status_pemuktahiran',
-        'upload_file_pemuktahiran'
+        'upload_file_pemuktahiran',
+        'approved_id',
+        'approved_by',
+        'rejected_id',
+        'rejected_by'
     ];
 
     

@@ -52,6 +52,10 @@ class CreateTableTxUpdateUsers extends Migration
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('status_pemuktahiran')->default(1);
             $table->text('upload_file_pemuktahiran')->nullable();
+            $table->unsignedBigInteger('approved_id')->default(0);
+            $table->unsignedBigInteger('rejected_id')->default(0);
+            $table->string('approved_by')->nullable();
+            $table->string('rejected_by')->nullable();
             $table->timestamps();
             $table->index(['id', 'username']);
             $table->foreign('role_id')
