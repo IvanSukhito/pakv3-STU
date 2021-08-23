@@ -4,9 +4,6 @@
         <i class="fa fa-eye"></i>
         <span class="d-none d-md-inline"> @lang('general.show')</span>
     </a>
-    <a href="{{ route('admin.' . $thisRoute . '.show', $query->{$masterId}.'?pdf=1')}}"  name="pdf" value="1" class="mb-1 btn btn-primary btn-sm" title="@lang('general.download_pdf')">
-        <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
-</a>
 @endif
 @if ($permission['edit'])
     <a href="{{ route('admin.' . $thisRoute . '.edit', $query->{$masterId}) }}" class="mb-1 btn btn-primary btn-sm"

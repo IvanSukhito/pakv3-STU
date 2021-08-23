@@ -72,7 +72,9 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                         break;
 
                     case 'persetujuan-surat-pernyataan':
+                    case 'surat-pernyataan':
                         $router->get($linkName . '/{id}/show-pdf', $controller . '@showPdf')->name('admin.' . $linkName . '.showPdf');
+                        $router->get($linkName . '/{id}/show-dupak-pdf', $controller . '@showDupakPdf')->name('admin.' . $linkName . '.showDupakPdf');
                         break;
 
                     case 'persetujuan-pemuktahiran':

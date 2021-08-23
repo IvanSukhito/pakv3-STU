@@ -329,8 +329,12 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2])->get();
         $getSuratPernyataanIds = [];
+        $getUserId = 0;
+        $getUpLineId = 0;
         foreach ($getSuratPernyataan as $list) {
             $getSuratPernyataanIds[] = $list->id;
+            $getUserId = $list->user_id;
+            $getUpLineId = $list->upline_id;
         }
 
         $actionKegiatan = $this->request->get('action_kegiatan');
@@ -362,26 +366,6 @@ class PersetujuanSuratPernyataanController extends _CrudController
             }
             $list->message = $getMessage;
             $list->status = $getAction;
-            $list->save();
-        }
-
-        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2])->get();
-        $getUserId = 0;
-        $getUpLineId = 0;
-        foreach ($getSuratPernyataan as $list) {
-            $getTotalKredit = isset($totalKredit[$list->id]) ? $totalKredit[$list->id] : 0;
-            $list->total_kredit = $getTotalKredit;
-            $list->updated_at = $dateNow;
-            $getUserId = $list->user_id;
-            $getUpLineId = $list->upline_id;
-            if ($getSaveFlag == 2) {
-                $list->tanggal = date('Y-m-d');
-                $list->status = 80;
-            }
-            else {
-                $list->status = 2;
-            }
-
             $list->save();
         }
 
@@ -448,8 +432,25 @@ class PersetujuanSuratPernyataanController extends _CrudController
                 DupakKegiatan::insert($saveDupakKegiatan);
             }
 
-            //Create PDF here
+            foreach ($getSuratPernyataan as $list) {
+                $getTotalKredit = isset($totalKredit[$list->id]) ? $totalKredit[$list->id] : 0;
+                $list->total_kredit = $getTotalKredit;
+                $list->updated_at = $dateNow;
+                $list->tanggal = date('Y-m-d');
+                $list->status = 80;
+                $list->dupak_id = $dupakId;
 
+                $list->save();
+            }
+        }
+        else {
+            foreach ($getSuratPernyataan as $list) {
+                $getTotalKredit = isset($totalKredit[$list->id]) ? $totalKredit[$list->id] : 0;
+                $list->total_kredit = $getTotalKredit;
+                $list->updated_at = $dateNow;
+                $list->status = 2;
+                $list->save();
+            }
         }
 
         DB::commit();

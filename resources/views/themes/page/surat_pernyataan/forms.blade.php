@@ -86,10 +86,6 @@ else {
                            class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
                             <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
                         </a>
-                        @elseif (in_array($viewType, ['show']) && in_array($data->status, [80]))
-                    <button type="submit" name="pdf" value="1" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
-                        <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
-                    </button>
                     @endif
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
@@ -108,21 +104,34 @@ else {
                     <h3 class="form-section first-form">Kegiatan</h3>
                     <p>Perancang mengajukan:</p>
                     <ul>
+                        @if (in_array($viewType, ['show']) && in_array($data->status, [80]))
+                            <li>
+                            <a href="{!! route('admin.surat-pernyataan.showDupakPdf', $data->dupak_id) !!}" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf') DUPAK">
+                                <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf') DUPAK</span>
+                            </a>
+                            </li>
+                        @endif
 
                         <li>Surat Pernyataan:
                         @foreach($topId as $top)
 
-
                         <?php $dataTop = isset($dataTopKegiatan[$top]) ? $dataTopKegiatan[$top] : false;?>
+                        <?php $getSuratPernyataan = isset($listSuratPernyataan[$top]) ? $listSuratPernyataan[$top] : 0;?>
                         <?php $dataAk = isset($kredit[$top]) ? $kredit[$top] : false;?>
 
                            <ul>
                                <?php $sumAk = 0;?>
-                               @foreach($dataAk as $dataAk)
-                               <?php $sumAk += $dataAk?>
+                               @foreach($dataAk as $listAk)
+                               <?php $sumAk += $listAk?>
                                @endforeach
 
-                              <li>{!! $dataTop ? $dataTop['name'] : '' !!} - {!!number_format($sumAk,3)!!}</li>
+                                   <li>{!! $dataTop ? $dataTop['name'] : '' !!} - {!!number_format($sumAk,3)!!}
+                                       @if (in_array($viewType, ['show']) && in_array($data->status, [80]))
+                                           <a href="{!! route('admin.surat-pernyataan.showPdf', $getSuratPernyataan) !!}" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
+                                               <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
+                                           </a>
+                                       @endif
+                                   </li>
 
                            </ul>
                            @endforeach
@@ -178,10 +187,6 @@ else {
                            class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
                             <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
                         </a>
-                        @elseif (in_array($viewType, ['show']) && in_array($data->status, [80]))
-                    <button type="submit" name="pdf" value="1" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
-                        <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
-                    </button>
                     @endif
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">

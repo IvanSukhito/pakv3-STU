@@ -13,6 +13,7 @@ class SuratPernyataan extends Model
         'user_id',
         'upline_id',
         'top_kegiatan_id',
+        'dupak_id',
         'tanggal',
         'nomor',
         'tanggal_mulai',

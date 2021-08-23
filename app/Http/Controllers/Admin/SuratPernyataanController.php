@@ -18,14 +18,17 @@ class SuratPernyataanController extends _CrudController
             'id' => [
                 'edit' => 0
             ],
-            'kegiatan' => [
-                'custom' => ', name:"ms_kegiatan.name"'
-            ],
             'total_kredit' => [
                 'type' => 'number'
             ],
             'status' => [
                 'type' => 'select'
+            ],
+            'tanggal_mulai' => [
+                'type' => 'datetime'
+            ],
+            'tanggal_akhir' => [
+                'type' => 'datetime'
             ],
             'created_at' => [
                 'lang' => 'DiKirim',
@@ -61,12 +64,16 @@ class SuratPernyataanController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('tx_surat_pernyataan.id, ms_kegiatan.name AS kegiatan, tx_surat_pernyataan.status,
-            tx_surat_pernyataan.total_kredit, tx_surat_pernyataan.created_at, tx_surat_pernyataan.updated_at')
+        $builder = Users::selectRaw('users.id, tx_surat_pernyataan.status,
+                tx_surat_pernyataan.tanggal_mulai, tx_surat_pernyataan.tanggal_akhir,
+                SUM(tx_surat_pernyataan.total_kredit) AS total_kredit, tx_surat_pernyataan.created_at,
+                tx_surat_pernyataan.updated_at')
             ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
-            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')
-            ->where('tx_surat_pernyataan.user_id', $userId)
-            ->whereIn('tx_surat_pernyataan.status', [80,99]);
+            ->where('users.id', $userId)
+            ->whereIn('tx_surat_pernyataan.status', [80,99])
+            ->groupByRaw('users.id, tx_surat_pernyataan.status,
+                tx_surat_pernyataan.tanggal_mulai, tx_surat_pernyataan.tanggal_akhir,
+                tx_surat_pernyataan.created_at, tx_surat_pernyataan.updated_at');
 
         $dataTables = $dataTables->eloquent($builder)
             ->addColumn('action', function ($query) {
@@ -132,24 +139,27 @@ class SuratPernyataanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [80,99])->first();
-        if (!$getSuratPernyataan) {
-            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [80,99])->get();
+        $getSuratPernyataanIds = [];
+        $status = 0;
+        $totalKredit = 0;
+        $listSuratPernyataan = [];
+        foreach ($getSuratPernyataan as $list) {
+            $getSuratPernyataanIds[] = $list->id;
+            $status = $list->status;
+            $totalKredit += $list->total_kredit;
+            $listSuratPernyataan[$list->top_kegiatan_id] = $list->id;
         }
+
         $getPerancang = Users::where('id', $userId)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        if ($this->request->get('pdf') == 1) {
-            $getPAKLogic = new PakLogic();
-            $getPAKLogic->generateSuratPernyataan($id);
-        }
+        $getPAKLogic = new PakLogic();
+        $getData = $getPAKLogic->getSuratPernyataanUser($getSuratPernyataan);
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
-
-        $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -177,7 +187,12 @@ class SuratPernyataanController extends _CrudController
         $data['viewType'] = 'show';
         $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getSuratPernyataan;
+        $data['data'] = (object)[
+            'id' => $id,
+            'dupak_id' => $id,
+            'status' => $status,
+            'total_kredit' => $totalKredit
+        ];
         $data['dataUser'] = $getPerancang;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;
@@ -185,12 +200,51 @@ class SuratPernyataanController extends _CrudController
         $data['dataKegiatan'] = $dataKegiatan;
         $data['dataTopKegiatan'] = $dataTopKegiatan;
         $data['totalPermen'] = $totalPermen;
+        $data['listSuratPernyataan'] = $listSuratPernyataan;
         $data['totalTop'] = $totalTop;
         $data['totalAk'] = $totalAk;
         $data['topId'] = $topId;
         $data['kredit'] = $kredit;
 
         return view($this->listView[$data['viewType']], $data);
+    }
+
+    public function showPdf($id)
+    {
+        $this->callPermission();
+
+        $userId = session()->get('admin_id');
+
+        $getAtasan = Users::where('id', $userId)->first();
+        if (!$getAtasan) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [80,88,99])->first();
+        if ($getSuratPernyataan) {
+            $getPAKLogic = new PakLogic();
+            $getPAKLogic->generateSuratPernyataan($id);
+        }
+        return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+    }
+
+    public function showDupakPdf($id)
+    {
+        $this->callPermission();
+
+        $userId = session()->get('admin_id');
+
+        $getAtasan = Users::where('id', $userId)->first();
+        if (!$getAtasan) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [80,88,99])->first();
+        if ($getSuratPernyataan) {
+            $getPAKLogic = new PakLogic();
+            $getPAKLogic->generateDupak($id);
+        }
+        return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
     }
 
 }

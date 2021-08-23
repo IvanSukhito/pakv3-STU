@@ -661,7 +661,8 @@ if ( ! function_exists('listAvailablePermission'))
                 ],
                 'show' => [
                     'admin.'.$keyPermission.'.show',
-                    'admin.'.$keyPermission.'.showPdf'
+                    'admin.'.$keyPermission.'.showPdf',
+                    'admin.'.$keyPermission.'.showDupakPdf'
                 ],
             ];
         }
@@ -675,7 +676,9 @@ if ( ! function_exists('listAvailablePermission'))
                     'admin.'.$keyPermission.'.dataTable'
                 ],
                 'show' => [
-                    'admin.'.$keyPermission.'.show'
+                    'admin.'.$keyPermission.'.show',
+                    'admin.'.$keyPermission.'.showPdf',
+                    'admin.'.$keyPermission.'.showDupakPdf'
                 ],
             ];
         }
