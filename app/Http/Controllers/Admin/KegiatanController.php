@@ -174,6 +174,11 @@ class KegiatanController extends _CrudController
             session()->flash('message_alert', 1);
             return redirect()->route('admin.' . $this->route . '.index');
         }
+        elseif ($getUser->progress == 2) {
+            session()->flash('message', __('Kegiatan Sedang di proses'));
+            session()->flash('message_alert', 1);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
 
         $getNewLogic = new PakLogic();
         $getData = $getNewLogic->createKegiatan();
@@ -206,6 +211,11 @@ class KegiatanController extends _CrudController
         $userId = session()->get('admin_id');
 
         $getUser = Users::where('id', $userId)->first();
+        if ($getUser->progress == 2) {
+            session()->flash('message', __('Kegiatan Sedang di proses'));
+            session()->flash('message_alert', 1);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
 
         $judul = Kegiatan::select('judul')->where('user_id',$userId)->where('status',1)->groupBy('judul')->get();
 
@@ -251,6 +261,14 @@ class KegiatanController extends _CrudController
             }
             else {
                 return redirect()->back()->withInput()->withErrors(['message' => __('general.error_no_upline')]);
+            }
+        }
+        elseif ($getUser->progress == 2) {
+            if ($this->request->ajax()) {
+                return response()->json(['result' => 2, 'message' => __('Kegiatan Sedang di proses')]);
+            }
+            else {
+                return redirect()->back()->withInput()->withErrors(['message' => __('Kegiatan Sedang di proses')]);
             }
         }
 
@@ -406,6 +424,11 @@ class KegiatanController extends _CrudController
                 return redirect()->back()->withInput()->withErrors(['message' => __('general.error_no_upline')]);
             }
         }
+        elseif ($getUser->progress == 2) {
+            session()->flash('message', __('Kegiatan Sedang di proses'));
+            session()->flash('message_alert', 1);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
 
         $userNip = $getUser->username;
 
@@ -512,6 +535,11 @@ class KegiatanController extends _CrudController
             session()->flash('message_alert', 1);
             return redirect()->route('admin.' . $this->route . '.index');
         }
+        else if ($getUser->progress == 2) {
+            session()->flash('message', __('Kegiatan Sedang di proses'));
+            session()->flash('message_alert', 1);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
 
         $getDateRange = $this->request->get('daterange1');
 
@@ -579,6 +607,11 @@ class KegiatanController extends _CrudController
             session()->flash('message_alert', 1);
             return redirect()->route('admin.' . $this->route . '.index');
         }
+        else if ($getUser->progress == 2) {
+            session()->flash('message', __('Kegiatan Sedang di proses'));
+            session()->flash('message_alert', 1);
+            return redirect()->route('admin.' . $this->route . '.index');
+        }
 
         $getAtasan = Users::where('id', $getUser->upline_id)->first();
         $getListPangkat = Pangkat::pluck('name', 'id')->toArray();
@@ -617,6 +650,7 @@ class KegiatanController extends _CrudController
         $getTopId = array_unique($getTopId);
 
         DB::beginTransaction();
+        $dateNow = date('Y-m-d H:i:s');
 
         foreach ($getTopId as $topId) {
 
@@ -648,6 +682,7 @@ class KegiatanController extends _CrudController
             ]);
             $suratPernyataan->status = 1;
             $suratPernyataan->total_kredit = $getKredit;
+            $suratPernyataan->created_at = $dateNow;
 
             $suratPernyataan->save();
 
@@ -660,7 +695,9 @@ class KegiatanController extends _CrudController
                         'surat_pernyataan_id' => $suratPernyataanId,
                         'kegiatan_id' => $list->id,
                         'ms_kegiatan_id' => $list->ms_kegiatan_id,
-                        'status' => 1
+                        'status' => 1,
+                        'created_at' => $dateNow,
+                        'updated_at' => $dateNow
                     ];
                 }
             }
@@ -676,6 +713,9 @@ class KegiatanController extends _CrudController
             ->update([
             'status' => 2
         ]);
+
+        $getUser->progress = 2;
+        $getUser->save();
 
         DB::commit();
 

@@ -30,11 +30,10 @@ class PersetujuanSuratPernyataanController extends _CrudController
             ],
             'name' => [
             ],
+            'email' => [
+            ],
             'total_kredit' => [
                 'type' => 'number'
-            ],
-            'kegiatan' => [
-                'custom' => ', name:"ms_kegiatan.name"'
             ],
             'status' => [
                 'type' => 'select'
@@ -76,13 +75,15 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('tx_surat_pernyataan.id, users.username, users.name, ms_kegiatan.name AS kegiatan,
-            tx_surat_pernyataan.status, tx_surat_pernyataan.total_kredit, tx_surat_pernyataan.created_at,
-            tx_surat_pernyataan.updated_at')
+        $builder = Users::selectRaw('users.id, users.name, users.username, users.email, tx_surat_pernyataan.status,
+                SUM(tx_surat_pernyataan.total_kredit) AS total_kredit, tx_surat_pernyataan.created_at,
+                tx_surat_pernyataan.updated_at')
             ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
-            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')
             ->where('users.upline_id', $userId)
-            ->whereIn('tx_surat_pernyataan.status', [1,2,80,99]);
+            ->whereIn('tx_surat_pernyataan.status', [1,2,80,99])
+            ->groupByRaw('users.id, users.name, users.username, users.email, tx_surat_pernyataan.status,
+                tx_surat_pernyataan.created_at,
+                tx_surat_pernyataan.updated_at');
 
         $dataTables = $dataTables->eloquent($builder)
             ->addColumn('action', function ($query) {
@@ -147,24 +148,34 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2,80, 99])->first();
-        if (!$getSuratPernyataan) {
-            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
-        }
-        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->first();
-        if (!$getPerancang) {
+        $getAtasan = Users::where('id', $userId)->first();
+        if (!$getAtasan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
+        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2,80, 99])->get();
+        $getSuratPernyataanIds = [];
+        $status = 0;
+        $totalKredit = 0;
+        $perancangId = 0;
+        foreach ($getSuratPernyataan as $list) {
+            $getSuratPernyataanIds[] = $list->id;
+            $status = $list->status;
+            $totalKredit += $list->total_kredit;
+            $perancangId = $list->user_id;
+        }
+
+        $getPerancang = Users::where('id', $perancangId)->first();
+
         if ($this->request->get('pdf') == 1) {
             $getPAKLogic = new PakLogic();
-            $getPAKLogic->generateSuratPernyataan($id);
+            $getPAKLogic->generateSuratPernyataan($getSuratPernyataanIds);
         }
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan);
+        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataanIds);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -192,7 +203,11 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $data['viewType'] = 'show';
         $data['formsTitle'] = __('general.title_show', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getSuratPernyataan;
+        $data['data'] = (object)[
+            'id' => $id,
+            'status' => $status,
+            'total_kredit' => $totalKredit
+        ];
         $data['dataUser'] = $getPerancang;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;
@@ -214,24 +229,29 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [1,2])->first();
-        if (!$getSuratPernyataan) {
-            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
-        }
-        $getPerancang = Users::where('id', $getSuratPernyataan->user_id)->first();
-        if (!$getPerancang) {
+        $getAtasan = Users::where('id', $userId)->first();
+        if (!$getAtasan) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        if($this->request->get('pdf') == 1){
-            $getPAKLogic = new PakLogic();
-            $getPAKLogic->generateSuratPernyataan($id);
+        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2])->get();
+        $getSuratPernyataanIds = [];
+        $status = 0;
+        $totalKredit = 0;
+        $perancangId = 0;
+        foreach ($getSuratPernyataan as $list) {
+            $getSuratPernyataanIds[] = $list->id;
+            $status = $list->status;
+            $totalKredit += $list->total_kredit;
+            $perancangId = $list->user_id;
         }
+
+        $getPerancang = Users::where('id', $perancangId)->first();
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
         $getNewLogic = new PakLogic();
-        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataan);
+        $getData = $getNewLogic->getSuratPernyataanUser($getSuratPernyataanIds);
 
         $dataPermen = [];
         $dataKegiatan = [];
@@ -259,7 +279,11 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $data['viewType'] = 'edit';
         $data['formsTitle'] = __('general.title_edit', ['field' => $data['thisLabel']]);
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
-        $data['data'] = $getSuratPernyataan;
+        $data['data'] = (object)[
+            'id' => $id,
+            'status' => $status,
+            'total_kredit' => $totalKredit
+        ];
         $data['dataUser'] = $getPerancang;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;
@@ -289,6 +313,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $getSaveFlag = $this->request->get('save');
 
         DB::beginTransaction();
+        $dateNow = date('Y-m-d H:i:s');
 
         $getSuratPernyataanKegiatan = SuratPernyataanKegiatan::selectRaw('tx_surat_pernyataan_kegiatan.*, tx_kegiatan.kredit AS kredit')
             ->join('tx_kegiatan', 'tx_kegiatan.id', '=', 'tx_surat_pernyataan_kegiatan.kegiatan_id')
@@ -310,6 +335,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         }
 
         $getData->total_kredit = $totalKredit;
+        $getData->updated_at = $dateNow;
 
         if ($getSaveFlag == 2) {
             $getData->tanggal = date('Y-m-d');

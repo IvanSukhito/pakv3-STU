@@ -131,7 +131,7 @@ else {
                         </li>
 
                         <li>Total AK yang di ajukan: {!! number_format($totalAk, 3) !!}</li>
-                        @if(in_array($data->status, [80,88,99]))
+                        @if(in_array($data->status, [2,80,88,99]))
                         <li>Total AK yang di setujui: {!! number_format($data->total_kredit, 3) !!}</li>
                         @endif
                     </ul>

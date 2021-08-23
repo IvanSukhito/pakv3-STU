@@ -48,6 +48,7 @@ class CreateUsersTable extends Migration
             $table->tinyInteger('atasan')->default(0);
             $table->tinyInteger('sekretariat')->default(0);
             $table->tinyInteger('tim_penilai')->default(0);
+            $table->tinyInteger('progress')->default(1);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->index(['id', 'username']);

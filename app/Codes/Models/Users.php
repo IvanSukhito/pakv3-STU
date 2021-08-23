@@ -43,6 +43,7 @@ class Users extends Model
         'atasan',
         'sekretariat',
         'tim_penilai',
+        'progress',
         'status',
     ];
 
