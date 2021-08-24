@@ -56,7 +56,9 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\DupakController' => 'dupak',
                 'Admin\PersetujuanDupakController' => 'persetujuan-dupak',
                 'Admin\PemuktahiranDataDiriController' => 'pemuktahiran-data-diri',
+                'Admin\PemuktahiranAKController' => 'pemuktahiran-ak',
                 'Admin\PersetujuanPemuktahiranController' => 'persetujuan-pemuktahiran',
+                'Admin\PersetujuanPemuktahiranAKController' => 'persetujuan-pemuktahiran-ak',
             ];
             foreach ($listRouter as $controller => $linkName) {
 
@@ -78,6 +80,10 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                         break;
 
                     case 'persetujuan-pemuktahiran':
+                        $router->get($linkName . '/approve/{id}', $controller . '@approve')->name('admin.' . $linkName . '.approve');
+                        $router->get($linkName . '/reject/{id}', $controller . '@reject')->name('admin.' . $linkName . '.reject');
+                        break;
+                    case 'persetujuan-pemuktahiran-ak':
                         $router->get($linkName . '/approve/{id}', $controller . '@approve')->name('admin.' . $linkName . '.approve');
                         $router->get($linkName . '/reject/{id}', $controller . '@reject')->name('admin.' . $linkName . '.reject');
                         break;

@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
-class PersetujuanPemuktahiranController extends _CrudController
+class PersetujuanPemuktahiranAKController extends _CrudController
 {
     public function __construct(Request $request)
     {
@@ -37,61 +37,20 @@ class PersetujuanPemuktahiranController extends _CrudController
             'name' => [
                 'create' => false,
             ],
-            'upline_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'lang' => 'general.atasan',
-                'type' => 'select2'
-            ],
-            'pangkat_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2',
-                'lang' => 'general.pangkat'
-            ],
-            'golongan_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2',
-                'lang' => 'general.golongan'
-            ],
-            'tmt_pangkat' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
+            'tanggal_pak_terakhir' => [
+                'create' => false,
                 'type' => 'datepicker',
-                'lang' => 'general.kenaikan_jenjang_terakhir'
             ],
-            'jenjang_perancang_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2',
-                'lang' => 'general.jenjang_perancang'
+            'angka_kredit_terakhir' => [
+                'create' => false,
+                'type' => 'text',
             ],
-            'tmt_jabatan' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'datepicker',
-                'lang' => 'general.tmt_jabatan'
-            ],
-            'unit_kerja_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2',
-                'lang' => 'general.unit_kerja'
+            'nomor_pak_terakhir' => [
+                'create' => false,
+                'type' => 'text',
+
             ],
 
-            'status_pemuktahiran' => [
-                'create' => false,
-                'edit' => false,
-                'type' => 'select'
-            ],
             'action' => [
                 'create' => false,
                 'edit' => false,
@@ -102,13 +61,12 @@ class PersetujuanPemuktahiranController extends _CrudController
 
 
         parent::__construct(
-            $request, 'general.persetujuan-pemuktahiran', 'persetujuan-pemuktahiran', 'UpdateUsers', 'persetujuan-pemuktahiran',
+            $request, 'general.persetujuan-pemuktahiran-ak', 'persetujuan-pemuktahiran-ak', 'UpdateUsers', 'persetujuan-pemuktahiran-ak',
             $passingData
         );
 
 
         $getGolongan = Golongan::where('status', 1)->pluck('name', 'id')->toArray();
-        $listGolongan = [0 => 'Kosong'];
         if($getGolongan) {
             foreach($getGolongan as $key => $value) {
                 $listGolongan[$key] = $value;
@@ -116,7 +74,6 @@ class PersetujuanPemuktahiranController extends _CrudController
         }
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->pluck('name', 'id')->toArray();
-        $listJenjangPerancang = [0 => 'Kosong'];
         if($getJenjangPerancang) {
             foreach($getJenjangPerancang as $key => $value) {
                 $listJenjangPerancang[$key] = $value;
@@ -146,10 +103,10 @@ class PersetujuanPemuktahiranController extends _CrudController
         $this->data['listSet']['upline_id'] = Users::where('atasan', 1)->pluck('name', 'id')->toArray();
 
 
-        $this->listView['index'] = env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran.list';
-        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran.forms';
-        $this->listView['create'] = env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran.forms';
-        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran.list_button';
+        $this->listView['index'] = env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran-ak.list';
+        $this->listView['show'] = env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran-ak.forms';
+        $this->listView['create'] = env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran-ak.forms';
+        $this->listView['dataTable'] = env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran-ak.list_button';
 
         $this->data['listSet']['status_pemuktahiran'] = get_list_status_permuktahiran();
 
@@ -192,14 +149,9 @@ class PersetujuanPemuktahiranController extends _CrudController
         $getData = UpdateUsers::where('id', $id)->first();
         $User = Users::where('id', $getData->user_id)->first();
 
-        $getUplineId = $getData->upline_id;
-        $getPangkat = $getData->pangkat_id;
-        $getJenjangPerancang = $getData->jenjang_perancang_id;
-        $getUnitKerja = $getData->unit_kerja_id;
-        $getGolongan = $getData->golongan_id;
-        $getTmtJabatan = $getData->tmt_jabatan;
-        $getTmtPangkat = $getData->tmt_pangkat;
-
+        $getAK = $getData->angka_kredit_terakhir;
+        $getNomorPak = $getData->nomor_pak_terakhir;
+        $getTanggalPak = $getData->tanggal_pak_terakhir;
 
         $getData->update([
             'status_pemuktahiran' => 80,
@@ -209,13 +161,10 @@ class PersetujuanPemuktahiranController extends _CrudController
         ]);
 
         $User->update([
-            'upline_id' => $getUplineId,
-            'pangkat_id' => $getPangkat,
-            'golongan_id' => $getGolongan,
-            'jenjang_perancang_id' => $getJenjangPerancang,
-            'unit_kerja_id' => $getUnitKerja,
-            'tmt_jabatan' => $getTmtJabatan,
-            'tmt_pangkat' => $getTmtPangkat
+
+            'tanggal_pak_terakhir' => $getTanggalPak,
+            'nomor_pak_terakhir' => $getNomorPak,
+            'angka_kredit_terakhir' => $getAK
 
         ]);
 
@@ -265,13 +214,10 @@ class PersetujuanPemuktahiranController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = $this->model::query()->selectRaw('tx_update_users.id, tx_update_users.name, tx_update_users.username, tx_update_users.upline_id, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, tx_update_users.tmt_pangkat, tx_update_users.tmt_jabatan, tx_update_users.status_pemuktahiran')
-        ->leftJoin('role AS B', 'B.id', '=', 'tx_update_users.role_id')
-        ->leftJoin('pangkat AS C', 'C.id', '=', 'tx_update_users.pangkat_id')
-        ->leftJoin('golongan as D', 'D.id','=', 'tx_update_users.golongan_id')
-        ->leftJoin('jenjang_perancang as E','E.id','=','tx_update_users.jenjang_perancang_id')
-        ->leftJoin('unit_kerja as F','F.id','=','tx_update_users.unit_kerja_id')
-        ->where('flag_pemuktahiran', 1);
+        $builder = $this->model::query()->selectRaw('tx_update_users.id, tx_update_users.name, tx_update_users.username, tx_update_users.tanggal_pak_terakhir, tx_update_users.angka_kredit_terakhir, tx_update_users.nomor_pak_terakhir, tx_update_users.status_pemuktahiran')
+            ->leftJoin('role AS B', 'B.id', '=', 'tx_update_users.role_id')
+            ->where('flag_pemuktahiran', 2);
+
 
 
         $dataTables = $dataTables->eloquent($builder)
@@ -320,7 +266,6 @@ class PersetujuanPemuktahiranController extends _CrudController
             ->rawColumns($listRaw)
             ->make(true);
     }
-
 
 
 
