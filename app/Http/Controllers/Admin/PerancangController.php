@@ -368,7 +368,7 @@ class PerancangController extends _CrudController
             ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
             ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
             ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')
-            ->leftJoin('instansi as G','G.id','=','users.instansi_id');
+            ->leftJoin('instansi as G','G.id','=','users.instansi_id')->get();
 
 
 
