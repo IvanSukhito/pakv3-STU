@@ -976,11 +976,11 @@ class PakLogic
             $dateStart = date('d-M-Y', strtotime($getDupak->tanggal_mulai));
             $dateEnd = date('d-M-Y', strtotime($getDupak->tanggal_akhir));
 
-            $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.ms_kegiatan_id, tx_kegiatan.top_id, SUM(tx_kegiatan.kredit) AS kredit')
+            $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.ms_kegiatan_id, tx_kegiatan.permen_id, tx_kegiatan.top_id, SUM(tx_kegiatan.kredit) AS kredit')
                 ->join('tx_dupak_kegiatan', 'tx_dupak_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
                 ->where('tx_dupak_kegiatan.dupak_id', $dupakId)
 //                ->whereIn('tx_dupak_kegiatan.status', [80])
-                ->groupByRaw('tx_kegiatan.ms_kegiatan_id, tx_kegiatan.top_id')
+                ->groupByRaw('tx_kegiatan.ms_kegiatan_id, tx_kegiatan.permen_id, tx_kegiatan.top_id')
                 ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
             $getPermenId = 0;
             foreach ($getKegiatan as $list) {
