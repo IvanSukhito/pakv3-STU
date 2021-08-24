@@ -12,8 +12,12 @@ class PakKegiatan extends Model
         'id',
         'pak_id',
         'kegiatan_id',
+        'top_kegiatan_id',
         'ms_kegiatan_id',
         'message',
+        'kredit_ori',
+        'kredit_old',
+        'kredit_new',
         'status'
     ];
 

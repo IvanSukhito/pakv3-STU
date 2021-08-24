@@ -8,6 +8,7 @@ use App\Codes\Models\Dupak;
 use App\Codes\Models\DupakKegiatan;
 use App\Codes\Models\Golongan;
 use App\Codes\Models\JabatanPerancang;
+use App\Codes\Models\PakKegiatan;
 use App\Codes\Models\Pangkat;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
@@ -375,6 +376,24 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
         if ($getSaveFlag == 2) {
 
+            $oldKredit = [];
+            $oldTopKredit = [];
+            $getKreditKegiatan = PakKegiatan::selectRaw('tx_pak_kegiatan.ms_kegiatan_id, tx_pak_kegiatan.top_kegiatan_id, SUM(tx_pak_kegiatan.kredit_new) AS total_kredit')
+                ->join('tx_pak', 'tx_pak.id', '=', 'tx_pak_kegiatan.pak_id')
+                ->whereIn('status', [88])
+                ->groupByRaw('tx_pak_kegiatan.ms_kegiatan_id, tx_pak_kegiatan.top_kegiatan_id')
+                ->get();
+            foreach ($getKreditKegiatan as $list) {
+                if (isset($oldKredit[$list->ms_kegiatan_id])) {
+                    $oldKredit[$list->ms_kegiatan_id] += $list->total_kredit;
+                    $oldTopKredit[$list->top_kegiatan_id] += $list->total_kredit;
+                }
+                else {
+                    $oldKredit[$list->ms_kegiatan_id] = $list->total_kredit;
+                    $oldTopKredit[$list->top_kegiatan_id] = $list->total_kredit;
+                }
+            }
+
             $getUser = Users::where('id', $getUserId)->first();
             $getAtasan = Users::where('id', $getUpLineId)->first();
             $getListPangkat = Pangkat::pluck('name', 'id')->toArray();
@@ -411,7 +430,9 @@ class PersetujuanSuratPernyataanController extends _CrudController
                 'atasan_nip' => $getAtasan->username,
                 'atasan_pangkat' => $getAtasanPangkat.'/'.$getAtasanGolongan.'/'.$getAtasanPangkatTms,
                 'atasan_jabatan' => $getAtasanJabatan.'/'.$getAtasanJabatanTms,
-                'atasan_unit_kerja' => $getAtasanUnitKerja
+                'atasan_unit_kerja' => $getAtasanUnitKerja,
+                'old_kredit' => $oldKredit,
+                'old_top_kredit' => $oldTopKredit
             ]);
             $saveDupak->total_kredit = $allTotalKredit;
             $saveDupak->status = 1;

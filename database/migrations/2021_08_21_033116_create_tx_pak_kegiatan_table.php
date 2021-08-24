@@ -17,7 +17,11 @@ class CreateTxPakKegiatanTable extends Migration
             $table->id();
             $table->unsignedBigInteger('pak_id')->default(0);
             $table->unsignedBigInteger('kegiatan_id')->default(0);
+            $table->unsignedBigInteger('top_kegiatan_id')->default(0);
             $table->unsignedBigInteger('ms_kegiatan_id')->default(0);
+            $table->float('kredit_ori', 10, 3)->default(0)->nullable();
+            $table->float('kredit_old', 10, 3)->default(0)->nullable();
+            $table->float('kredit_new', 10, 3)->default(0)->nullable();
             $table->string('message')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
