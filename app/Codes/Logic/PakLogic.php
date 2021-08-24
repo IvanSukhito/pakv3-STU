@@ -967,6 +967,9 @@ class PakLogic
             $getAtasanJabatan = $getInfoSuratPernyataan['atasan_jabatan'] ?? '';
             $getAtasanUnitKerja = $getInfoSuratPernyataan['atasan_unit_kerja'] ?? '';
 
+            $dateStart = date('d-M-Y', strtotime($getDupak->tanggal_mulai));
+            $dateEnd = date('d-M-Y', strtotime($getDupak->tanggal_akhir));
+
             $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_dupak_kegiatan.id AS dupak_kegiatan_id,
                 tx_dupak_kegiatan.message AS dupak_kegiatan_message, tx_dupak_kegiatan.status AS dupak_kegiatan_status')
                 ->join('tx_dupak_kegiatan', 'tx_dupak_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
@@ -981,7 +984,6 @@ class PakLogic
             $getMsKegiatan = MsKegiatan::where('permen_id', $getPermenId)->get();
             $getDataMsKegiatan = $this->getCreateListTreeKegiatan($getMsKegiatan->toArray());
             $getDeep = set_deep_ms_kegiatan($getDataMsKegiatan);
-            dd($getPermenId, $getDataMsKegiatan, $getDeep);
 
             $spreadsheet = new Spreadsheet();
             $spreadsheet->getProperties()->setCreator('Peraturan Perundang-undangan')
@@ -996,84 +998,29 @@ class PakLogic
 
             $row = 2;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'KEMENTERIAN HUKUM DAN HAK ASASI MANUSIA REPUBLIK INDONESIA
-            DIREKTORAT JENDERAL ADMINISTRASI HUKUM UMUM');
-            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
-                'font' => array(
-                    'bold' => true
-                ),
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                ),
-
-            ));
-
-            $row += 1;
-            $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row,'DIREKTORAT JENDERAL ADMINISTRASI HUKUM UMUM');
-            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
-                'font' => array(
-                    'bold' => true
-                ),
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                ),
-            ));
-
-            $row += 1;
-            $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'Jl. HR. Rasuna Said Kav. 6-7 Kuningan, Jakarta Selatan');
-            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                )
-            ));
-
-            $row += 1;
-            $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'Telp. (021) 5221618, Fax. (021) 5265480');
-            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                )
-            ));
-
-            $row += 1;
-            $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'laman: www.ahu.go.id, Surel:humas@ahu.go.id');
-            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
-                'alignment' => array(
-                    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-                    'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
-                    'wrapText' => true
-                ),
-                'borders' => array(
-                    'bottom' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        'color' => array('argb' => '00000000'),
-                    )
-                )
-            ));
-
 
             $row += 2;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'SURAT PERNYATAAN');
+            $startRow = $row;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'DAFTAR USUL PENETAPAN ANGKA KREDIT');
             $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
-            $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
+
+            $row += 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'JABATAN PERANCANG PERATURAN PERUNDANG-UNDANGAN');
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+
+            $row += 1;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'NOMOR:');
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+
+            $row += 2;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, 'Masa Penilaian Tanggal '.$dateStart.' s.d. '.$dateEnd);
+            $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+
+            $sheet->getStyleByColumnAndRow(1,$startRow, $totalColumn, $row)->applyFromArray(array(
                 'font' => array(
                     'bold' => true
                 ),
