@@ -8,6 +8,10 @@
     @show
 
     <title>{{ env('WEBSITE_NAME') }} | @yield('title')</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/cms/images/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('assets/cms/images/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('assets/cms/images/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ asset('assets/cms/images/favicon/site.webmanifest') }}">
 
     @section('css')
     <link rel="stylesheet" href="{{ asset('assets/cms/css/app.css') }}">
