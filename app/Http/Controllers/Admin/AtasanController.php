@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
+use App\Codes\Models\Instansi;
 use Illuminate\Http\Request;
 use App\Codes\Models\Users;
 use App\Codes\Models\Golongan;
@@ -22,27 +23,30 @@ class AtasanController extends _CrudController
                 'edit' => 0,
                 'show' => 0
             ],
+            'name' => [
+                'validation' => [
+                    'edit' => 'required'
+                ]
+            ],
             'username' => [
                 'extra' => [
                     'edit' => ['disabled' => true]
                 ],
                 'lang' => 'NIP'
             ],
-            'name' => [
+            'jenjang_perancang_id' => [
                 'validation' => [
                     'edit' => 'required'
-                ]
-            ],
-            'email' => [
-                'validation' => [
-                    'edit' => 'required|email'
                 ],
-                'type' => 'email'
+                'type' => 'select2',
+                'lang' => 'general.jenjang_perancang'
             ],
-            'role' => [
-                'create' => false,
-                'edit' => false,
-                'show' => 0,
+            'tmt_jabatan' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.tmt_jabatan'
             ],
             'pangkat_id' => [
                 'validation' => [
@@ -65,26 +69,19 @@ class AtasanController extends _CrudController
                 'type' => 'datepicker',
                 'lang' => 'general.kenaikan_jenjang_terakhir'
             ],
-            'jenjang_perancang_id' => [
+
+            'nomor_keputusan_pemberhentian' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2',
-                'lang' => 'general.jenjang_perancang'
+                'lang' => 'general.nomor_keputusan_pemberhentian',
             ],
-            'tmt_jabatan' => [
+            'tgl_keputusan_pemberhentian' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
                 'type' => 'datepicker',
-                'lang' => 'general.tmt_jabatan'
-            ],
-            'unit_kerja_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2',
-                'lang' => 'general.unit_kerja'
+                'lang' => 'general.tgl_keputusan_pemberhentian',
             ],
             'gender' => [
                 'validation' => [
@@ -93,6 +90,32 @@ class AtasanController extends _CrudController
                 'type' => 'select',
                 'lang' => 'general.jenis_kelamin'
             ],
+            'instansi_id' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'select2',
+                'lang' => 'general.nama_instansi'
+            ],
+            'unit_kerja_id' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
+            ],
+            'email' => [
+                'validation' => [
+                    'edit' => 'required|email'
+                ],
+                'type' => 'email'
+            ],
+            'role' => [
+                'create' => false,
+                'edit' => false,
+                'show' => 0,
+            ],
+
             'status' => [
                 'validate' => [
                     'create' => 'required',
@@ -144,10 +167,19 @@ class AtasanController extends _CrudController
             }
         }
 
+        $getInstansi = Instansi::where('status', 1)->pluck('name', 'id')->toArray();
+        $listInstansi = [0 => 'Kosong'];
+        if($getInstansi) {
+            foreach($getInstansi as $key => $value) {
+                $listInstansi[$key] = $value;
+            }
+        }
+
         $this->data['listSet']['golongan_id'] = $listGolongan;
         $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
         $this->data['listSet']['pangkat_id'] = $listPangkat;
         $this->data['listSet']['unit_kerja_id'] = $listUnitKerja;
+        $this->data['listSet']['instansi_id'] = $listInstansi;
         $this->data['listSet']['status'] = get_list_status();
         $this->data['listSet']['gender'] = get_list_gender();
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.atasan.list';
@@ -163,14 +195,15 @@ class AtasanController extends _CrudController
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        $getPerancangData = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
+        $getPerancangData = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, G.name as instansi_id, B.name AS role, users.status')
             ->where('users.perancang', '=', 1)
             ->where('users.upline_id','=',$id)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
             ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
             ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
             ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
-            ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')->get();
+            ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')
+            ->leftJoin('instansi as G','G.id','=','users.instansi_id')->get();
 
         $data = $this->data;
 
@@ -191,13 +224,16 @@ class AtasanController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role,users.gender, users.status,users.tmt_pangkat,users.tmt_jabatan')
+        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat_id,
+        D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, G.name as instansi_id, B.name AS role,users.gender,
+         users.status,users.tmt_pangkat,users.tmt_jabatan, users.nomor_keputusan_pemberhentian, users.tgl_keputusan_pemberhentian')
             ->where('users.atasan', '=', 1)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
             ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
             ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
             ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
-            ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id');
+            ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')
+            ->leftJoin('instansi as G','G.id','=','users.instansi_id');
 
 
         $dataTables = $dataTables->eloquent($builder)
@@ -266,6 +302,8 @@ class AtasanController extends _CrudController
         $getTmtPangkat = $this->request->get('tmt_pangkat');
         $getJenjangPerancang = $this->request->get('jenjang_perancang_id');
         $getTmtJabatan = $this->request->get('tmt_jabatan');
+        $getTglKeputusanBerhenti = $this->request->get('tgl_keputusan_pemberhentian');
+        $getNomorKeputusanBerhenti = $this->request->get('nomor_keputusan_pemberhentian');
         $getUnitKerja = $this->request->get('unit_kerja_id');
         $getStatus = $this->request->get('status');
         $getGender = $this->request->get('gender');
@@ -281,6 +319,8 @@ class AtasanController extends _CrudController
         $atasan->jenjang_perancang_id = $getJenjangPerancang;
         $atasan->tmt_jabatan = $getTmtJabatan;
         $atasan->unit_kerja_id = $getUnitKerja;
+        $atasan->nomor_keputusan_pemberhentian = $getNomorKeputusanBerhenti;
+        $atasan->tgl_keputusan_pemberhentian = $getTglKeputusanBerhenti;
         $atasan->status = $getStatus;
         $atasan->gender = $getGender;
         $atasan->role_id = 2;

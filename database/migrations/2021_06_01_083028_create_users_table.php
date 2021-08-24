@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('username')->nullable();
             $table->string('password')->nullable();
             $table->string('email')->nullable();
+            $table->string('gelar_akademik')->nullable();
             $table->string('kartu_pegawai')->nullable();
             $table->string('tempat_lahir')->nullable();
             $table->date('tgl_lahir')->nullable();
@@ -35,9 +36,17 @@ class CreateUsersTable extends Migration
             $table->date('tmt_jabatan')->nullable();
             $table->date('masa_penilaian_terakhir_awal')->nullable();
             $table->date('masa_penilaian_terakhir_akhir')->nullable();
-            $table->date('tahun_diangkat')->nullable();
+            $table->date('tahun_diangkat_jabatan')->nullable();
+            $table->date('tahun_berakhir_jabatan')->nullable();
+            $table->string('nomor_angkat_jabatan_pertama')->nullable();
+            $table->date('tgl_angkat_jabatan_pertama')->nullable();
+            $table->string('nomor_keputusan_naik_pangkat_terakhir')->nullable();
+            $table->date('tgl_keputusan_naik_pangkat_terakhir')->nullable();
             $table->date('tahun_pelaksanaan_diklat')->nullable();
             $table->date('tanggal_pak_terakhir')->nullable();
+            $table->date('masa_penilaian_ak_terakhir')->nullable();
+            $table->string('nomor_keputusan_pemberhentian')->nullable();
+            $table->date('tgl_keputusan_pemberhentian')->nullable();
             $table->string('alasan')->nullable();
             $table->decimal('angka_kredit_terakhir')->nullable();
             $table->string('nomor_pak_terakhir')->nullable();

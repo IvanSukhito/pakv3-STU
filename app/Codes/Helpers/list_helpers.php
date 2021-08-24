@@ -21,6 +21,18 @@ if ( ! function_exists('get_list_status')) {
         ];
     }
 }
+if ( ! function_exists('get_list_gelar')) {
+    function get_list_gelar()
+    {
+        return [
+            0 => 'Kosong',
+            1 => 'Diploma.',
+            2 => 'Sarjana (S1)',
+            3 => 'Magister (S2)',
+            4 => 'Doktor (S3)'
+        ];
+    }
+}
 
 if ( ! function_exists('get_list_status2')) {
     function get_list_status2($number)
