@@ -970,6 +970,8 @@ class PakLogic
             $getPerancangPangkat = $getInfoSuratPernyataan['perancang_pangkat'] ?? '';
             $getPerancangJabatan = $getInfoSuratPernyataan['perancang_jabatan'] ?? '';
             $getPerancangUnitKerja = $getInfoSuratPernyataan['perancang_unit_kerja'] ?? '';
+            $getOldKredit = $getInfoSuratPernyataan['old_kredit'] ?? [];
+            $getOldTopKredit = $getInfoSuratPernyataan['old_top_kredit'] ?? [];
 
             $dateStart = date('d-M-Y', strtotime($getDupak->tanggal_mulai));
             $dateEnd = date('d-M-Y', strtotime($getDupak->tanggal_akhir));
@@ -984,6 +986,8 @@ class PakLogic
             foreach ($getKegiatan as $list) {
                 $getPermenId = $list->permen_id;
             }
+
+            var_dump($getKegiatan->toArray()); die();
 
             $getMsKegiatan = MsKegiatan::where('permen_id', $getPermenId)->get();
             $getDataMsKegiatan = $this->getCreateListTreeKegiatan($getMsKegiatan->toArray());

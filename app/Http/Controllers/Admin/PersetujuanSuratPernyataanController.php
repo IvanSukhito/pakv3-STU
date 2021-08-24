@@ -448,7 +448,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
                 if ($getAction != 99) {
                     $saveDupakKegiatan[] = [
                         'dupak_id' => $dupakId,
-                        'kegiatan_id' => $list->id,
+                        'kegiatan_id' => $list->kegiatan_id,
                         'ms_kegiatan_id' => $list->ms_kegiatan_id,
                         'status' => 1
                     ];
