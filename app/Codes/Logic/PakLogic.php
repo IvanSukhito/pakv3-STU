@@ -182,7 +182,7 @@ class PakLogic
             tx_surat_pernyataan_kegiatan.status AS sp_kegiatan_status')
             ->join('tx_surat_pernyataan_kegiatan', 'tx_surat_pernyataan_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
             ->whereIn('tx_surat_pernyataan_kegiatan.surat_pernyataan_id', $getSuratpernyataanIds)
-            ->whereIn('tx_surat_pernyataan_kegiatan.status', [80])
+//            ->whereIn('tx_surat_pernyataan_kegiatan.status', [80])
             ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
 
         if ($getKegiatan) {

@@ -155,8 +155,7 @@ class PemuktahiranDataDiriController extends _CrudController
         $userId = session()->get('admin_id');
         $getData = UpdateUsers::where('user_id', $userId)->first();
 
-
-        $getStatusPemuktahiran = $getData->status_pemuktahiran;
+        $getStatusPemuktahiran = $getData ? $getData->status_pemuktahiran : '';
 
 
 
