@@ -970,8 +970,8 @@ class PakLogic
             $getPerancangPangkat = $getInfoSuratPernyataan['perancang_pangkat'] ?? '';
             $getPerancangJabatan = $getInfoSuratPernyataan['perancang_jabatan'] ?? '';
             $getPerancangUnitKerja = $getInfoSuratPernyataan['perancang_unit_kerja'] ?? '';
-            $getOldKredit = $getInfoSuratPernyataan['old_kredit'] ?? [];
-            $getOldTopKredit = $getInfoSuratPernyataan['old_top_kredit'] ?? [];
+            $getListOldKredit = $getInfoSuratPernyataan['old_kredit'] ?? [];
+            $getListOldTopKredit = $getInfoSuratPernyataan['old_top_kredit'] ?? [];
 
             $dateStart = date('d-M-Y', strtotime($getDupak->tanggal_mulai));
             $dateEnd = date('d-M-Y', strtotime($getDupak->tanggal_akhir));
@@ -983,11 +983,23 @@ class PakLogic
                 ->groupByRaw('tx_kegiatan.ms_kegiatan_id, tx_kegiatan.permen_id, tx_kegiatan.top_id')
                 ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
             $getPermenId = 0;
+            $getListKredit = [];
+            $getListTopKredit = [];
             foreach ($getKegiatan as $list) {
                 $getPermenId = $list->permen_id;
+                if (isset($getListKredit[$list->ms_kegiatan_id])) {
+                    $getListKredit[$list->ms_kegiatan_id] += $list->kredit;
+                }
+                else {
+                    $getListKredit[$list->ms_kegiatan_id] = $list->kredit;
+                }
+                if (isset($getListTopKredit[$list->top_id])) {
+                    $getListTopKredit[$list->top_id] += $list->kredit;
+                }
+                else {
+                    $getListTopKredit[$list->top_id] = $list->kredit;
+                }
             }
-
-//            var_dump($getKegiatan->toArray()); die();
 
             $getMsKegiatan = MsKegiatan::where('permen_id', $getPermenId)->get();
             $getDataMsKegiatan = $this->getCreateListTreeKegiatan($getMsKegiatan->toArray());
@@ -1226,6 +1238,9 @@ class PakLogic
             $sheet->mergeCellsByColumnAndRow(2,$row, $setColumn-1, $row);
 
             //ISI
+            $sumOldTotalKredit = 0;
+            $sumTotalKredit = 0;
+            $sumNowTotalKredit = 0;
             foreach ($getDataMsKegiatan as $list) {
                 $getName = $list['name'];
 
@@ -1239,14 +1254,26 @@ class PakLogic
                     $getKegiatanName = $getName;
                 }
 
+                $getOldTopKredit = isset($getListOldTopKredit[$list['id']]) ? $getListOldTopKredit[$list['id']] : 0;
+                $getTopKredit = isset($getListTopKredit[$list['id']]) ? $getListTopKredit[$list['id']] : 0;
+                $getTotalTopKredit = $getOldTopKredit + $getTopKredit;
+
+                $sumOldTotalKredit += $getOldTopKredit;
+                $sumTotalKredit += $getTopKredit;
+                $sumNowTotalKredit += $getTotalTopKredit;
+
                 $row += 1;
                 $column = 1;
                 $sheet->setCellValueByColumnAndRow($column++, $row, $getIndexName);
                 $sheet->setCellValueByColumnAndRow($column++, $row, $getKegiatanName);
+                $column = $setColumn;
+                $sheet->setCellValueByColumnAndRow($column++, $row, $getOldTopKredit > 0 ? $getOldTopKredit : '');
+                $sheet->setCellValueByColumnAndRow($column++, $row, $getTopKredit > 0 ? $getTopKredit : '');
+                $sheet->setCellValueByColumnAndRow($column++, $row, $getTotalTopKredit > 0 ? $getTotalTopKredit : '');
                 $sheet->mergeCellsByColumnAndRow(2,$row, $setColumn-1, $row);
 
                 if ($list['have_child'] == 1) {
-                    $row = $this->generateChildDupak($sheet, $row, $list['child'], [], 2, $getDeep, $setColumn-1);
+                    $row = $this->generateChildDupak($sheet, $row, $list['child'], $getListOldKredit, $getListKredit, 2, $getDeep, $setColumn-1);
                 }
 
             }
@@ -1259,6 +1286,10 @@ class PakLogic
             $column = $setColumn-2;
             $sheet->setCellValueByColumnAndRow($column, $row, 'JUMLAH SELURUHNYA');
             $sheet->mergeCellsByColumnAndRow($column,$row, $column+1, $row);
+            $column += 2;
+            $sheet->setCellValueByColumnAndRow($column++, $row, $sumOldTotalKredit);
+            $sheet->setCellValueByColumnAndRow($column++, $row, $sumTotalKredit);
+            $sheet->setCellValueByColumnAndRow($column++, $row, $sumNowTotalKredit);
 
             $sheet->getStyleByColumnAndRow(1,$startRow, $setColumn-1, $row)->applyFromArray(array(
                 'alignment' => array(
@@ -1313,7 +1344,7 @@ class PakLogic
         }
     }
 
-    protected function generateChildDupak($sheet, $row, $getDataMsKegiatan, $dataKegiatan, $deep, $totalDeep, $setColumn)
+    protected function generateChildDupak($sheet, $row, $getDataMsKegiatan, $getListOldKredit, $getListKredit, $deep, $totalDeep, $setColumn)
     {
         foreach ($getDataMsKegiatan as $list) {
             $getName = $list['name'];
@@ -1327,14 +1358,23 @@ class PakLogic
                 $getKegiatanName = $getName;
             }
 
+            $getOldTopKredit = isset($getListOldKredit[$list['id']]) ? $getListOldKredit[$list['id']] : 0;
+            $getTopKredit = isset($getListKredit[$list['id']]) ? $getListKredit[$list['id']] : 0;
+            $getTotalTopKredit = $getOldTopKredit + $getTopKredit;
+
             $row += 1;
             $column = $deep;
             $sheet->setCellValueByColumnAndRow($column++, $row, $getIndexName);
             $sheet->setCellValueByColumnAndRow($column, $row, $getKegiatanName);
             $sheet->mergeCellsByColumnAndRow($column,$row, $setColumn, $row);
 
+            $column = $setColumn+1;
+            $sheet->setCellValueByColumnAndRow($column++, $row, $getOldTopKredit > 0 ? $getOldTopKredit : '');
+            $sheet->setCellValueByColumnAndRow($column++, $row, $getTopKredit > 0 ? $getTopKredit : '');
+            $sheet->setCellValueByColumnAndRow($column++, $row, $getTotalTopKredit > 0 ? $getTotalTopKredit : '');
+
             if ($list['have_child'] == 1) {
-                $row = $this->generateChildDupak($sheet, $row, $list['child'], [], $deep + 1, $totalDeep, $setColumn);
+                $row = $this->generateChildDupak($sheet, $row, $list['child'], $getListOldKredit, $getListKredit, $deep + 1, $totalDeep, $setColumn);
             }
 
         }
