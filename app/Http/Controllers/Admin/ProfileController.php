@@ -314,7 +314,7 @@ class ProfileController extends _GlobalFunctionController
             return Role::where('id', '=', $roleId)->first();
         });
         $getRoleType = json_decode($role->permission_data, true);
-        $getPerancang = isset($getRoleType['role_perancang']) ?? 0;
+        $getPerancang = $getRoleType['role_perancang'] ?? 0;
         $getAtasan = isset($getRoleType['role_atasan']) ?? 0;
         $getSeketariat = isset($getRoleType['role_seketariat']) ?? 0;
         $getTim = isset($getRoleType['role_tim_penilai']) ?? 0;
