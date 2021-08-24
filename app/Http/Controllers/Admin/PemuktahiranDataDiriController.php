@@ -149,7 +149,7 @@ class PemuktahiranDataDiriController extends _CrudController
     {
         $this->callPermission();
         $userId = session()->get('admin_id');
-        $getData = UpdateUsers::where('user_id', $userId)->orderBy('id','DESC')->first();
+        $getData = UpdateUsers::where('user_id', $userId)->where('flag_pemuktahiran',1)->orderBy('id','DESC')->first();
         $getStatusPemuktahiran = $getData ? $getData->status_pemuktahiran : '';
 
         $data = $this->data;
