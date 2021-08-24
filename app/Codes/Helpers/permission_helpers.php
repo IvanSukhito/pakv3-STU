@@ -355,6 +355,14 @@ if ( ! function_exists('listAllMenu')) {
                         'route' => 'admin.pemuktahiran-ak.index',
                         'key' => 'pemuktahiran-ak',
                         'type' => 1
+                    ],
+                    [
+                        'name' => __('general.persetujuan_pemuktahiran_ak'),
+                        'title' => __('general.persetujuan_pemuktahiran_ak'),
+                        'active' => ['admin.persetujuan-pemuktahiran-ak.'],
+                        'route' => 'admin.persetujuan-pemuktahiran-ak.index',
+                        'key' => 'persetujuan-pemuktahiran-ak',
+                        'type' => 1
                     ]
                 ]
             ],
@@ -593,7 +601,6 @@ if ( ! function_exists('listAvailablePermission'))
             'golongan',
             'jenjang-perancang',
             'pendidikan',
-            'pemuktahiran-ak',
             'unit-kerja',
             'role',
             'admin'
@@ -623,6 +630,7 @@ if ( ! function_exists('listAvailablePermission'))
         foreach ([
 
             'pemuktahiran-data-diri',
+            'pemuktahiran-ak',
 
                  ] as $keyPermission) {
             $listPermission[$keyPermission] = [
@@ -647,6 +655,7 @@ if ( ! function_exists('listAvailablePermission'))
         foreach ([
             'persetujuan-surat-pernyataan',
             'persetujuan-pemuktahiran',
+            'persetujuan-pemuktahiran-ak',
             'dupak',
             'persetujuan-dupak',
                  ] as $keyPermission) {
@@ -694,6 +703,9 @@ if ( ! function_exists('listAvailablePermission'))
 
         $listPermission['persetujuan-pemuktahiran']['edit'][] = 'admin.persetujuan-pemuktahiran.approve';
         $listPermission['persetujuan-pemuktahiran']['edit'][] = 'admin.persetujuan-pemuktahiran.reject';
+
+        $listPermission['persetujuan-pemuktahiran-ak']['edit'][] = 'admin.persetujuan-pemuktahiran-ak.approve';
+        $listPermission['persetujuan-pemuktahiran-ak']['edit'][] = 'admin.persetujuan-pemuktahiran-ak.reject';
 
 
 

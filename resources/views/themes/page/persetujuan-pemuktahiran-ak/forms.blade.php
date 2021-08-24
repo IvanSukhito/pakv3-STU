@@ -45,6 +45,22 @@ else {
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
+            <div class="row">
+
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">@lang('general.data_perancang_old')</h3>
+                    </div>
+                    <div class="card-body">
+                    @include(env('ADMIN_TEMPLATE').'.page.persetujuan-pemuktahiran.generate_forms_old')
+                    </div>
+                </div>
+            </div>
+
+
+                <!-- /.card-body baru  -->
+                <div class="col-md-6">
 
                 <!-- /.card-header -->
                 @if(in_array($viewType, ['create']))
@@ -55,13 +71,15 @@ else {
 
                 <div class="card card-primary">
                 <div class="card-header">
-                    <h3 class="card-title">{{ $formsTitle }}</h3>
+                    <h3 class="card-title">@lang('general.data_pengajuan_pemuktahiran')</h3>
                 </div>
                 <div class="card-body">
                     @include(env('ADMIN_TEMPLATE').'._component.generate_forms')
                 </div>
                 </div>
 
+                </div>
+                <div class="col-md-12">
                 @if(in_array($viewType, ['create']) )
                 <div class="card card-primary">
                 <div class="card-header">
@@ -74,7 +92,7 @@ else {
                                 <div class="d-flex align-items-center">
                                     <div class="p-2">
                                         <input type="file" name="upload_file_pemuktahiran[]" class="dropify" accept=".pdf"
-                                               data-allowed-file-extensions="pdf" data-max-file-size="10M" required>
+                                               data-allowed-file-extensions="pdf" data-max-file-size="10M">
                                     </div>
                                 </div>
                             </div>
@@ -102,12 +120,14 @@ else {
                  <?php endif ?>
                 </div>
                 </div>
-
+                </div>
 
 
                 @endif
-                <!-- /.card-body -->
 
+
+                </div>
+                </div>
                 <div class="card-footer">
 
                 @if(in_array($viewType, ['create']))
