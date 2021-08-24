@@ -1240,6 +1240,7 @@ class PakLogic
             }
 
             $row += 1;
+            $column = $setColumn-2;
             $sheet->mergeCellsByColumnAndRow($column,$row, $column+1, $row);
             $row += 1;
             $column = $setColumn-2;
@@ -1278,19 +1279,20 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Lampiran Usul/Bahan Yang Dinilai');
 
             // Redirect output to a client’s web browser (Xls)
-            header('Content-Type: application/vnd.ms-excel');
-            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.xlsx"');
+//            header('Content-Type: application/vnd.ms-excel');
+//            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.xlsx"');
 
             // Redirect output to a client’s web browser (PDF)
-//            header('Content-Type: application/pdf');
-//            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.pdf"');
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.pdf"');
 
             header('Cache-Control: max-age=0');
             // If you're serving to IE 9, then the following may be needed
             header('Cache-Control: max-age=1');
 
-            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-//            $writer = IOFactory::createWriter($spreadsheet, 'Pdf');
+//            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            IOFactory::registerWriter('Pdf', \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf::class);
+            $writer = IOFactory::createWriter($spreadsheet, 'Pdf');
             $writer->save('php://output');
             exit;
 
