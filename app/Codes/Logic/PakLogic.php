@@ -5,6 +5,7 @@ namespace App\Codes\Logic;
 use App\Codes\Models\Dupak;
 use App\Codes\Models\Kegiatan;
 use App\Codes\Models\MsKegiatan;
+use App\Codes\Models\Pendidikan;
 use App\Codes\Models\Users;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Permen;
@@ -862,11 +863,11 @@ class PakLogic
 
             // Redirect output to a client’s web browser (Xls)
 //            header('Content-Type: application/vnd.ms-excel');
-//            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.xlsx"');
+//            header('Content-Disposition: attachment;filename="surat_pernyataan_' . $getPerancangNIP . '_' . strtotime("now") . '.xlsx"');
 
             // Redirect output to a client’s web browser (PDF)
             header('Content-Type: application/pdf');
-            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.pdf"');
+            header('Content-Disposition: attachment;filename="surat_pernyataan_' . $getPerancangNIP . '_' . strtotime("now") . '.pdf"');
 
             header('Cache-Control: max-age=0');
             // If you're serving to IE 9, then the following may be needed
@@ -954,8 +955,15 @@ class PakLogic
         ini_set('max_execution_time', -1);
 
         $getDupak = Dupak::where('id', $dupakId)->first();
-        $datenow = date("Y-m-d");
         if($getDupak) {
+            $getUser = Users::where('id', $getDupak->user_id)->first();
+            $getPerancangPendidikan = '';
+            if ($getUser) {
+                $getPendidikan = Pendidikan::where('id', $getUser->pendidikan_id)->first();
+                if ($getPendidikan) {
+                    $getPerancangPendidikan = $getPendidikan->name;
+                }
+            }
             $getInfoSuratPernyataan = json_decode($getDupak->info_dupak, TRUE);
             $getPerancangName = $getInfoSuratPernyataan['perancang_name'] ?? '';
             $getPerancangNIP = $getInfoSuratPernyataan['perancang_nip'] ?? '';
@@ -1092,7 +1100,7 @@ class PakLogic
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, '6');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Pendidikan yang telah diperhitungkan angka kreditnya');
-            $sheet->setCellValueByColumnAndRow($setColumn, $row, '');
+            $sheet->setCellValueByColumnAndRow($setColumn, $row, $getPerancangPendidikan);
             $sheet->mergeCellsByColumnAndRow(2,$row, $setColumn-1, $row);
             $sheet->mergeCellsByColumnAndRow($setColumn,$row, $totalColumn, $row);
 
@@ -1100,7 +1108,7 @@ class PakLogic
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, '7');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Pangkat/Golongan ruang/TMT');
-            $sheet->setCellValueByColumnAndRow($setColumn, $row, '');
+            $sheet->setCellValueByColumnAndRow($setColumn, $row, $getPerancangPangkat);
             $sheet->mergeCellsByColumnAndRow(2,$row, $setColumn-1, $row);
             $sheet->mergeCellsByColumnAndRow($setColumn,$row, $totalColumn, $row);
 
@@ -1108,7 +1116,7 @@ class PakLogic
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, '8');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Jabatan Perancang Peraturan Perundang-undang');
-            $sheet->setCellValueByColumnAndRow($setColumn, $row, '');
+            $sheet->setCellValueByColumnAndRow($setColumn, $row, $getPerancangJabatan);
             $sheet->mergeCellsByColumnAndRow(2,$row, $setColumn-1, $row);
             $sheet->mergeCellsByColumnAndRow($setColumn,$row, $totalColumn, $row);
 
@@ -1132,7 +1140,7 @@ class PakLogic
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column++, $row, '10');
             $sheet->setCellValueByColumnAndRow($column++, $row, 'Unit Kerja');
-            $sheet->setCellValueByColumnAndRow($column++, $row, '');
+            $sheet->setCellValueByColumnAndRow($column++, $row, $getPerancangUnitKerja);
             $sheet->mergeCellsByColumnAndRow(2,$row, $setColumn-1, $row);
             $sheet->mergeCellsByColumnAndRow($setColumn,$row, $totalColumn, $row);
 
@@ -1282,11 +1290,11 @@ class PakLogic
 
             // Redirect output to a client’s web browser (Xls)
 //            header('Content-Type: application/vnd.ms-excel');
-//            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.xlsx"');
+//            header('Content-Disposition: attachment;filename="dupak_' . $getPerancangNIP . '_' . strtotime("now") . '.xlsx"');
 
             // Redirect output to a client’s web browser (PDF)
             header('Content-Type: application/pdf');
-            header('Content-Disposition: attachment;filename="surat_pernyataan_' . strtotime("now") . '.pdf"');
+            header('Content-Disposition: attachment;filename="dupak_' . $getPerancangNIP . '_' . strtotime("now") . '.pdf"');
 
             header('Cache-Control: max-age=0');
             // If you're serving to IE 9, then the following may be needed
