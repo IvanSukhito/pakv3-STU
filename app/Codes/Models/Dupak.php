@@ -17,6 +17,8 @@ class Dupak extends Model
         'info_dupak',
         'tanggal',
         'nomor',
+        'tanggal_mulai',
+        'tanggal_akhir',
         'pdf',
         'pdf_url',
         'file_upload_surat_pernyataan',

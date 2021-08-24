@@ -223,20 +223,4 @@ if ( ! function_exists('set_deep_ms_kegiatan')) {
     }
 }
 
-if ( ! function_exists('check_deep_ms_kegiatan')) {
-    function check_deep_ms_kegiatan($data, $master, $deep = 1)
-    {
-        $getDeep = $deep;
-        foreach ($data as $list) {;
-            if (isset($master[$list])) {
-                $tempDeep = check_deep_ms_kegiatan($master[$list], $master, $deep + 1);
-                if ($getDeep < $tempDeep) {
-                    $getDeep = $tempDeep;
-                }
-            }
-        }
-        return $getDeep;
-    }
-}
-
 

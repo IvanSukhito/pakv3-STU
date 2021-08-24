@@ -22,6 +22,8 @@ class CreateTxDupakTable extends Migration
             $table->longText('info_dupak')->nullable();
             $table->date('tanggal')->nullable();
             $table->string('nomor')->nullable();
+            $table->date('tanggal_mulai')->nullable();
+            $table->date('tanggal_akhir')->nullable();
             $table->string('pdf')->nullable();
             $table->text('pdf_url')->nullable();
             $table->text('file_upload_surat_pernyataan')->nullable();

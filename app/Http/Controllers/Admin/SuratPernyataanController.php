@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
+use App\Codes\Models\Dupak;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Users;
@@ -148,12 +149,14 @@ class SuratPernyataanController extends _CrudController
         $getSuratPernyataanIds = [];
         $status = 0;
         $totalKredit = 0;
+        $dupakId = 0;
         $listSuratPernyataan = [];
         foreach ($getSuratPernyataan as $list) {
             $getSuratPernyataanIds[] = $list->id;
             $status = $list->status;
             $totalKredit += $list->total_kredit;
             $listSuratPernyataan[$list->top_kegiatan_id] = $list->id;
+            $dupakId = $list->dupak_id;
         }
 
         $getPerancang = Users::where('id', $userId)->first();
@@ -194,7 +197,7 @@ class SuratPernyataanController extends _CrudController
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
         $data['data'] = (object)[
             'id' => $id,
-            'dupak_id' => $id,
+            'dupak_id' => $dupakId,
             'status' => $status,
             'total_kredit' => $totalKredit
         ];
@@ -244,8 +247,8 @@ class SuratPernyataanController extends _CrudController
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        $getSuratPernyataan = SuratPernyataan::where('id', $id)->whereIn('status', [80,88,99])->first();
-        if ($getSuratPernyataan) {
+        $getDupak = Dupak::where('id', $id)->first();
+        if ($getDupak) {
             $getPAKLogic = new PakLogic();
             $getPAKLogic->generateDupak($id);
         }

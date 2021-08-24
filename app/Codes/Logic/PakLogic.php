@@ -177,9 +177,12 @@ class PakLogic
 
     public function getSuratPernyataanUser($getSuratpernyataanIds)
     {
-        $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_surat_pernyataan_kegiatan.id AS sp_kegiatan_id, tx_surat_pernyataan_kegiatan.message AS sp_kegiatan_message, tx_surat_pernyataan_kegiatan.status AS sp_kegiatan_status')
+        $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_surat_pernyataan_kegiatan.id AS sp_kegiatan_id,
+            tx_surat_pernyataan_kegiatan.message AS sp_kegiatan_message,
+            tx_surat_pernyataan_kegiatan.status AS sp_kegiatan_status')
             ->join('tx_surat_pernyataan_kegiatan', 'tx_surat_pernyataan_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
             ->whereIn('tx_surat_pernyataan_kegiatan.surat_pernyataan_id', $getSuratpernyataanIds)
+            ->whereIn('tx_surat_pernyataan_kegiatan.status', [80])
             ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
 
         if ($getKegiatan) {
@@ -964,13 +967,21 @@ class PakLogic
             $getAtasanJabatan = $getInfoSuratPernyataan['atasan_jabatan'] ?? '';
             $getAtasanUnitKerja = $getInfoSuratPernyataan['atasan_unit_kerja'] ?? '';
 
-            $getData = $this->getDupakUser($getDupak);
-            $getDataKegiatan = $getData['data'] ?? [];
-            $getTotalTop = $getData['total_top'][0] ?? 0;
-            $getListTopKegiatan = $getData['top_kegiatan'];
-            $getTopKegiatan = $getListTopKegiatan[$getTotalTop] ?? false;
+            $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_dupak_kegiatan.id AS dupak_kegiatan_id,
+                tx_dupak_kegiatan.message AS dupak_kegiatan_message, tx_dupak_kegiatan.status AS dupak_kegiatan_status')
+                ->join('tx_dupak_kegiatan', 'tx_dupak_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
+                ->where('tx_dupak_kegiatan.dupak_id', $dupakId)
+//                ->whereIn('tx_dupak_kegiatan.status', [80])
+                ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
+            $getPermenId = 0;
+            foreach ($getKegiatan as $list) {
+                $getPermenId = $list->permen_id;
+            }
 
-            $getTitleSuratPernyataan = $getTopKegiatan && isset($getTopKegiatan['name']) ? $getTopKegiatan['name'] : '';
+            $getMsKegiatan = MsKegiatan::where('permen_id', $getPermenId)->get();
+            $getDataMsKegiatan = $this->getCreateListTreeKegiatan($getMsKegiatan->toArray());
+            $getDeep = set_deep_ms_kegiatan($getDataMsKegiatan);
+            dd($getPermenId, $getDataMsKegiatan, $getDeep);
 
             $spreadsheet = new Spreadsheet();
             $spreadsheet->getProperties()->setCreator('Peraturan Perundang-undangan')

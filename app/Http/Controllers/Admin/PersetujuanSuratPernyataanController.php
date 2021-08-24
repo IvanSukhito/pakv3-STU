@@ -331,10 +331,14 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $getSuratPernyataanIds = [];
         $getUserId = 0;
         $getUpLineId = 0;
+        $getTglAwal = '';
+        $getTglAkhir = '';
         foreach ($getSuratPernyataan as $list) {
             $getSuratPernyataanIds[] = $list->id;
             $getUserId = $list->user_id;
             $getUpLineId = $list->upline_id;
+            $getTglAwal = $list->tanggal_mulai;
+            $getTglAkhir = $list->tanggal_akhir;
         }
 
         $actionKegiatan = $this->request->get('action_kegiatan');
@@ -411,6 +415,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
             ]);
             $saveDupak->total_kredit = $allTotalKredit;
             $saveDupak->status = 1;
+            $saveDupak->tanggal_mulai = $getTglAwal;
+            $saveDupak->tanggal_akhir = $getTglAkhir;
 
             $saveDupak->save();
 
