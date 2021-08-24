@@ -980,7 +980,7 @@ class PakLogic
                 ->join('tx_dupak_kegiatan', 'tx_dupak_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
                 ->where('tx_dupak_kegiatan.dupak_id', $dupakId)
 //                ->whereIn('tx_dupak_kegiatan.status', [80])
-                ->orderBy('tx_kegiatan.tanggal', 'ASC')
+                ->groupByRaw('tx_kegiatan.ms_kegiatan_id, tx_kegiatan.top_id')
                 ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
             $getPermenId = 0;
             foreach ($getKegiatan as $list) {
