@@ -1241,6 +1241,7 @@ class PakLogic
 
             $row += 1;
             $column = $setColumn-2;
+            $sheet->setCellValueByColumnAndRow($column, $row, '');
             $sheet->mergeCellsByColumnAndRow($column,$row, $column+1, $row);
             $row += 1;
             $column = $setColumn-2;
@@ -1276,7 +1277,8 @@ class PakLogic
 
             $row += 2;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column++, $row, 'Lampiran Usul/Bahan Yang Dinilai');
+            $sheet->setCellValueByColumnAndRow($column, $row, 'Lampiran Usul/Bahan Yang Dinilai');
+            $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
             // Redirect output to a client’s web browser (Xls)
 //            header('Content-Type: application/vnd.ms-excel');
