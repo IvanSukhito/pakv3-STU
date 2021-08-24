@@ -450,7 +450,9 @@ class PersetujuanSuratPernyataanController extends _CrudController
                         'dupak_id' => $dupakId,
                         'kegiatan_id' => $list->kegiatan_id,
                         'ms_kegiatan_id' => $list->ms_kegiatan_id,
-                        'status' => 1
+                        'status' => 1,
+                        'created_at' => $dateNow,
+                        'updated_at' => $dateNow
                     ];
                 }
             }

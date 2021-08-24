@@ -976,18 +976,18 @@ class PakLogic
             $dateStart = date('d-M-Y', strtotime($getDupak->tanggal_mulai));
             $dateEnd = date('d-M-Y', strtotime($getDupak->tanggal_akhir));
 
-            $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_dupak_kegiatan.id AS dupak_kegiatan_id,
-                tx_dupak_kegiatan.message AS dupak_kegiatan_message, tx_dupak_kegiatan.status AS dupak_kegiatan_status')
+            $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.ms_kegiatan_id, tx_kegiatan.top_id, SUM(tx_kegiatan.kredit) AS kredit')
                 ->join('tx_dupak_kegiatan', 'tx_dupak_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
                 ->where('tx_dupak_kegiatan.dupak_id', $dupakId)
 //                ->whereIn('tx_dupak_kegiatan.status', [80])
+                ->orderBy('tx_kegiatan.tanggal', 'ASC')
                 ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
             $getPermenId = 0;
             foreach ($getKegiatan as $list) {
                 $getPermenId = $list->permen_id;
             }
 
-            var_dump($getKegiatan->toArray()); die();
+//            var_dump($getKegiatan->toArray()); die();
 
             $getMsKegiatan = MsKegiatan::where('permen_id', $getPermenId)->get();
             $getDataMsKegiatan = $this->getCreateListTreeKegiatan($getMsKegiatan->toArray());
