@@ -278,7 +278,6 @@ class PemuktahiranDataDiriController extends _CrudController
             return redirect()->route('admin.' . $this->route . '.index');
         }
 
-
     }
 
     public function show($id){
