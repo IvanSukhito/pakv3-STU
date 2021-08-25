@@ -33,7 +33,7 @@
                 <div class="col-12 text-center">
                     <div id="login-left-side-data">
                         <p>Klik Disini untuk Melihat Data Perancang</p>
-                        <a href=""><h2 id="link-perancang">Lihat Data Perancang</h2></a>
+                        <a href="{{ route('admin.dataPerancang') }}"><h2 id="link-perancang">Lihat Data Perancang</h2></a>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,13 @@
+.bglayout {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)) , url("../images/bg.png");
+    background-position: center;
+    background-size: cover;
+    opacity: 0.8;
+    position: fixed;
+    height: 100vh;
+    width: 100%;
+}
+
+#fullpage {
+    padding-top: 50px;
+}
