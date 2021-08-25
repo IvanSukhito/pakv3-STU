@@ -29,7 +29,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12">
-                            Welcome, {{ session('admin_name') }} , 
+                            Welcome, {{ session('admin_name') }} ,
                         </div>
                     </div>
                 </div>
