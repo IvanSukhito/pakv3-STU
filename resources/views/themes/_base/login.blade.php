@@ -18,25 +18,28 @@
 </head>
 <body class="hold-transition">
 <div class="container-fluid" id="container-login">
-    <div class="d-flex align-items-stretch" id="flex-login">
-        <div class="col-12 col-md-6 col-xl-4 text-center">
+    <div class="d-md-flex align-items-stretch" id="flex-login">
+        <div class="col-12 col-md-6 col-xl-4 text-center align-self-center">
             <h1 class="text-center" id="header-text">SISTEM INFORMASI JABATAN FUNGSIONAL PERANCANGAN PERATURAN PERUNDANG-UNDANGAN</h1>
             <img src="{{ asset('assets/cms/images/logo.png') }}" id="logo" alt="logo"/>
             <div class="login-box">
                 <!-- /.login-logo -->
                 @yield('content')
-                <footer class="text-center">2021 &copy; PAK</footer>
+                <footer class="text-center d-none d-md-block">2021 &copy; PAK</footer>
             </div>
         </div>
         <div class="col-12 col-md-6 col-xl-8" id="login-left-side">
             <div class="row align-items-center h-100">
                 <div class="col-12 text-center">
-                    <p>Klik Disini untuk Melihat Data Perancang</p>
-                    <a href=""><h2 id="link-perancang">Lihat Data Perancang</h2></a>
+                    <div id="login-left-side-data">
+                        <p>Klik Disini untuk Melihat Data Perancang</p>
+                        <a href=""><h2 id="link-perancang">Lihat Data Perancang</h2></a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <footer class="text-center d-md-none">2021 &copy; PAK</footer>
 </div>
 <script src="{{ asset('/assets/cms/js/app.js') }}"></script>
 </body>

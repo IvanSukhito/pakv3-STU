@@ -13,7 +13,10 @@
     margin: auto;
 }
 
-#container-login,
+#container-login {
+    min-height: 100vh;
+    padding: 0;
+}
 #flex-login {
     min-height: 100vh;
 }
@@ -23,7 +26,7 @@
 }
 
 #link-perancang {
-    font-size: 72px;
+    font-size: 36px;
 }
 
 #logo {
@@ -39,13 +42,30 @@
     background-position: center;
     background-size: cover;
     opacity: 0.8;
+    min-height: 300px;
 }
 
 #login-left-side p {
-    font-size: 36px;
+    font-size: 24px;
     color: #FFFFFF;
 }
 
 #login-left-side a {
     color: #FFFFFF;
+}
+
+#login-left-side-data {
+    padding: 30px 0;
+}
+
+@media (min-width: 768px) {
+
+    #login-left-side p {
+        font-size: 36px;
+    }
+
+    #link-perancang {
+        font-size: 72px;
+    }
+
 }
