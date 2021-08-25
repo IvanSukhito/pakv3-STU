@@ -33,7 +33,7 @@ class PerancangController extends _CrudController
                 'extra' => [
                     'edit' => ['disabled' => true]
                 ],
-                'lang' => 'NIP'
+                'lang' => 'general.nip'
             ],
             'pangkat_id' => [
                 'validation' => [
@@ -147,7 +147,7 @@ class PerancangController extends _CrudController
                     'edit' => 'required'
                 ],
                 'type' => 'datepicker',
-                'lang' => 'Tanggal Keputusan Kenaikan Pangkat Terakhir',
+                'lang' => 'general.tgl_keputusan_naik_pangkat_terakhir',
             ],
             'nomor_angkat_jabatan_akhir' => [
                 'validation' => [
@@ -368,7 +368,7 @@ class PerancangController extends _CrudController
             ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
             ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
             ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')
-            ->leftJoin('instansi as G','G.id','=','users.instansi_id')->get();
+            ->leftJoin('instansi as G','G.id','=','users.instansi_id');
 
 
 
