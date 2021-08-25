@@ -37,10 +37,10 @@
                     <div class="col-12">
                         <button type="submit" class="btn btn-success btn-block">@lang('general.sign_in')</button>
                     </div>
-                    <p>&nbsp;</p>
-                    <div class="col-12">
-                        <a href="#" class="btn btn-info btn-block">@lang('general.register')</a>
-                    </div>
+{{--                    <p>&nbsp;</p>--}}
+{{--                    <div class="col-12">--}}
+{{--                        <a href="#" class="btn btn-info btn-block">@lang('general.register')</a>--}}
+{{--                    </div>--}}
                     <p>&nbsp;</p>
                     <div class="col-12 text-center">
                         <a href="mailto:help.eperancang@gmail.com">Butuh Bantuan? Klik Disini</a>

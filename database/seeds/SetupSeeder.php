@@ -67,10 +67,11 @@ class SetupSeeder extends Seeder
 
         DB::table('pangkat')->insert(
             array(
-                array('name' => 'I'),
-                array('name' => 'II'),
-                array('name' => 'III'),
-                array('name' => 'IV')
+                array('name' => 'Perancang'),
+                array('name' => 'Pembina'),
+                array('name' => 'Seketariat Daerah'),
+                array('name' => 'Seketariat Pusat'),
+                array('name' => 'Tim Penilai'),
             )
         );
 

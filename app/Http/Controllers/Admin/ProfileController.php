@@ -7,6 +7,7 @@ use App\Codes\Models\Golongan;
 use App\Codes\Models\JabatanPerancang;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Pangkat;
+use App\Codes\Models\Pendidikan;
 use App\Codes\Models\Role;
 use App\Codes\Models\UnitKerja;
 use App\Codes\Models\Users;
@@ -94,7 +95,7 @@ class ProfileController extends _GlobalFunctionController
                 'type' => 'datepicker',
                 'lang' => 'general.tmt_jabatan'
             ],
-            'gelar_akademik' => [
+            'pendidikan_id' => [
                 'validate' => [
                     'create' => 'required',
                     'edit' => 'required',
@@ -320,6 +321,7 @@ class ProfileController extends _GlobalFunctionController
                 'golongan_id' => Golongan::where('status', 1)->pluck('name', 'id')->toArray(),
                 'jabatan_perancang_id' => JabatanPerancang::where('status', 1)->pluck('name', 'id')->toArray(),
                 'jenjang_perancang_id' => JenjangPerancang::where('status', 1)->pluck('name', 'id')->toArray(),
+                'pendidikan_id' => Pendidikan::where('status', 1)->pluck('name', 'id')->toArray(),
                 'unit_kerja_id' => UnitKerja::where('status', 1)->pluck('name', 'id')->toArray(),
                 'gender' => get_list_gender(),
                 'status' => get_list_status(),
@@ -353,7 +355,7 @@ class ProfileController extends _GlobalFunctionController
             $getPerancangData = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id,
         users.tempat_lahir, users.tgl_lahir, users.kartu_pegawai, users.gender, C.name AS pangkat_id, D.name as golongan_id,
         E.name as jenjang_perancang_id, F.name as unit_kerja_id, G.name as instansi_id, H.name as jabatan_perancang_id, B.name AS role,
-        users.alamat_kantor, users.status, users.tmt_pangkat, users.tmt_jabatan, users.gelar_akademik,
+        users.alamat_kantor, users.status, users.tmt_pangkat, users.tmt_jabatan, users.pendidikan_id,
         users.tahun_pelaksanaan_diklat,users.masa_penilaian_ak_terakhir, users.angka_kredit_terakhir')
                 ->where('users.perancang', '=', 1)
                 ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
