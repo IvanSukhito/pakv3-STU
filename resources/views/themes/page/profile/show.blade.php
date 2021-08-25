@@ -67,8 +67,8 @@ else {
                             <th>@lang('general.email')</th>
                             <th>@lang('general.pangkat')</th>
                             <th>@lang('general.golongan')</th>
-                            <th>@lang('general.kenaikan_jenjang_terakhir')</th>
-                            <th>@lang('general.jenjang_perancang')</th>
+                            <th>@lang('general.tmt_pangkat_golongan')</th>
+                            <th>@lang('general.jabatan')</th>
                             <th>@lang('general.tmt_jabatan')</th>
                             <th>@lang('general.unit_kerja')</th>
                             <th>@lang('general.jenis_kelamin')</th>
@@ -85,7 +85,7 @@ else {
                                 <td>{{ $list->pangkat_id }}</td>
                                 <td>{{ $list->golongan_id }}
                                 <td>{{ $list->tmt_pangkat }}
-                                <td>{{ $list->jenjang_perancang_id }}</td>
+                                <td>{{ $list->jabatan_perancang_id }}</td>
                                 <td>{{ $list->tmt_jabatan }}
                                 <td>{{ $list->unit_kerja_id }}</td>
                                 <td>{{ get_list_gender2($list->gender) }}</td>

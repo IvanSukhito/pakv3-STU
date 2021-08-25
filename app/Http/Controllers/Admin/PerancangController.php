@@ -202,11 +202,12 @@ class PerancangController extends _CrudController
                 $listJenjangPerancang[$key] = $value;
             }
         }
+
         $getJabatanPerancang = JabatanPerancang::where('status', 1)->pluck('name', 'id')->toArray();
         $listJabatanPerancang = [0 => 'Kosong'];
         if($getJabatanPerancang) {
             foreach($getJabatanPerancang as $key => $value) {
-                $getJabatanPerancang [$key] = $value;
+                $listJabatanPerancang[$key] = $value;
             }
         }
 

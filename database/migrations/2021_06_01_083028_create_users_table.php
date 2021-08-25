@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('pangkat_id')->default(0);
             $table->unsignedBigInteger('golongan_id')->default(0);
             $table->unsignedBigInteger('jenjang_perancang_id')->default(0);
+            $table->unsignedBigInteger('jabatan_perancang_id')->default(0);
             $table->unsignedBigInteger('pendidikan_id')->default(0);
             $table->unsignedBigInteger('instansi_id')->default(0);
             $table->unsignedBigInteger('unit_kerja_id')->default(0);
