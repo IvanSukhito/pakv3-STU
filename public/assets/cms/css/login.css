@@ -8,3 +8,44 @@
 .disable {
     display: none;
 }
+
+.login-box {
+    margin: auto;
+}
+
+#container-login,
+#flex-login {
+    min-height: 100vh;
+}
+
+#header-text {
+    font-size: 24px;
+}
+
+#link-perancang {
+    font-size: 72px;
+}
+
+#logo {
+    width: 200px;
+    margin: 15px auto;
+    padding: 15px 0;
+    border-top: 5px #FEB58A solid;
+    border-bottom: 5px #FEB58A solid;
+}
+
+#login-left-side {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5),rgba(0, 0, 0, 0.5)) , url("../images/bg.png");
+    background-position: center;
+    background-size: cover;
+    opacity: 0.8;
+}
+
+#login-left-side p {
+    font-size: 36px;
+    color: #FFFFFF;
+}
+
+#login-left-side a {
+    color: #FFFFFF;
+}

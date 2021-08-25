@@ -34,12 +34,17 @@
                     @endforeach
                 @endif
                 <div class="row">
-                    <div class="col-8">&nbsp;</div>
-                    <!-- /.col -->
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">@lang('general.sign_in')</button>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-success btn-block">@lang('general.sign_in')</button>
                     </div>
-                    <!-- /.col -->
+                    <p>&nbsp;</p>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-info btn-block">@lang('general.register')</button>
+                    </div>
+                    <p>&nbsp;</p>
+                    <div class="col-12 text-center">
+                        <a href="mailto:help.eperancang@gmail.com">Butuh Bantuan? Klik Disini</a>
+                    </div>
                 </div>
             {{ Form::close() }}
         </div>
