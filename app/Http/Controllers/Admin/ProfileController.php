@@ -46,29 +46,16 @@ class ProfileController extends _GlobalFunctionController
             ]
         ]);
         $this->passingPerancang = generatePassingData([
-            'username' => [
-                'extra' => [
-                    'edit' => ['disabled' => true]
-                ],
-                'lang' => 'NIP'
-            ],
             'name' => [
                 'validation' => [
                     'edit' => 'required'
                 ]
             ],
-            'email' => [
-                'validation' => [
-                    'edit' => 'required|email'
+            'username' => [
+                'extra' => [
+                    'edit' => ['disabled' => true]
                 ],
-                'type' => 'email'
-            ],
-            'upline_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'lang' => 'general.atasan',
-                'type' => 'select2'
+                'lang' => 'NIP'
             ],
             'pangkat_id' => [
                 'validation' => [
@@ -91,19 +78,40 @@ class ProfileController extends _GlobalFunctionController
                 'type' => 'datepicker',
                 'lang' => 'general.kenaikan_jenjang_terakhir'
             ],
-            'jenjang_perancang_id' => [
+            'gelar_akademik' => [
+                'validate' => [
+                    'create' => 'required',
+                    'edit' => 'required'
+                ],
+                'type' => 'select',
+                'lang' => 'general.gelar_akademik'
+            ],
+            'tempat_lahir' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select2',
-                'lang' => 'general.jenjang_perancang'
+                'lang' => 'general.tempat_lahir',
             ],
-            'tmt_jabatan' => [
+            'tgl_lahir' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
                 'type' => 'datepicker',
-                'lang' => 'general.tmt_jabatan'
+                'lang' => 'general.tanggal_lahir',
+            ],
+            'gender' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'select',
+                'lang' => 'general.gender'
+            ],
+            'instansi_id' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'select2',
+                'lang' => 'general.nama_instansi'
             ],
             'unit_kerja_id' => [
                 'validation' => [
@@ -112,12 +120,129 @@ class ProfileController extends _GlobalFunctionController
                 'type' => 'select2',
                 'lang' => 'general.unit_kerja'
             ],
-            'gender' => [
+            'kartu_pegawai' => [
                 'validation' => [
                     'edit' => 'required'
                 ],
-                'type' => 'select',
-                'lang' => 'general.gender'
+                'lang' => 'general.kartu_pegawai',
+            ],
+            'alamat_kantor' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'lang' => 'general.alamat_kantor',
+            ],
+            'email' => [
+                'validation' => [
+                    'edit' => 'required|email'
+                ],
+                'type' => 'email'
+            ],
+            'tahun_pelaksanaan_diklat' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.tahun_pelaksanaan_diklat',
+            ],
+            'nomor_angkat_jabatan_pertama' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'lang' => 'general.nomor_angkat_jabatan_pertama',
+            ],
+            'tgl_angkat_jabatan_pertama' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.tgl_angkat_jabatan_pertama',
+            ],
+            'nomor_keputusan_naik_pangkat_terakhir' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'lang' => 'general.nomor_keputusan_naik_pangkat_terakhir',
+            ],
+            'tgl_keputusan_naik_pangkat_terakhir' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'Tanggal Keputusan Kenaikan Pangkat Terakhir',
+            ],
+            'nomor_angkat_jabatan_akhir' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'lang' => 'general.angkat_jabatan_akhir',
+            ],
+            'tgl_angkat_jabatan_akhir' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.tgl_angkat_jabatan_akhir',
+            ],
+            'nomor_keputusan_pemberhentian' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'lang' => 'general.nomor_keputusan_pemberhentian',
+            ],
+            'tgl_keputusan_pemberhentian' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.tgl_keputusan_pemberhentian',
+            ],
+            'upline_id' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'lang' => 'general.atasan',
+                'type' => 'select2'
+            ],
+            'masa_penilaian_ak_terakhir' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.masa_penilaian_ak_terakhir',
+            ],
+            'tanggal_pak_terakhir' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'datepicker',
+                'lang' => 'general.tgl_pak_terakhir',
+            ],
+            'nomor_pak_terakhir' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'lang' => 'general.nomor_pak_terakhir',
+            ],
+            'angka_kredit_terakhir' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'lang' => 'general.angka_kredit_terakhir',
+            ],
+            'jenjang_perancang_id' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'select2',
+                'lang' => 'general.jenjang_perancang'
+            ],
+            'status' => [
+                'validate' => [
+                    'create' => 'required',
+                    'edit' => 'required'
+                ],
+                'type' => 'select'
             ],
         ]);
         $this->passingAtasan = generatePassingData([
@@ -271,14 +396,21 @@ class ProfileController extends _GlobalFunctionController
         }
         elseif ($getAtasan == 1) {
             $getPassing = $this->passingAtasan;
-            $getPerancangData = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id, users.gender, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status, users.tmt_pangkat, users.tmt_jabatan')
+            $getPerancangData = Users::selectRaw('users.id, users.name, users.username as username, users.email, users.upline_id,
+        users.tempat_lahir, users.tgl_lahir, users.kartu_pegawai, users.gender, C.name AS pangkat_id, D.name as golongan_id,
+        E.name as jenjang_perancang_id, F.name as unit_kerja_id, G.name as instansi_id, B.name AS role,
+        users.alamat_kantor, users.status, users.tmt_pangkat, users.tmt_jabatan, users.gelar_akademik,
+        users.tahun_pelaksanaan_diklat, users.nomor_keputusan_naik_pangkat_terakhir, users.tgl_keputusan_naik_pangkat_terakhir,
+        users.nomor_angkat_jabatan_akhir, users.tgl_angkat_jabatan_akhir, users.nomor_keputusan_pemberhentian, users.tgl_keputusan_pemberhentian,
+        users.tanggal_pak_terakhir, users.nomor_pak_terakhir, users.nomor_angkat_jabatan_pertama, users.tgl_angkat_jabatan_pertama,
+        users.masa_penilaian_ak_terakhir, users.angka_kredit_terakhir')
                 ->where('users.perancang', '=', 1)
-                ->where('users.upline_id','=',session()->get('admin_id'))
                 ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
                 ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
                 ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
                 ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
-                ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')->get();
+                ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id')
+                ->leftJoin('instansi as G','G.id','=','users.instansi_id')->get();
         }
         elseif ($getSeketariat == 1) {
             $getPassing = $this->passingSeketariat;

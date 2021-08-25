@@ -39,7 +39,7 @@
                     </div>
                     <p>&nbsp;</p>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-info btn-block">@lang('general.register')</button>
+                        <a href="#" class="btn btn-info btn-block">@lang('general.register')</a>
                     </div>
                     <p>&nbsp;</p>
                     <div class="col-12 text-center">

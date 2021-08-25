@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router){
+
     $router->get('login', ['uses'=>'Admin\AccessAdminController@getLogin', 'middleware'=>['have_login_admin']])->name('admin.login');
     $router->post('login', ['uses'=>'Admin\AccessAdminController@postLogin', 'middleware'=>['have_login_admin']])->name('admin.login.post');
     $router->get('logout', ['uses'=>'Admin\AccessAdminController@doLogout'])->name('admin.logout');
