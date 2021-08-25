@@ -1089,9 +1089,7 @@ class PakLogic
                 'font' => array(
                     'bold' => true,
                     'size' => 11
-                )
-              
-              
+                )    
             );
 
             $totalColumn = $column;
