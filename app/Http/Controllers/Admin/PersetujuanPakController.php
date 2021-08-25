@@ -207,6 +207,11 @@ class PersetujuanPakController extends _CrudController
         return view($this->listView[$data['viewType']], $data);
     }
 
+    public function pdf(){
+        $getPAKLogic = new PakLogic();
+        $getPAKLogic->generatePak();
+    }
+
     public function show($id)
     {
         $this->callPermission();

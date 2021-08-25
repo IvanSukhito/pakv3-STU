@@ -68,6 +68,7 @@ return [
     'explain' => 'Explain',
     'export' => 'Export',
     'download_pdf' => 'Download PDF',
+    'download_pak' => 'Download PAK',
     'upload_sp' => 'Upload SP',
     'title_dupak_uploadSP' => 'Upload Surat Pernyataan',
     'fail' => 'Fail',
