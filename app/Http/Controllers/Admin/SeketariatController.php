@@ -46,27 +46,6 @@ class SeketariatController extends _CrudController
                 ],
                 'type' => 'email'
             ],
-            'pangkat_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2',
-                'lang' => 'general.pangkat'
-            ],
-            'golongan_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2',
-                'lang' => 'general.golongan'
-            ],
-            'jenjang_perancang_id' => [
-                'validation' => [
-                    'edit' => 'required'
-                ],
-                'type' => 'select2',
-                'lang' => 'general.jenjang_perancang'
-            ],
             'unit_kerja_id' => [
                 'validation' => [
                     'edit' => 'required'
@@ -93,29 +72,6 @@ class SeketariatController extends _CrudController
             $request, 'general.seketariat', 'seketariat', 'Users', 'seketariat',
             $passingData
         );
-        $getGolongan = Golongan::where('status', 1)->pluck('name', 'id')->toArray();
-        $listGolongan = [0 => 'Kosong'];
-        if($getGolongan) {
-            foreach($getGolongan as $key => $value) {
-                $listGolongan[$key] = $value;
-            }
-        }
-
-        $getJenjangPerancang = JenjangPerancang::where('status', 1)->pluck('name', 'id')->toArray();
-        $listJenjangPerancang = [0 => 'Kosong'];
-        if($getJenjangPerancang) {
-            foreach($getJenjangPerancang as $key => $value) {
-                $listJenjangPerancang[$key] = $value;
-            }
-        }
-
-        $getPangkat = Pangkat::where('status', 1)->pluck('name', 'id')->toArray();
-        $listPangkat = [0 => 'Kosong'];
-        if($getPangkat) {
-            foreach($getPangkat as $key => $value) {
-                $listPangkat[$key] = $value;
-            }
-        }
 
         $getUnitKerja = UnitKerja::where('status', 1)->pluck('name', 'id')->toArray();
         $listUnitKerja = [0 => 'Kosong'];
@@ -124,10 +80,6 @@ class SeketariatController extends _CrudController
                 $listUnitKerja[$key] = $value;
             }
         }
-
-        $this->data['listSet']['golongan_id'] = $listGolongan;
-        $this->data['listSet']['jenjang_perancang_id'] = $listJenjangPerancang;
-        $this->data['listSet']['pangkat_id'] = $listPangkat;
         $this->data['listSet']['unit_kerja_id'] = $listUnitKerja;
         $this->data['listSet']['status'] = get_list_status();
         $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.seketariat.list';
@@ -142,12 +94,9 @@ class SeketariatController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, C.name AS pangkat_id, D.name as golongan_id, E.name as jenjang_perancang_id, F.name as unit_kerja_id, B.name AS role, users.status')
+        $builder = $this->model::query()->selectRaw('users.id, users.name, users.username as username, users.email, F.name as unit_kerja_id, B.name AS role, users.status')
             ->where('users.sekretariat', '=', 1)
             ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
-            ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
-            ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
-            ->leftJoin('jenjang_perancang as E','E.id','=','users.jenjang_perancang_id')
             ->leftJoin('unit_kerja as F','F.id','=','users.unit_kerja_id');
 
 
@@ -212,9 +161,6 @@ class SeketariatController extends _CrudController
         $getUsername = $this->request->get('username');
         $getName = $this->request->get('name');
         $getEmail = $this->request->get('email');
-        $getPangkat = $this->request->get('pangkat_id');
-        $getGolongan = $this->request->get('golongan_id');
-        $getJenjangPerancang = $this->request->get('jenjang_perancang_id');
         $getUnitKerja = $this->request->get('unit_kerja_id');
         $getStatus = $this->request->get('status');
 
@@ -223,9 +169,6 @@ class SeketariatController extends _CrudController
         $seketariat->username = $getUsername;
         $seketariat->email = $getEmail;
         $seketariat->password = Hash::make('123');
-        $seketariat->pangkat_id = $getPangkat;
-        $seketariat->golongan_id = $getGolongan;
-        $seketariat->jenjang_perancang_id = $getJenjangPerancang;
         $seketariat->unit_kerja_id = $getUnitKerja;
         $seketariat->status = $getStatus;
         $seketariat->role_id = 4;
