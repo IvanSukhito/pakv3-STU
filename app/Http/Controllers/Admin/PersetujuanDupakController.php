@@ -8,6 +8,12 @@ use App\Codes\Models\Dupak;
 use App\Codes\Models\DupakKegiatan;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\Users;
+use App\Codes\Models\Golongan;
+use App\Codes\Models\JabatanPerancang;
+use App\Codes\Models\PakKegiatan;
+use App\Codes\Models\Pangkat;
+use App\Codes\Models\Pak;
+use App\Codes\Models\UnitKerja;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
@@ -279,16 +285,38 @@ class PersetujuanDupakController extends _CrudController
     {
         $this->callPermission();
 
-        $getData = Dupak::where('id', $id)->whereIn('status', [1,2])->first();
+        $getData = Dupak::where('id', $id)->whereIn('status', [1,2])->get();
         if (!$getData) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
+
+        //dd($getData);
+
+        $getDupakIds = [];
+        $getUserId = 0;
+        $getUpLineId = 0;
+        $getTopId = [];
+        $getTglAwal = '';
+        $getTglAkhir = '';
+        foreach ($getData as $list) {
+
+            $getTopId[] = $list->top_kegiatan_id;
+            $getDupakIds[] = $list->id;
+            $getUserId = $list->user_id;
+            $getUpLineId = $list->upline_id;
+            $getTglAwal = $list->tanggal_mulai;
+            $getTglAkhir = $list->tanggal_akhir;
+        }
+
+        $getTopId = array_unique($getTopId);
+
 
         $actionKegiatan = $this->request->get('action_kegiatan');
         $messageKegiatan = $this->request->get('message_kegiatan');
         $getSaveFlag = $this->request->get('save');
 
         DB::beginTransaction();
+        $dateNow = date('Y-m-d H:i:s');
 
         $getDupakKegiatan = DupakKegiatan::selectRaw('tx_dupak_kegiatan.*, tx_kegiatan.kredit AS kredit')
             ->join('tx_kegiatan', 'tx_kegiatan.id', '=', 'tx_dupak_kegiatan.kegiatan_id')
@@ -313,19 +341,103 @@ class PersetujuanDupakController extends _CrudController
         $getData->total_kredit = $totalKredit;
 
         if ($getSaveFlag == 2) {
-            $getData->tanggal = date('Y-m-d');
-            $getData->status = $getAction;
-            $getData->update();
+            //$getData->tanggal = date('Y-m-d');
+            //$getData->status = $getAction;
+            //$getData->update();
 
 
-            //Create PDF here
+            $getUser = Users::where('id', $getUserId)->first();
+            $getAtasan = Users::where('id', $getUpLineId)->first();
+            $getListPangkat = Pangkat::pluck('name', 'id')->toArray();
+            $getListGolongan = Golongan::pluck('name', 'id')->toArray();
+            $getListJabatan = JabatanPerancang::pluck('name', 'id')->toArray();
+            $getListUnitKerja = UnitKerja::pluck('name', 'id')->toArray();
+
+            $getUserPangkat = $getListPangkat[$getUser->pangkat_id] ?? '';
+            $getUserGolongan = $getListGolongan[$getUser->golongan_id] ?? '';
+            $getUserJabatan = $getListJabatan[$getUser->jenjang_perancang_id] ?? '';
+            $getUserUnitKerja = $getListUnitKerja[$getUser->unit_kerja_id] ?? '';
+            $getUserPangkatTms = $getUser->tmt_pangkat ? date('d-M-Y', strtotime($getUser->tmt_pangkat)) : '';
+            $getUserJabatanTms = $getUser->tmt_jabatan ? date('d-M-Y', strtotime($getUser->tmt_jabatan)) : '';
+
+            $getAtasanPangkat = $getListPangkat[$getAtasan->pangkat_id] ?? '';
+            $getAtasanGolongan = $getListGolongan[$getAtasan->golongan_id] ?? '';
+            $getAtasanJabatan = $getListJabatan[$getAtasan->jenjang_perancang_id] ?? '';
+            $getAtasanUnitKerja = $getListUnitKerja[$getAtasan->unit_kerja_id] ?? '';
+            $getAtasanPangkatTms = $getAtasan->tmt_pangkat ? date('d-M-Y', strtotime($getAtasan->tmt_pangkat)) : '';
+            $getAtasanJabatanTms = $getAtasan->tmt_jabatan ? date('d-M-Y', strtotime($getAtasan->tmt_jabatan)) : '';
+
+            $savePak = new Pak();
+            $savePak->user_id = $getUserId;
+            $savePak->upline_id = $getUpLineId;
+            $savePak->top_kegiatan_id = $getTopId;
+            $savePak->unit_kerja_id = 0;
+            $savePak->info_pak = json_encode([
+                'perancang_name' => $getUser->name,
+                'perancang_nip' => $getUser->username,
+                'perancang_pangkat' => $getUserPangkat.'/'.$getUserGolongan.'/'.$getUserPangkatTms,
+                'perancang_jabatan' => $getUserJabatan.'/'.$getUserJabatanTms,
+                'perancang_unit_kerja' => $getUserUnitKerja,
+                'atasan_name' => $getAtasan->name,
+                'atasan_nip' => $getAtasan->username,
+                'atasan_pangkat' => $getAtasanPangkat.'/'.$getAtasanGolongan.'/'.$getAtasanPangkatTms,
+                'atasan_jabatan' => $getAtasanJabatan.'/'.$getAtasanJabatanTms,
+                'atasan_unit_kerja' => $getAtasanUnitKerja,
+                //'old_kredit' => $oldKredit,
+                //'old_top_kredit' => $oldTopKredit
+            ]);
+            $savePak->total_kredit = $totalKredit;
+            $savePak->status = 1;
+            //$savePak->tanggal_mulai = $getTglAwal;
+            //$savePak->tanggal_akhir = $getTglAkhir;
+
+            $savePak->save();
+
+            $pakId = $savePak->id;
+
+            $savePakKegiatan = [];
+            foreach ($getDupakKegiatan as $list) {
+                if ($getAction != 99) {
+                    $savePakKegiatan[] = [
+                        'pak_id' => $pakId,
+                        'kegiatan_id' => $list->kegiatan_id,
+                        'ms_kegiatan_id' => $list->ms_kegiatan_id,
+                        'status' => 1,
+                        'created_at' => $dateNow,
+                        'updated_at' => $dateNow
+                    ];
+                }
+            }
+
+            if (count($savePakKegiatan) > 0) {
+                PakKegiatan::insert($savePakKegiatan);
+            }
+
+
+            foreach ($getData as $list) {
+                $getTotalKredit = isset($totalKredit[$list->id]) ? $totalKredit[$list->id] : 0;
+                $list->total_kredit = $getTotalKredit;
+                $list->updated_at = $dateNow;
+                $list->tanggal = date('Y-m-d');
+                $list->status = 80;
+                $list->pak_id = $pakId;
+
+                $list->save();
+            }
+
 
         }
         else {
-            $getData->status = 2;
+            foreach ($getData as $list) {
+                $getTotalKredit = isset($totalKredit[$list->id]) ? $totalKredit[$list->id] : 0;
+                $list->total_kredit = $getTotalKredit;
+                $list->updated_at = $dateNow;
+                $list->status = 2;
+                $list->save();
+            }
         }
 
-        $getData->save();
+        //$getData->save();
 
         DB::commit();
 

@@ -55,6 +55,8 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\SuratPernyataanController' => 'surat-pernyataan',
                 'Admin\PersetujuanSuratPernyataanController' => 'persetujuan-surat-pernyataan',
                 'Admin\DupakController' => 'dupak',
+                'Admin\PakController' => 'pak',
+                'Admin\PersetujuanPakController' => 'persetujuan-pak',
                 'Admin\PersetujuanDupakController' => 'persetujuan-dupak',
                 'Admin\PemuktahiranDataDiriController' => 'pemuktahiran-data-diri',
                 'Admin\PemuktahiranAKController' => 'pemuktahiran-ak',
@@ -87,6 +89,10 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                     case 'persetujuan-pemuktahiran-ak':
                         $router->get($linkName . '/approve/{id}', $controller . '@approve')->name('admin.' . $linkName . '.approve');
                         $router->get($linkName . '/reject/{id}', $controller . '@reject')->name('admin.' . $linkName . '.reject');
+                        break;
+                    case 'pak':
+                        $router->get($linkName . '/uploadSP/{id}', $controller . '@edit')->name('admin.' . $linkName . '.uploadSP');
+                        $router->PUT($linkName . '/SubmitSP/{id}', $controller . '@update')->name('admin.' . $linkName . '.submitSP');
                         break;
 
                 }

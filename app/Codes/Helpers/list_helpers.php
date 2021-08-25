@@ -84,6 +84,21 @@ if ( ! function_exists('get_list_status_dupak')) {
     }
 }
 
+
+if ( ! function_exists('get_list_status_pak')) {
+    function get_list_status_pak()
+    {
+        return [
+            1 => __('Menunggu Upload SP'),
+            2 => __('general.pending'),
+            3 => __('Di Proses'),
+            80 => __('Di Setujui'),
+            88 => __('History'),
+            99 => __('Di Tolak'),
+        ];
+    }
+}
+
 if ( ! function_exists('get_list_status_pak')) {
     function get_list_status_pak()
     {

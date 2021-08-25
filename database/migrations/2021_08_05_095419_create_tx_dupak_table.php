@@ -19,6 +19,7 @@ class CreateTxDupakTable extends Migration
             $table->unsignedBigInteger('upline_id')->default(0);
             $table->unsignedBigInteger('sekretariat_id')->default(0);
             $table->unsignedBigInteger('unit_kerja_id')->default(0);
+            $table->unsignedBigInteger('pak_id')->default(0);
             $table->longText('info_dupak')->nullable();
             $table->date('tanggal')->nullable();
             $table->string('nomor')->nullable();

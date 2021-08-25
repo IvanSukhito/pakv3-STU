@@ -391,6 +391,29 @@ if ( ! function_exists('listAllMenu')) {
                 'key' => 'persetujuan-surat-pernyataan',
                 'type' => 1,
             ],
+            //PAK
+            [
+                'name' => __('general.pak'),
+                'icon' => '<i class="nav-icon fa fa-envelope"></i>',
+                'title' => __('general.pak'),
+                'active' => [
+                    'admin.pak.'
+                ],
+                'route' => 'admin.pak.index',
+                'key' => 'pak',
+                'type' => 1,
+            ],
+            [
+                'name' => __('general.persetujuan_pak'),
+                'icon' => '<i class="nav-icon fa fa-envelope"></i>',
+                'title' => __('general.persetujuan_pak'),
+                'active' => [
+                    'admin.persetujuan-pak.index'
+                ],
+                'route' => 'admin.persetujuan-pak.index',
+                'key' => 'persetujuan-pak',
+                'type' => 1,
+            ],
 
             // DUPAK
             [
@@ -658,6 +681,8 @@ if ( ! function_exists('listAvailablePermission'))
             'persetujuan-pemuktahiran-ak',
             'dupak',
             'persetujuan-dupak',
+            'pak',
+            'persetujuan-pak',
                  ] as $keyPermission) {
             $listPermission[$keyPermission] = [
                 'list' => [
@@ -700,6 +725,9 @@ if ( ! function_exists('listAvailablePermission'))
 
         $listPermission['dupak']['edit'][] = 'admin.dupak.uploadSP';
         $listPermission['dupak']['edit'][] = 'admin.dupak.storeSP';
+
+        $listPermission['pak']['edit'][] = 'admin.pak.uploadSP';
+        $listPermission['pak']['edit'][] = 'admin.pak.storeSP';
 
         $listPermission['persetujuan-pemuktahiran']['edit'][] = 'admin.persetujuan-pemuktahiran.approve';
         $listPermission['persetujuan-pemuktahiran']['edit'][] = 'admin.persetujuan-pemuktahiran.reject';
