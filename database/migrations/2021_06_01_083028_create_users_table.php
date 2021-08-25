@@ -38,15 +38,9 @@ class CreateUsersTable extends Migration
             $table->date('masa_penilaian_terakhir_akhir')->nullable();
             $table->date('tahun_diangkat_jabatan')->nullable();
             $table->date('tahun_berakhir_jabatan')->nullable();
-            $table->string('nomor_angkat_jabatan_pertama')->nullable();
-            $table->date('tgl_angkat_jabatan_pertama')->nullable();
-            $table->string('nomor_keputusan_naik_pangkat_terakhir')->nullable();
-            $table->date('tgl_keputusan_naik_pangkat_terakhir')->nullable();
             $table->date('tahun_pelaksanaan_diklat')->nullable();
             $table->date('tanggal_pak_terakhir')->nullable();
             $table->date('masa_penilaian_ak_terakhir')->nullable();
-            $table->string('nomor_keputusan_pemberhentian')->nullable();
-            $table->date('tgl_keputusan_pemberhentian')->nullable();
             $table->string('alasan')->nullable();
             $table->decimal('angka_kredit_terakhir')->nullable();
             $table->string('nomor_pak_terakhir')->nullable();
