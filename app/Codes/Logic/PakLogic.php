@@ -188,7 +188,8 @@ class PakLogic
             $getKegiatan = $getKegiatan->whereIn('tx_surat_pernyataan_kegiatan.status', $status);
         }
 
-        $getKegiatan = $getKegiatan->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
+        $getKegiatan = $getKegiatan->orderBy('tx_kegiatan.top_id', 'ASC')->orderBy('tx_kegiatan.tanggal', 'ASC')
+            ->get();
 
         if ($getKegiatan) {
             $getJudul = [];
@@ -252,7 +253,7 @@ class PakLogic
         $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_dupak_kegiatan.id AS sp_kegiatan_id, tx_dupak_kegiatan.message AS sp_kegiatan_message, tx_dupak_kegiatan.status AS sp_kegiatan_status')
             ->join('tx_dupak_kegiatan', 'tx_dupak_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
             ->where('tx_dupak_kegiatan.dupak_id', '=', $dupak->id)
-            ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
+            ->orderBy('tx_kegiatan.top_id', 'ASC')->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
 
         if ($getKegiatan) {
             $getJudul = [];
@@ -316,7 +317,7 @@ class PakLogic
         $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_pak_kegiatan.id AS sp_kegiatan_id, tx_pak_kegiatan.message AS sp_kegiatan_message, tx_pak_kegiatan.status AS sp_kegiatan_status')
             ->join('tx_pak_kegiatan', 'tx_pak_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
             ->where('tx_pak_kegiatan.pak_id', '=', $pak->id)
-            ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
+            ->orderBy('tx_kegiatan.top_id', 'ASC')->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
 
         if ($getKegiatan) {
             $getJudul = [];

@@ -145,7 +145,8 @@ class SuratPernyataanController extends _CrudController
 
         $userId = session()->get('admin_id');
 
-        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [80,99])->get();
+        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [80,99])
+            ->orderBy('top_kegiatan_id', 'ASC')->get();
         $getSuratPernyataanIds = [];
         $status = 0;
         $totalKredit = 0;

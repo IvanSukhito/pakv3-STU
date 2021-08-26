@@ -208,7 +208,8 @@ class DupakController extends _CrudController
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
         $getSuratPernyataan = SuratPernyataan::selectRaw('tx_surat_pernyataan.id, tx_surat_pernyataan.top_kegiatan_id, ms_kegiatan.name')
-            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')->where('dupak_id', $id)->get();
+            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')->where('dupak_id', $id)
+            ->orderBy('tx_surat_pernyataan.top_kegiatan_id', 'ASC')->get();
 
         $setPassing = [
             'unit_kerja_id' => [

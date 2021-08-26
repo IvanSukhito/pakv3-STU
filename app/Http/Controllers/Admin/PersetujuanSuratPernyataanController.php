@@ -154,7 +154,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2,80, 99])->get();
+        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2,80, 99])
+            ->orderBy('top_kegiatan_id', 'ASC')->get();
         $getSuratPernyataanIds = [];
         $status = 0;
         $totalKredit = 0;
@@ -255,7 +256,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
 
-        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2])->get();
+        $getSuratPernyataan = SuratPernyataan::where('user_id', $id)->whereIn('status', [1,2])
+            ->orderBy('top_kegiatan_id', 'ASC')->get();
         $getSuratPernyataanIds = [];
         $status = 0;
         $totalKredit = 0;
