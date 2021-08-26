@@ -7,6 +7,7 @@ use App\Codes\Logic\PakLogic;
 use App\Codes\Models\Dupak;
 use App\Codes\Models\DupakKegiatan;
 use App\Codes\Models\JenjangPerancang;
+use App\Codes\Models\Pendidikan;
 use App\Codes\Models\Users;
 use App\Codes\Models\Golongan;
 use App\Codes\Models\JabatanPerancang;
@@ -147,10 +148,8 @@ class PersetujuanDupakController extends _CrudController
         $userId = session()->get('admin_id');
 
         $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2])->first();
-        //dd($getDupak->file_upload_surat_pernyataan);
         $fileSP = json_decode($getDupak->file_upload_surat_pernyataan, true);
 
-        //dd($fileSP);
         if (!$getDupak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
@@ -186,8 +185,6 @@ class PersetujuanDupakController extends _CrudController
 
         }
 
-
-
         $data = $this->data;
 
         $data['viewType'] = 'edit';
@@ -215,13 +212,12 @@ class PersetujuanDupakController extends _CrudController
     {
         $this->callPermission();
 
-        $userId = session()->get('admin_id');
-
         $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2,3,80,99])->first();
-
         if (!$getDupak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
+
+        $userId = $getDupak->user_id;
         $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
@@ -283,31 +279,12 @@ class PersetujuanDupakController extends _CrudController
     {
         $this->callPermission();
 
-        $getData = Dupak::where('id', $id)->whereIn('status', [1,2])->get();
+        $adminId = session()->get('admin_id');
+
+        $getData = Dupak::where('id', $id)->whereIn('status', [1,2,3])->get();
         if (!$getData) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
-
-        //dd($getData);
-
-        $getDupakIds = [];
-        $getUserId = 0;
-        $getUpLineId = 0;
-        $getTopId = [];
-        $getTglAwal = '';
-        $getTglAkhir = '';
-        foreach ($getData as $list) {
-
-            $getTopId[] = $list->top_kegiatan_id;
-            $getDupakIds[] = $list->id;
-            $getUserId = $list->user_id;
-            $getUpLineId = $list->upline_id;
-            $getTglAwal = $list->tanggal_mulai;
-            $getTglAkhir = $list->tanggal_akhir;
-        }
-
-        $getTopId = array_unique($getTopId);
-
 
         $actionKegiatan = $this->request->get('action_kegiatan');
         $messageKegiatan = $this->request->get('message_kegiatan');
@@ -321,6 +298,7 @@ class PersetujuanDupakController extends _CrudController
             ->where('dupak_id', $id)->get();
 
         $totalKredit = 0;
+        $savePakKegiatan = [];
         foreach ($getDupakKegiatan as $list) {
             $getAction = isset($actionKegiatan[$list->id]) ? $actionKegiatan[$list->id] : 1;
             $getMessage = '';
@@ -329,6 +307,13 @@ class PersetujuanDupakController extends _CrudController
             }
             else {
                 $totalKredit += $list->kredit;
+                $savePakKegiatan[] = [
+                    'kegiatan_id' => $list->kegiatan_id,
+                    'ms_kegiatan_id' => $list->ms_kegiatan_id,
+                    'status' => 1,
+                    'created_at' => $dateNow,
+                    'updated_at' => $dateNow
+                ];
             }
             $list->message = $getMessage;
             $list->status = $getAction;
@@ -337,15 +322,19 @@ class PersetujuanDupakController extends _CrudController
         }
 
         $getData->total_kredit = $totalKredit;
+        $getData->sekretariat_id = $adminId;
 
         if ($getSaveFlag == 2) {
-            //$getData->tanggal = date('Y-m-d');
-            //$getData->status = $getAction;
-            //$getData->update();
 
+            $getData->tanggal = date('Y-m-d');
+            $getData->status = 80;
+
+            $getUserId = $getData->user_id;
+            $getUpLineId = $getData->upline_id;
 
             $getUser = Users::where('id', $getUserId)->first();
             $getAtasan = Users::where('id', $getUpLineId)->first();
+            $getPendidikan = Pendidikan::where('id', $getUser->pendidikan_id)->first();
             $getListPangkat = Pangkat::pluck('name', 'id')->toArray();
             $getListGolongan = Golongan::pluck('name', 'id')->toArray();
             $getListJabatan = JabatanPerancang::pluck('name', 'id')->toArray();
@@ -358,84 +347,51 @@ class PersetujuanDupakController extends _CrudController
             $getUserPangkatTms = $getUser->tmt_pangkat ? date('d-M-Y', strtotime($getUser->tmt_pangkat)) : '';
             $getUserJabatanTms = $getUser->tmt_jabatan ? date('d-M-Y', strtotime($getUser->tmt_jabatan)) : '';
 
-            $getAtasanPangkat = $getListPangkat[$getAtasan->pangkat_id] ?? '';
-            $getAtasanGolongan = $getListGolongan[$getAtasan->golongan_id] ?? '';
-            $getAtasanJabatan = $getListJabatan[$getAtasan->jenjang_perancang_id] ?? '';
-            $getAtasanUnitKerja = $getListUnitKerja[$getAtasan->unit_kerja_id] ?? '';
-            $getAtasanPangkatTms = $getAtasan->tmt_pangkat ? date('d-M-Y', strtotime($getAtasan->tmt_pangkat)) : '';
-            $getAtasanJabatanTms = $getAtasan->tmt_jabatan ? date('d-M-Y', strtotime($getAtasan->tmt_jabatan)) : '';
-
             $savePak = new Pak();
             $savePak->user_id = $getUserId;
             $savePak->upline_id = $getUpLineId;
-            $savePak->top_kegiatan_id = $getTopId;
             $savePak->unit_kerja_id = 0;
+            $savePak->tim_penilai_id = 0;
+            $savePak->dupak_id = $id;
             $savePak->info_pak = json_encode([
                 'perancang_name' => $getUser->name,
                 'perancang_nip' => $getUser->username,
+                'perancang_karpeg' => $getUser->kartu_pegawai,
+                'perancang_tempat_tgl_lahir' => $getUser->tempat_lahir.', '.date('d-M-Y', strtotime($getUser->tgl_lahir)),
+                'perancang_pendidikan' => $getPendidikan ? $getPendidikan->name : '',
                 'perancang_pangkat' => $getUserPangkat.'/'.$getUserGolongan.'/'.$getUserPangkatTms,
                 'perancang_jabatan' => $getUserJabatan.'/'.$getUserJabatanTms,
+                'perancang_golongan_lama' => '',
+                'perancang_golongan_baru' => '',
                 'perancang_unit_kerja' => $getUserUnitKerja,
                 'atasan_name' => $getAtasan->name,
                 'atasan_nip' => $getAtasan->username,
-                'atasan_pangkat' => $getAtasanPangkat.'/'.$getAtasanGolongan.'/'.$getAtasanPangkatTms,
-                'atasan_jabatan' => $getAtasanJabatan.'/'.$getAtasanJabatanTms,
-                'atasan_unit_kerja' => $getAtasanUnitKerja,
-                //'old_kredit' => $oldKredit,
-                //'old_top_kredit' => $oldTopKredit
             ]);
+            $savePak->tanggal_mulai = $getData->tanggal_mulai;
+            $savePak->tanggal_akhir = $getData->tanggal_akhir;
             $savePak->total_kredit = $totalKredit;
             $savePak->status = 1;
-            //$savePak->tanggal_mulai = $getTglAwal;
-            //$savePak->tanggal_akhir = $getTglAkhir;
 
             $savePak->save();
 
             $pakId = $savePak->id;
 
-            $savePakKegiatan = [];
-            foreach ($getDupakKegiatan as $list) {
-                if ($getAction != 99) {
-                    $savePakKegiatan[] = [
-                        'pak_id' => $pakId,
-                        'kegiatan_id' => $list->kegiatan_id,
-                        'ms_kegiatan_id' => $list->ms_kegiatan_id,
-                        'status' => 1,
-                        'created_at' => $dateNow,
-                        'updated_at' => $dateNow
-                    ];
-                }
-            }
-
             if (count($savePakKegiatan) > 0) {
+                $temp = [];
+                foreach ($savePakKegiatan as $list) {
+                    $list['pak_id'] = $pakId;
+                    $temp[] = $list;
+                }
+                $savePakKegiatan = $temp;
                 PakKegiatan::insert($savePakKegiatan);
             }
 
-
-            foreach ($getData as $list) {
-                $getTotalKredit = isset($totalKredit[$list->id]) ? $totalKredit[$list->id] : 0;
-                $list->total_kredit = $getTotalKredit;
-                $list->updated_at = $dateNow;
-                $list->tanggal = date('Y-m-d');
-                $list->status = 80;
-                $list->pak_id = $pakId;
-
-                $list->save();
-            }
-
-
         }
         else {
-            foreach ($getData as $list) {
-                $getTotalKredit = isset($totalKredit[$list->id]) ? $totalKredit[$list->id] : 0;
-                $list->total_kredit = $getTotalKredit;
-                $list->updated_at = $dateNow;
-                $list->status = 2;
-                $list->save();
-            }
+            $getData->status = 3;
         }
 
-        //$getData->save();
+        $getData->save();
 
         DB::commit();
 

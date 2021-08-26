@@ -110,13 +110,12 @@ else {
                    @foreach($fileSP as $dataSP)
                        <?php $no++;?>
                             <div class="form-group">
-                                <h4>
-                                    View Bukti {!! $no !!}<br/>
-                                    @if($dataSP['id'])
-                                        <br/>
-                                    @endif
-                                    <a href="{{asset($dataSP['path'])}}" target="_blank">{!! $dataSP['name'] !!}</a>
-                                </h4>
+                                @if(isset($dataSP['nice']))
+                                <p>{!! $dataSP['nice'] !!}:</p>
+                                @else
+                                <h5>View Bukti {!! $no !!}:</h5>
+                                @endif
+                                <p><a href="{{asset($dataSP['path'])}}" target="_blank">{!! $dataSP['name'] !!}</a></p>
                             </div>
                     @endforeach
                     <?php else: ?>
