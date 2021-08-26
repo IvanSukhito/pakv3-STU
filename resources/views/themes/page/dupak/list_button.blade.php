@@ -4,9 +4,9 @@
         <i class="fa fa-eye"></i>
         <span class="d-none d-md-inline"> @lang('general.show')</span>
     </a>
-    <a href="/pakPdf"  name="pdf" value="1" class="mb-1 btn btn-primary btn-sm" title="@lang('general.download_pdf')">
-        <i class="fa fa-download"></i><span class=""> @lang('general.download_pak')</span>
-    </a>
+{{--    <a href="/pakPdf"  name="pdf" value="1" class="mb-1 btn btn-primary btn-sm" title="@lang('general.download_pdf')">--}}
+{{--        <i class="fa fa-download"></i><span class=""> @lang('general.download_pak')</span>--}}
+{{--    </a>--}}
 @endif
 @if ($permission['destroy'])
     <a href="#" class="mb-1 btn btn-danger btn-sm" title="@lang('general.delete')"
