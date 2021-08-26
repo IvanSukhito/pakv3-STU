@@ -292,38 +292,54 @@ class DupakController extends _CrudController
     }
 
     public function update($id){
-        //dd($this->request);
+
         $this->callPermission();
-        $viewType = 'Upload Surat Pernyataan';
-        $this->request->validate([
 
-            'file_upload_surat_pernyataan' => 'required',
-            'unit_kerja_id' => 'required'
-        ]);
+        $userId = session()->get('admin_id');
 
-        $getData = Dupak::findOrFail($id);
+        $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2,3])->first();
+        if (!$getDupak) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+        $getPerancang = Users::where('id', $userId)->where('upline_id', $getDupak->upline_id)->first();
+        if (!$getPerancang) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+        $getSuratPernyataan = SuratPernyataan::selectRaw('tx_surat_pernyataan.id, tx_surat_pernyataan.top_kegiatan_id, ms_kegiatan.name')
+            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')->where('dupak_id', $id)->get();
+
+        $listDokument = ['dupak'];
+        $setPassing = [
+            'unit_kerja_id' => 'required',
+            'dupak' => 'required',
+        ];
+        foreach ($getSuratPernyataan as $list) {
+            $setPassing['sp_'.$list->id] = 'required';
+            $listDokument[] = 'sp_'.$list->id;
+        }
+
+        $this->request->validate($setPassing);
 
         $userId = session()->get('admin_id');
         $getUser = Users::where('id', $userId)->first();
         $userNip = $getUser->username;
         $userFolder = 'user_' . preg_replace("/[^A-Za-z0-9?!]/", '', $userNip);
         $todayDate = date('Y-m-d');
-        $folderName = $userFolder . '/kegiatan/' . $todayDate . '/';
-        $dokument = $this->request->file('file_upload_surat_pernyataan');
+        $folderName = $userFolder . '/dupak/' . $todayDate . '/';
         $unitkerja = $this->request->get('unit_kerja_id');
 
         $totalDokument = [];
 
-
-        foreach ($dokument as $listDoc) {
+        foreach ($listDokument as $getDoc) {
+            $listDoc = $this->request->file($getDoc);
             if ($listDoc->getError() == 0) {
                 $getFileName = $listDoc->getClientOriginalName();
                 $ext = explode('.', $getFileName);
                 $fileName = reset($ext);
                 $ext = end($ext);
                 $setFileName = preg_replace("/[^A-Za-z0-9?!]/", '_', $fileName) . '_' . date('His') . rand(0,100) . '.' . $ext;
-                $destinationPath = './uploads/' . $folderName . $getData->id . '/';
-                $destinationLink = 'uploads/' . $folderName . $getData->id . '/' . $setFileName;
+                $destinationPath = './uploads/' . $folderName . '/';
+                $destinationLink = 'uploads/' . $folderName . '/' . $setFileName;
                 $listDoc->move($destinationPath, $setFileName);
 
                 $totalDokument[] = [
@@ -333,7 +349,7 @@ class DupakController extends _CrudController
             }
         }
 
-        $getData->update([
+        $getDupak->update([
             'file_upload_surat_pernyataan' => json_encode($totalDokument),
             'unit_kerja_id' => $unitkerja,
             'status' => 2
@@ -347,8 +363,6 @@ class DupakController extends _CrudController
             session()->flash('message_alert', 2);
             return redirect()->route('admin.' . $this->route . '.index');
         }
-
-
 
     }
 }
