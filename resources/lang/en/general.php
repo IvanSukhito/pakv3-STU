@@ -550,6 +550,7 @@ return [
     'view_berkas_pemuktahiran' => 'Lihat File Pemuktahiran',
     'kirim' =>'Kirim',
     'total_kredit' => 'Total Kredit',
+    'draft' => 'Draft',
     'persetujuan_dupak' => 'Persetujuan Dupak',
     'jabatan' => 'Jabatan',
     'tmt_pangkat_golongan' => 'TMT Pangkat/Golongan',
