@@ -104,9 +104,15 @@ else {
 
                 <div class="card-body">
                     <h3 class="form-section first-form">Kegiatan</h3>
+                    @if (in_array($viewType, ['show']) && in_array($data->status, [80]))
+                        <p>
+                            <a href="{!! route('admin.'.$thisRoute.'.showDupakPdf', $data->dupak_id) !!}" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf') DUPAK">
+                                <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf') DUPAK</span>
+                            </a>
+                        </p>
+                    @endif
                     <p>Perancang mengajukan:</p>
                     <ul>
-
                         <li>Surat Pernyataan:
                         @foreach($topId as $top)
 

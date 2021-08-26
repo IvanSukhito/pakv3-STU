@@ -158,6 +158,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $getSuratPernyataanIds = [];
         $status = 0;
         $totalKredit = 0;
+        $dupakId = 0;
         $perancangId = 0;
         $listSuratPernyataan = [];
         foreach ($getSuratPernyataan as $list) {
@@ -166,6 +167,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
             $totalKredit += $list->total_kredit;
             $perancangId = $list->user_id;
             $listSuratPernyataan[$list->top_kegiatan_id] = $list->id;
+            $dupakId = $list->dupak_id;
         }
 
         $getPerancang = Users::where('id', $perancangId)->first();
@@ -203,6 +205,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
         $data['passing'] = collectPassingData($this->passingData, $data['viewType']);
         $data['data'] = (object)[
             'id' => $id,
+            'dupak_id' => $dupakId,
             'status' => $status,
             'total_kredit' => $totalKredit
         ];
@@ -380,7 +383,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
             $oldTopKredit = [];
             $getKreditKegiatan = PakKegiatan::selectRaw('tx_pak_kegiatan.ms_kegiatan_id, tx_pak_kegiatan.top_kegiatan_id, SUM(tx_pak_kegiatan.kredit_new) AS total_kredit')
                 ->join('tx_pak', 'tx_pak.id', '=', 'tx_pak_kegiatan.pak_id')
-                ->whereIn('status', [88])
+                ->whereIn('tx_pak_kegiatan.status', [88])
                 ->groupByRaw('tx_pak_kegiatan.ms_kegiatan_id, tx_pak_kegiatan.top_kegiatan_id')
                 ->get();
             foreach ($getKreditKegiatan as $list) {
