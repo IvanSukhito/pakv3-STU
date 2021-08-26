@@ -10,6 +10,7 @@ use App\Codes\Models\Golongan;
 use App\Codes\Models\JabatanPerancang;
 use App\Codes\Models\PakKegiatan;
 use App\Codes\Models\Pangkat;
+use App\Codes\Models\Pendidikan;
 use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\JenjangPerancang;
 use App\Codes\Models\SuratPernyataanKegiatan;
@@ -412,6 +413,7 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
             $getUser = Users::where('id', $getUserId)->first();
             $getAtasan = Users::where('id', $getUpLineId)->first();
+            $getPendidikan = Pendidikan::where('id', $getUser->pendidikan_id)->first();
             $getListPangkat = Pangkat::pluck('name', 'id')->toArray();
             $getListGolongan = Golongan::pluck('name', 'id')->toArray();
             $getListJabatan = JabatanPerancang::pluck('name', 'id')->toArray();
@@ -424,13 +426,6 @@ class PersetujuanSuratPernyataanController extends _CrudController
             $getUserPangkatTms = $getUser->tmt_pangkat ? date('d-M-Y', strtotime($getUser->tmt_pangkat)) : '';
             $getUserJabatanTms = $getUser->tmt_jabatan ? date('d-M-Y', strtotime($getUser->tmt_jabatan)) : '';
 
-            $getAtasanPangkat = $getListPangkat[$getAtasan->pangkat_id] ?? '';
-            $getAtasanGolongan = $getListGolongan[$getAtasan->golongan_id] ?? '';
-            $getAtasanJabatan = $getListJabatan[$getAtasan->jenjang_perancang_id] ?? '';
-            $getAtasanUnitKerja = $getListUnitKerja[$getAtasan->unit_kerja_id] ?? '';
-            $getAtasanPangkatTms = $getAtasan->tmt_pangkat ? date('d-M-Y', strtotime($getAtasan->tmt_pangkat)) : '';
-            $getAtasanJabatanTms = $getAtasan->tmt_jabatan ? date('d-M-Y', strtotime($getAtasan->tmt_jabatan)) : '';
-
             $saveDupak = new Dupak();
             $saveDupak->user_id = $getUserId;
             $saveDupak->upline_id = $getUpLineId;
@@ -439,14 +434,16 @@ class PersetujuanSuratPernyataanController extends _CrudController
             $saveDupak->info_dupak = json_encode([
                 'perancang_name' => $getUser->name,
                 'perancang_nip' => $getUser->username,
+                'perancang_karpeg' => $getUser->kartu_pegawai,
+                'perancang_tempat_tgl_lahir' => $getUser->tempat_lahir.', '.date('d-M-Y', strtotime($getUser->tgl_lahir)),
+                'perancang_pendidikan' => $getPendidikan ? $getPendidikan->name : '',
                 'perancang_pangkat' => $getUserPangkat.'/'.$getUserGolongan.'/'.$getUserPangkatTms,
                 'perancang_jabatan' => $getUserJabatan.'/'.$getUserJabatanTms,
+                'perancang_golongan_lama' => '',
+                'perancang_golongan_baru' => '',
                 'perancang_unit_kerja' => $getUserUnitKerja,
                 'atasan_name' => $getAtasan->name,
                 'atasan_nip' => $getAtasan->username,
-                'atasan_pangkat' => $getAtasanPangkat.'/'.$getAtasanGolongan.'/'.$getAtasanPangkatTms,
-                'atasan_jabatan' => $getAtasanJabatan.'/'.$getAtasanJabatanTms,
-                'atasan_unit_kerja' => $getAtasanUnitKerja,
                 'old_kredit' => $oldKredit,
                 'old_top_kredit' => $oldTopKredit
             ]);

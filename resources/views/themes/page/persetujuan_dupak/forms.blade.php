@@ -81,15 +81,11 @@ else {
                         <button type="submit" name="save" value="1" class="mb-2 mr-2 btn btn-info" title="@lang('general.draft')">
                             <i class="fa fa-save"></i><span class=""> @lang('general.draft')</span>
                         </button>
-                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true && in_array($data->status, [1,2]))
+                    @elseif (in_array($viewType, ['show']) && $permission['edit'] == true && in_array($data->status, [1,2,3]))
                         <a href="<?php echo route('admin.' . $thisRoute . '.edit', $data->{$masterId}) ?>"
                            class="mb-2 mr-2 btn btn-primary" title="{{ __('general.edit') }}">
                             <i class="fa fa-pencil"></i><span class=""> {{ __('general.edit') }}</span>
                         </a>
-                    @elseif (in_array($viewType, ['show']) && in_array($data->status, [80]))
-                    <button type="submit" name="pdf" value="1" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
-                        <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
-                    </button>
                     @endif
                     <a href="<?php echo route('admin.' . $thisRoute . '.index') ?>" class="mb-2 mr-2 btn btn-warning"
                        title="{{ __('general.back') }}">
@@ -107,25 +103,27 @@ else {
                 @endif
 
                 <div class="card-body">
-                @if(in_array($viewType, ['edit']))
 
 
                 <?php if($fileSP): ?>
                    <?php $no = 0;?>
                    @foreach($fileSP as $dataSP)
-                   <?php $no++;?>
-                                <div class="form-group">
-                                    <h3><a href="{{asset($dataSP['path'])}}" target="_blank">View Surat Pernyataan - {!! $no !!}</a></h3>
-                                </div>
-                                
+                       <?php $no++;?>
+                            <div class="form-group">
+                                @if(isset($dataSP['nice']))
+                                <p>{!! $dataSP['nice'] !!}:</p>
+                                @else
+                                <h5>View Bukti {!! $no !!}:</h5>
+                                @endif
+                                <p><a href="{{asset($dataSP['path'])}}" target="_blank">{!! $dataSP['name'] !!}</a></p>
+                            </div>
                     @endforeach
-                    
-                  
-                            <?php else: ?>
-                        <h3>No File</h3>
+                    <?php else: ?>
+                    <div class="form-group">
+                        <h4>No File</h4>
+                    </div>
                  <?php endif ?>
 
-                 @endif
                     <h3 class="form-section first-form">Kegiatan</h3>
                     <p>Perancang mengajukan:</p>
                     <ul>
@@ -155,7 +153,7 @@ else {
                         @endif
                     </ul>
                 </div>
-          
+
                 <div class="card-body">
                     @if(isset($dataKegiatan))
 

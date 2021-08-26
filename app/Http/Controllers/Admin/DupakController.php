@@ -310,6 +310,7 @@ class DupakController extends _CrudController
             ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')->where('dupak_id', $id)->get();
 
         $listDokument = ['dupak'];
+        $getNiceNameDoc = [];
         $setPassing = [
             'unit_kerja_id' => 'required',
             'dupak' => 'required',
@@ -317,6 +318,7 @@ class DupakController extends _CrudController
         foreach ($getSuratPernyataan as $list) {
             $setPassing['sp_'.$list->id] = 'required';
             $listDokument[] = 'sp_'.$list->id;
+            $getNiceNameDoc['sp_'.$list->id] = $list->name;
         }
 
         $this->request->validate($setPassing);
@@ -343,8 +345,10 @@ class DupakController extends _CrudController
                 $destinationLink = 'uploads/' . $folderName . '/' . $setFileName;
                 $listDoc->move($destinationPath, $setFileName);
 
+                $getDocNice = $getNiceNameDoc[$getDoc] ?? '-';
                 $totalDokument[] = [
                     'id' => $getDoc,
+                    'nice' => $getDoc == 'dupak' ? 'DUPAK' : 'SP: '.$getDocNice,
                     'name' => $setFileName,
                     'path' => $destinationLink
                 ];
