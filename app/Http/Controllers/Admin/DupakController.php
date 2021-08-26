@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Codes\Logic\_CrudController;
 use App\Codes\Logic\PakLogic;
+use App\Codes\Models\SuratPernyataan;
 use App\Codes\Models\UnitKerja;
 use App\Codes\Models\Dupak;
 use App\Codes\Models\JenjangPerancang;
@@ -17,21 +18,20 @@ class DupakController extends _CrudController
     {
         $passingData = [
             'id' => [
-                'edit' => 0
             ],
             'total_kredit' => [
-                'type' => 'number'
+                'type' => 'number',
             ],
             'status' => [
-                'type' => 'select'
+                'type' => 'select',
             ],
             'created_at' => [
                 'lang' => 'DiKirim',
-                'type' => 'datetime'
+                'type' => 'datetime',
             ],
             'updated_at' => [
                 'lang' => 'Disetujui',
-                'type' => 'datetime'
+                'type' => 'datetime',
             ],
             'action' => [
                 'show' => 0,
@@ -195,14 +195,10 @@ class DupakController extends _CrudController
     }
 
     public function edit($id){
-        //return view($this->listView[$data['viewType']]);
         $this->callPermission();
 
         $userId = session()->get('admin_id');
 
-        $data = $this->data;
-
-        $unitkerja = UnitKerja::all();
         $getDupak = Dupak::where('id', $id)->whereIn('status', [1,2,3,80,99])->first();
         if (!$getDupak) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
@@ -211,11 +207,36 @@ class DupakController extends _CrudController
         if (!$getPerancang) {
             return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
         }
+        $getSuratPernyataan = SuratPernyataan::selectRaw('tx_surat_pernyataan.id, tx_surat_pernyataan.top_kegiatan_id, ms_kegiatan.name')
+            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_surat_pernyataan.top_kegiatan_id')->where('dupak_id', $id)->get();
 
-        if ($this->request->get('pdf') == 1) {
-            $getPAKLogic = new PakLogic();
-            $getPAKLogic->generateDupak($id);
+        $setPassing = [
+            'unit_kerja_id' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'select2',
+                'lang' => 'general.unit_kerja'
+            ],
+            'dupak' => [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'pdf',
+            ],
+        ];
+        foreach ($getSuratPernyataan as $list) {
+            $setPassing['sp_'.$list->id] = [
+                'validation' => [
+                    'edit' => 'required'
+                ],
+                'type' => 'pdf',
+                'lang' => 'SP '.$list->name
+            ];
         }
+        $passingData = generatePassingData($setPassing);
+
+        $unitkerja = UnitKerja::whereIn('id', [2, $getPerancang->unit_kerja_id])->pluck('name', 'id')->toArray();
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 
@@ -245,9 +266,15 @@ class DupakController extends _CrudController
 
         $data = $this->data;
 
-
-
-       // $data['data'] = $getDupak;
+        $data['viewType'] = 'edit';
+        $data['formsTitle'] = __('general.title_dupak_uploadSP', ['field' => $data['thisLabel']]);
+        $data['passing'] = collectPassingData($passingData, $data['viewType']);
+        $data['data'] = (object)[
+            'id' => $id,
+            'dupak_id' => $getDupak->id,
+            'status' => $getDupak->status,
+            'total_kredit' => $getDupak->total_kredit
+        ];
         $data['dataUser'] = $getPerancang;
         $data['dataJenjangPerancang'] = $getJenjangPerancang;
         $data['dataPermen'] = $dataPermen;
@@ -259,10 +286,7 @@ class DupakController extends _CrudController
         $data['totalAk'] = $totalAk;
         $data['topId'] = $topId;
         $data['kredit'] = $kredit;
-        $data['unitkerja'] = $unitkerja;
-        $data['viewType'] = 'edit';
-        $data['formsTitle'] = __('general.title_dupak_uploadSP', ['field' => $data['thisLabel']]);
-        $data['data'] = $this->crud->show($id);
+        $data['listSet']['unit_kerja_id'] = $unitkerja;
 
         return view($this->listView['edit'], $data);
     }

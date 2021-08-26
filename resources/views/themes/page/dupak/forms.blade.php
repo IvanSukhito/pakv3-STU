@@ -91,43 +91,10 @@ else {
 
                 </div>
 
-      
-                @if(in_array($viewType, ['edit']))
                 <div class="card-body">
-              
-              @csrf
-              <div class="modal-body">
-            
-                  <div class="form-group">
-               
-                    
-                      <div class="form-group">
-                            <label for="judul">Unit Kerja</label>
-                            <div class="input-group">
-                                <select class="form-control" data-width="100%" name="unit_kerja_id" id="unit_kerja_id" required>
-                                    <option value="0">kosong</option>
-                                    @foreach($unitkerja as $list)
-                                        <option value="{{$list->id}}">{{$list->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <label>File Surat Pernyataan</label>
-                      <br/>
-                      <div class="form-group">
-                          <div class="d-flex align-items-center">
-                              <div class="p-2">
-                                  <input type="file" data-width="100%" name="file_upload_surat_pernyataan[]" class="dropify" accept=".pdf"
-                                         data-allowed-file-extensions="pdf" data-max-file-size="10M">
-                              </div>
-                          </div>
-                      </div>
-                    
-                  </div>
-              </div>     
-          </div>
+                    @include(env('ADMIN_TEMPLATE').'._component.generate_forms')
+                </div>
 
-                @endif
                 <div class="card-body">
                     <h3 class="form-section first-form">Kegiatan</h3>
                     <p>Perancang mengajukan:</p>
