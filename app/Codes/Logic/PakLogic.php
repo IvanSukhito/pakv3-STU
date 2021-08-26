@@ -976,9 +976,6 @@ class PakLogic
             $getPerancangUnitKerja = $getInfoSuratPernyataan['perancang_unit_kerja'] ?? '';
             $getAtasanName = $getInfoSuratPernyataan['atasan_name'] ?? '';
             $getAtasanNIP = $getInfoSuratPernyataan['atasan_nip'] ?? '';
-            $getAtasanPangkat = $getInfoSuratPernyataan['atasan_pangkat'] ?? '';
-            $getAtasanJabatan = $getInfoSuratPernyataan['atasan_jabatan'] ?? '';
-            $getAtasanUnitKerja = $getInfoSuratPernyataan['atasan_unit_kerja'] ?? '';
             $getListOldKredit = $getInfoSuratPernyataan['old_kredit'] ?? [];
             $getListOldTopKredit = $getInfoSuratPernyataan['old_top_kredit'] ?? [];
 
@@ -1104,7 +1101,6 @@ class PakLogic
             $row += 1;
             $column = 8;
             $column2 = 10;
-            $startRow = $row;
             $sheet->setCellValueByColumnAndRow($column, $row, 'LAMPIRAN II:');
             $sheet->setCellValueByColumnAndRow($column2, $row, 'KEPUTUSAN BERSAMA MENTERI KEHAKIMAN DAN HAK ASASI MANUSIA DAN KEPALA BADAN KEPEGAWAIAN NEGARA');
             $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
@@ -1114,14 +1110,12 @@ class PakLogic
 
             $row += 1;
             $column2 = 10;
-            $startRow = $row;
             $sheet->setCellValueByColumnAndRow($column2, $row, 'NOMOR : ');
             $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
             $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleLampiran2);
 
             $row += 1;
             $column2 = 10;
-            $startRow = $row;
             $sheet->setCellValueByColumnAndRow($column2, $row, 'NOMOR : ');
             $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
             $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleLampiran2);
@@ -1135,7 +1129,6 @@ class PakLogic
 
             $row += 2;
             $column = 1;
-            $startRow = $row;
             $sheet->setCellValueByColumnAndRow($column++, $row, 'DAFTAR USUL PENETAPAN ANGKA KREDIT');
             $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
             $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray($styleJudul);
@@ -1481,8 +1474,8 @@ class PakLogic
             $row += 6;
             $column = 2;
             $column2 = 11;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'TITIK SUSIAWATI, S.H., M.H.');
-            $sheet->setCellValueByColumnAndRow($column2, $row, 'MEGA FITRIYA, S.H.');
+            $sheet->setCellValueByColumnAndRow($column, $row, $getAtasanName);
+            $sheet->setCellValueByColumnAndRow($column2, $row, $getPerancangName);
             $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
             $sheet->mergeCellsByColumnAndRow($column,$row, 6, $row);
             $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleFooter);
@@ -1506,13 +1499,13 @@ class PakLogic
 
             $row += 6;
             $column = 7;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'MOHAMAD ALIAMSYAH, S.Sos., S.H., M.H.');
+            $sheet->setCellValueByColumnAndRow($column, $row, '');
             $sheet->mergeCellsByColumnAndRow($column,$row, 10, $row);
             $sheet->getStyleByColumnAndRow($column,$row, 10, $row)->applyFromArray($styleFooter);
 
             $row += 1;
             $column = 7;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'NIP. 192122544429');
+            $sheet->setCellValueByColumnAndRow($column, $row, 'NIP. ');
             $sheet->mergeCellsByColumnAndRow($column,$row, 10, $row);
             $sheet->getStyleByColumnAndRow($column,$row, 10, $row)->applyFromArray($styleFooter);
 
@@ -1544,8 +1537,6 @@ class PakLogic
 						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
 						'color' => array('argb' => '00000000'),
                     )
-
-
 				)
 			));
 
@@ -1581,10 +1572,6 @@ class PakLogic
 
 				)
 			));
-
-
-
-
 
 
             // Redirect output to a client’s web browser (Xls)
