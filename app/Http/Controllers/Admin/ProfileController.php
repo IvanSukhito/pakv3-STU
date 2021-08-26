@@ -66,7 +66,6 @@ class ProfileController extends _GlobalFunctionController
                 'type' => 'select2',
                 'lang' => 'general.pangkat'
             ],
-
             'golongan_id' => [
                 'validation' => [
                     'edit' => 'required'
@@ -358,6 +357,7 @@ class ProfileController extends _GlobalFunctionController
         users.alamat_kantor, users.status, users.tmt_pangkat, users.tmt_jabatan, users.pendidikan_id,
         users.tahun_pelaksanaan_diklat,users.masa_penilaian_ak_terakhir, users.angka_kredit_terakhir')
                 ->where('users.perancang', '=', 1)
+                ->where('users.upline_id', '=', $adminId)
                 ->leftJoin('role AS B', 'B.id', '=', 'users.role_id')
                 ->leftJoin('pangkat AS C', 'C.id', '=', 'users.pangkat_id')
                 ->leftJoin('golongan as D', 'D.id','=', 'users.golongan_id')
@@ -420,6 +420,8 @@ class ProfileController extends _GlobalFunctionController
         else {
             $getPassing = $this->passing;
         }
+
+        dd($getRoleType);
 
         $data['data'] = $getData;
         $data['formsTitle'] = __('general.title_edit', ['field' => __('general.profile') . ' ' . $getData->name]);

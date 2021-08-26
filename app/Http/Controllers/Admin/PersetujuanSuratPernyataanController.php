@@ -497,4 +497,23 @@ class PersetujuanSuratPernyataanController extends _CrudController
         }
     }
 
+    public function showDupakPdf($id)
+    {
+        $this->callPermission();
+
+        $userId = session()->get('admin_id');
+
+        $getAtasan = Users::where('id', $userId)->first();
+        if (!$getAtasan) {
+            return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+        }
+
+        $getDupak = Dupak::where('id', $id)->first();
+        if ($getDupak) {
+            $getPAKLogic = new PakLogic();
+            $getPAKLogic->generateDupak($id);
+        }
+        return redirect()->route($this->rootRoute.'.' . $this->route . '.index');
+    }
+
 }

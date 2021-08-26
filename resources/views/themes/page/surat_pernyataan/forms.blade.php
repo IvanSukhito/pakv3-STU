@@ -126,7 +126,7 @@ else {
 
                                    <li>{!! $dataTop ? $dataTop['name'] : '' !!} - {!!number_format($sumAk,3)!!}
                                        @if (in_array($viewType, ['show']) && in_array($data->status, [80]))
-                                           <a href="{!! route('admin.surat-pernyataan.showPdf', $getSuratPernyataan) !!}" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
+                                           <a href="{!! route('admin.'.$thisRoute.'.showPdf', $getSuratPernyataan) !!}" class="mb-2 mr-2 btn btn-primary" title="@lang('general.download_pdf')">
                                                <i class="fa fa-download"></i><span class=""> @lang('general.download_pdf')</span>
                                            </a>
                                        @endif
