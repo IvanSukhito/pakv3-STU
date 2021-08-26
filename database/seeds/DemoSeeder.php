@@ -33,8 +33,8 @@ class DemoSeeder extends Seeder
         ]);
 
         $getSekRole = DB::table('role')->insertGetId([
-            'name' => 'Seketariat',
-            'permission_data' =>  '{"role_seketariat":1,"pemuktahiran-data-diri":{"list":1,"create":1,"show":1},"persetujuan-dupak":{"list":1,"edit":1,"show":1}}',
+            'name' => 'Sekretariat',
+            'permission_data' =>  '{"role_sekretariat":1,"pemuktahiran-data-diri":{"list":1,"create":1,"show":1},"persetujuan-dupak":{"list":1,"edit":1,"show":1}}',
             'permission_route' => '["admin.pemuktahiran-data-diri.index","admin.pemuktahiran-data-diri.dataTable","admin.pemuktahiran-data-diri.create","admin.pemuktahiran-data-diri.store","admin.pemuktahiran-data-diri.show","admin.persetujuan-dupak.index","admin.persetujuan-dupak.dataTable","admin.persetujuan-dupak.edit","admin.persetujuan-dupak.update","admin.persetujuan-dupak.show","admin.persetujuan-dupak.showPdf","admin.persetujuan-dupak.showDupakPdf"]',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
@@ -71,7 +71,7 @@ class DemoSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ]);
             DB::table('users')->insertGetId([
-                'name' => 'seketariat '.$i,
+                'name' => 'sekretariat '.$i,
                 'username' => 'sek'.$i,
                 'upline_id' => $getId,
                 'password' => bcrypt('123456'),

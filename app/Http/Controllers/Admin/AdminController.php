@@ -140,7 +140,7 @@ class AdminController extends _CrudController
         $getRoleType = json_decode($getRole->permission_data, true);
         $data['perancang'] = $getRoleType['role_perancang'] ?? 0;
         $data['atasan'] = $getRoleType['role_atasan'] ?? 0;
-        $data['sekretariat'] = $getRoleType['role_seketariat'] ?? 0;
+        $data['sekretariat'] = $getRoleType['role_sekretariat'] ?? 0;
         $data['tim_penilai'] = $getRoleType['role_tim_penilai'] ?? 0;
 
         $getData = $this->crud->store($data);
@@ -210,7 +210,7 @@ class AdminController extends _CrudController
 
         $data['perancang'] = $getRoleType['role_perancang'] ?? 0;
         $data['atasan'] = $getRoleType['role_atasan'] ?? 0;
-        $data['sekretariat'] = $getRoleType['role_seketariat'] ?? 0;
+        $data['sekretariat'] = $getRoleType['role_sekretariat'] ?? 0;
         $data['tim_penilai'] = $getRoleType['role_tim_penilai'] ?? 0;
 
         $getData = $this->crud->update($data, $id);

@@ -140,8 +140,8 @@ if ( ! function_exists('getValidatePermissionMenu')) {
                 else if ($key == 'role_atasan') {
                     $listMenu['role_atasan'] = 1;
                 }
-                else if ($key == 'role_seketariat') {
-                    $listMenu['role_seketariat'] = 1;
+                else if ($key == 'role_sekretariat') {
+                    $listMenu['role_sekretariat'] = 1;
                 }
                 else if ($key == 'role_tim_penilai') {
                     $listMenu['role_tim_penilai'] = 1;
@@ -181,10 +181,10 @@ if ( ! function_exists('generateListPermission')) {
                     Atasan
                 </label><br/><br/>';
 
-                $value = isset($data['role_seketariat']) ? 'checked' : '';
-                $html .= '<label for="role_seketariat">
-                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_seketariat"
-                    data-name="role_seketariat" name="permission[role_seketariat]" value="1" id="role_seketariat"/>
+                $value = isset($data['role_sekretariat']) ? 'checked' : '';
+                $html .= '<label for="role_sekretariat">
+                    <input '.$value.' style="margin-right: 5px;" type="checkbox" class="role_sekretariat"
+                    data-name="role_sekretariat" name="permission[role_sekretariat]" value="1" id="role_sekretariat"/>
                     Sekretariat
                 </label><br/><br/>';
 
@@ -478,7 +478,7 @@ if ( ! function_exists('listAllMenu')) {
                     'admin.staff.',
                     'admin.atasan.',
                     'admin.perancang.',
-                    'admin.seketariat.',
+                    'admin.sekretariat.',
                     'admin.tim_penilai.',
                 ],
                 'type' => 2,
@@ -501,11 +501,11 @@ if ( ! function_exists('listAllMenu')) {
                     ],
 
                     [
-                       'name' => __('general.seketariat'),
-                        'title' => __('general.seketariat'),
-                        'active' => ['admin.seketariat.'],
-                       'route' => 'admin.seketariat.index',
-                        'key' => 'seketariat',
+                       'name' => __('general.sekretariat'),
+                        'title' => __('general.sekretariat'),
+                        'active' => ['admin.sekretariat.'],
+                       'route' => 'admin.sekretariat.index',
+                        'key' => 'sekretariat',
                         'type' => 1
                     ],
                    [
@@ -617,7 +617,7 @@ if ( ! function_exists('listAvailablePermission'))
             'kegiatan',
             'perancang',
             'atasan',
-            'seketariat',
+            'sekretariat',
             'tim_penilai',
             'instansi',
             'pangkat',

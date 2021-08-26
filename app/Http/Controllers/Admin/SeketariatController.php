@@ -12,7 +12,7 @@ use App\Codes\Models\JenjangPerancang;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 
-class SeketariatController extends _CrudController
+class SekretariatController extends _CrudController
 {
     public function __construct(Request $request)
     {
@@ -69,7 +69,7 @@ class SeketariatController extends _CrudController
         ];
 
         parent::__construct(
-            $request, 'general.seketariat', 'seketariat', 'Users', 'seketariat',
+            $request, 'general.sekretariat', 'sekretariat', 'Users', 'sekretariat',
             $passingData
         );
 
@@ -82,7 +82,7 @@ class SeketariatController extends _CrudController
         }
         $this->data['listSet']['unit_kerja_id'] = $listUnitKerja;
         $this->data['listSet']['status'] = get_list_status();
-        $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.seketariat.list';
+        $this->listView['index'] = env('ADMIN_TEMPLATE') . '.page.sekretariat.list';
         //$this->passingData = Users::where('role_id',3);
     }
 
@@ -164,16 +164,16 @@ class SeketariatController extends _CrudController
         $getUnitKerja = $this->request->get('unit_kerja_id');
         $getStatus = $this->request->get('status');
 
-        $seketariat = new Users();
-        $seketariat->name = $getName;
-        $seketariat->username = $getUsername;
-        $seketariat->email = $getEmail;
-        $seketariat->password = Hash::make('123');
-        $seketariat->unit_kerja_id = $getUnitKerja;
-        $seketariat->status = $getStatus;
-        $seketariat->role_id = 4;
-        $seketariat->sekretariat = 1;
-        $seketariat->save();
+        $sekretariat = new Users();
+        $sekretariat->name = $getName;
+        $sekretariat->username = $getUsername;
+        $sekretariat->email = $getEmail;
+        $sekretariat->password = Hash::make('123');
+        $sekretariat->unit_kerja_id = $getUnitKerja;
+        $sekretariat->status = $getStatus;
+        $sekretariat->role_id = 4;
+        $sekretariat->sekretariat = 1;
+        $sekretariat->save();
 
         if($this->request->ajax()){
             return response()->json(['result' => 1, 'message' => __('general.success_add')]);

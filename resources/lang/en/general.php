@@ -501,7 +501,7 @@ return [
     'cycling' => 'Cycling',
     'sampling' => 'Sampling',
     'instagram' => 'Instagram',
-    'seketariat' => 'Sekretariat',
+    'sekretariat' => 'Sekretariat',
     'kegiatan' => 'Kegiatan',
     'instansi' => 'Instansi',
     'jenis_kelamin' => 'Jenis Kelamin',

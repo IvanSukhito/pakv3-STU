@@ -69,8 +69,8 @@ class SetupSeeder extends Seeder
             array(
                 array('name' => 'Perancang'),
                 array('name' => 'Pembina'),
-                array('name' => 'Seketariat Daerah'),
-                array('name' => 'Seketariat Pusat'),
+                array('name' => 'Sekretariat Daerah'),
+                array('name' => 'Sekretariat Pusat'),
                 array('name' => 'Tim Penilai'),
             )
         );

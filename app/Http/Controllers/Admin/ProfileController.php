@@ -21,7 +21,7 @@ class ProfileController extends _GlobalFunctionController
     protected $passing;
     protected $passingPerancang;
     protected $passingAtasan;
-    protected $passingSeketariat;
+    protected $passingSekretariat;
     protected $passingTimPerancang;
     protected $passingPassword;
 
@@ -266,7 +266,7 @@ class ProfileController extends _GlobalFunctionController
                 'lang' => 'general.gender'
             ],
         ]);
-        $this->passingSeketariat = generatePassingData([
+        $this->passingSekretariat = generatePassingData([
             'username' => [
                 'extra' => [
                     'edit' => ['disabled' => true]
@@ -292,7 +292,7 @@ class ProfileController extends _GlobalFunctionController
                 'lang' => 'general.unit_kerja'
             ],
         ]);
-        $this->passingTimPerancang = $this->passingSeketariat;
+        $this->passingTimPerancang = $this->passingSekretariat;
         $this->passingPassword = generatePassingData([
             'old_password' => [
                 'type' => 'password',
@@ -342,7 +342,7 @@ class ProfileController extends _GlobalFunctionController
         $getRoleType = json_decode($role->permission_data, true);
         $getPerancang = isset($getRoleType['role_perancang']) ?? 0;
         $getAtasan = isset($getRoleType['role_atasan']) ?? 0;
-        $getSeketariat = isset($getRoleType['role_seketariat']) ?? 0;
+        $getSekretariat = isset($getRoleType['role_sekretariat']) ?? 0;
         $getTim = isset($getRoleType['role_tim_penilai']) ?? 0;
         if ($getPerancang == 1) {
             $getPassing = $this->passingPerancang;
@@ -366,8 +366,8 @@ class ProfileController extends _GlobalFunctionController
                 ->leftJoin('instansi as G','G.id','=','users.instansi_id')
                 ->leftJoin('jabatan_perancang as H','H.id','=','users.jabatan_perancang_id')->get();
         }
-        elseif ($getSeketariat == 1) {
-            $getPassing = $this->passingSeketariat;
+        elseif ($getSekretariat == 1) {
+            $getPassing = $this->passingSekretariat;
             $getPerancangData = false;
         }
         elseif ($getTim == 1) {
@@ -402,7 +402,7 @@ class ProfileController extends _GlobalFunctionController
         $getRoleType = json_decode($role->permission_data, true);
         $getPerancang = $getRoleType['role_perancang'] ?? 0;
         $getAtasan = isset($getRoleType['role_atasan']) ?? 0;
-        $getSeketariat = isset($getRoleType['role_seketariat']) ?? 0;
+        $getSekretariat = isset($getRoleType['role_sekretariat']) ?? 0;
         $getTim = isset($getRoleType['role_tim_penilai']) ?? 0;
         if ($getPerancang == 1) {
             $getPassing = $this->passingPerancang;
@@ -411,8 +411,8 @@ class ProfileController extends _GlobalFunctionController
         elseif ($getAtasan == 1) {
             $getPassing = $this->passingAtasan;
         }
-        elseif ($getSeketariat == 1) {
-            $getPassing = $this->passingSeketariat;
+        elseif ($getSekretariat == 1) {
+            $getPassing = $this->passingSekretariat;
         }
         elseif ($getTim == 1) {
             $getPassing = $this->passingTimPerancang;
@@ -444,7 +444,7 @@ class ProfileController extends _GlobalFunctionController
         $getRoleType = json_decode($role->permission_data, true);
         $getPerancang = isset($getRoleType['role_perancang']) ?? 0;
         $getAtasan = isset($getRoleType['role_atasan']) ?? 0;
-        $getSeketariat = isset($getRoleType['role_seketariat']) ?? 0;
+        $getSekretariat = isset($getRoleType['role_sekretariat']) ?? 0;
         $getTim = isset($getRoleType['role_tim_penilai']) ?? 0;
         if ($getPerancang == 1) {
             $getPassing = $this->passingPerancang;
@@ -453,8 +453,8 @@ class ProfileController extends _GlobalFunctionController
         elseif ($getAtasan == 1) {
             $getPassing = $this->passingAtasan;
         }
-        elseif ($getSeketariat == 1) {
-            $getPassing = $this->passingSeketariat;
+        elseif ($getSekretariat == 1) {
+            $getPassing = $this->passingSekretariat;
         }
         elseif ($getTim == 1) {
             $getPassing = $this->passingTimPerancang;

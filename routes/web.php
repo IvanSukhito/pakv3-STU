@@ -49,7 +49,7 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
                 'Admin\MsKegiatanController' => 'ms-kegiatan',
                 'Admin\PerancangController' => 'perancang',
                 'Admin\AtasanController' => 'atasan',
-                'Admin\SeketariatController' => 'seketariat',
+                'Admin\SekretariatController' => 'sekretariat',
                 'Admin\TimPenilaiController' => 'tim_penilai',
                 'Admin\KegiatanController' => 'kegiatan',
                 'Admin\SuratPernyataanController' => 'surat-pernyataan',
