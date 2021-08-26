@@ -33,15 +33,14 @@ class PersetujuanDupakController extends _CrudController
             'total_kredit' => [
                 'type' => 'number'
             ],
-            'kegiatan' => [
-                'custom' => ', name:"ms_kegiatan.name"'
+            'tanggal_mulai' => [
+                'type' => 'datetime'
+            ],
+            'tanggal_akhir' => [
+                'type' => 'datetime'
             ],
             'status' => [
                 'type' => 'select'
-            ],
-            'created_at' => [
-                'lang' => 'DiKirim',
-                'type' => 'datetime'
             ],
             'updated_at' => [
                 'lang' => 'DiUpdate',
@@ -77,11 +76,10 @@ class PersetujuanDupakController extends _CrudController
 
         $dataTables = new DataTables();
 
-        $builder = Users::selectRaw('tx_dupak.id, users.username, users.name, ms_kegiatan.name AS kegiatan, tx_dupak.status,
+        $builder = Dupak::selectRaw('tx_dupak.id, users.username, users.name,
+            tx_dupak.tanggal_mulai, tx_dupak.tanggal_akhir, tx_dupak.status,
             tx_dupak.total_kredit, tx_dupak.created_at, tx_dupak.updated_at')
-            ->join('tx_dupak', 'tx_dupak.user_id', '=', 'users.id')
-            ->join('ms_kegiatan', 'ms_kegiatan.id', '=', 'tx_dupak.top_kegiatan_id')
-            ->where('tx_dupak.user_id', $userId)
+            ->join('users', 'users.id', '=', 'tx_dupak.user_id')
             ->whereIn('tx_dupak.status', [1,2,3,80,99]);
 
         $dataTables = $dataTables->eloquent($builder)

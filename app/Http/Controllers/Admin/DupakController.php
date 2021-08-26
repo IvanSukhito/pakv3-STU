@@ -344,6 +344,7 @@ class DupakController extends _CrudController
                 $listDoc->move($destinationPath, $setFileName);
 
                 $totalDokument[] = [
+                    'id' => $getDoc,
                     'name' => $setFileName,
                     'path' => $destinationLink
                 ];
