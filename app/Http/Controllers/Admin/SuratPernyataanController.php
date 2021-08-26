@@ -70,7 +70,7 @@ class SuratPernyataanController extends _CrudController
                 SUM(tx_surat_pernyataan.total_kredit) AS total_kredit, tx_surat_pernyataan.created_at,
                 tx_surat_pernyataan.updated_at')
             ->join('tx_surat_pernyataan', 'tx_surat_pernyataan.user_id', '=', 'users.id')
-            ->where('users.id', $userId)
+            ->where('tx_surat_pernyataan.user_id', $userId)
             ->whereIn('tx_surat_pernyataan.status', [80,99])
             ->groupByRaw('users.id, tx_surat_pernyataan.status,
                 tx_surat_pernyataan.tanggal_mulai, tx_surat_pernyataan.tanggal_akhir,
@@ -165,7 +165,7 @@ class SuratPernyataanController extends _CrudController
         }
 
         $getPAKLogic = new PakLogic();
-        $getData = $getPAKLogic->getSuratPernyataanUser($getSuratPernyataan);
+        $getData = $getPAKLogic->getSuratPernyataanUser($getSuratPernyataanIds);
 
         $getJenjangPerancang = JenjangPerancang::where('status', 1)->orderBy('order_high', 'ASC')->get();
 

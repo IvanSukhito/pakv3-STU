@@ -455,7 +455,7 @@ class PakLogic
             $getAtasanJabatan = $getInfoSuratPernyataan['atasan_jabatan'] ?? '';
             $getAtasanUnitKerja = $getInfoSuratPernyataan['atasan_unit_kerja'] ?? '';
 
-            $getData = $this->getSuratPernyataanUser($getSuratPernyataan);
+            $getData = $this->getSuratPernyataanUser([$suratPernyataanId]);
             $getDataKegiatan = $getData['data'] ?? [];
             $getTotalTop = $getData['total_top'][0] ?? 0;
             $getListTopKegiatan = $getData['top_kegiatan'];
@@ -1045,7 +1045,7 @@ class PakLogic
                     'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                     'wrapText' => true
                 )
-              
+
             );
 
             $styleFooter = array(
@@ -1057,7 +1057,7 @@ class PakLogic
                     'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                     'wrapText' => true
                 )
-              
+
             );
 
             $styleLampiran2 = array(
@@ -1069,10 +1069,10 @@ class PakLogic
                     'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                     'wrapText' => true
                 )
-              
+
             );
 
-            
+
             $styleLampiran1 = array(
                 'font' => array(
                     'size' => 12,5
@@ -1082,14 +1082,14 @@ class PakLogic
                     'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
                     'wrapText' => true
                 )
-              
+
             );
 
             $styleJudul2 = array(
                 'font' => array(
                     'bold' => true,
                     'size' => 11
-                )    
+                )
             );
 
             $totalColumn = $column;
@@ -1107,14 +1107,14 @@ class PakLogic
             $sheet->mergeCellsByColumnAndRow($column,$row, 9, $row);
             $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleLampiran2);
             $sheet->getStyleByColumnAndRow($column,$row, 9, $row)->applyFromArray($styleLampiran1);
-     
+
             $row += 1;
             $column2 = 10;
             $startRow = $row;
             $sheet->setCellValueByColumnAndRow($column2, $row, 'NOMOR : ');
             $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
             $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleLampiran2);
-     
+
             $row += 1;
             $column2 = 10;
             $startRow = $row;
@@ -1128,7 +1128,7 @@ class PakLogic
             $sheet->setCellValueByColumnAndRow($column2, $row, 'TANGGAL : ');
             $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
             $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleLampiran2);
-       
+
             $row += 2;
             $column = 1;
             $startRow = $row;
@@ -1452,7 +1452,7 @@ class PakLogic
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column, $row, '5.Surat pernyataan melakukan kegiatan penunjang profesi');
             $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
-   
+
             $row += 1;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column, $row, '6.Bukti fisik');
@@ -1467,23 +1467,23 @@ class PakLogic
             $row += 1;
             $column = 2;
             $column2 = 11;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'Atasan Langsung');                 
+            $sheet->setCellValueByColumnAndRow($column, $row, 'Atasan Langsung');
             $sheet->setCellValueByColumnAndRow($column2, $row, 'Perancang yang bersangkutan,');
             $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
             $sheet->mergeCellsByColumnAndRow($column,$row, 6, $row);
             $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleFooter);
             $sheet->getStyleByColumnAndRow($column,$row, 6, $row)->applyFromArray($styleFooter);
-         
+
             $row += 6;
             $column = 2;
             $column2 = 11;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'TITIK SUSIAWATI, S.H., M.H.');  
+            $sheet->setCellValueByColumnAndRow($column, $row, 'TITIK SUSIAWATI, S.H., M.H.');
             $sheet->setCellValueByColumnAndRow($column2, $row, 'MEGA FITRIYA, S.H.');
             $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
             $sheet->mergeCellsByColumnAndRow($column,$row, 6, $row);
             $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleFooter);
-            $sheet->getStyleByColumnAndRow($column,$row, 6, $row)->applyFromArray($styleFooter);  
-            
+            $sheet->getStyleByColumnAndRow($column,$row, 6, $row)->applyFromArray($styleFooter);
+
             $row += 1;
             $column = 2;
             $column2 = 11;
@@ -1493,42 +1493,42 @@ class PakLogic
             $sheet->mergeCellsByColumnAndRow($column,$row, 6, $row);
             $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleFooter);
             $sheet->getStyleByColumnAndRow($column,$row, 6, $row)->applyFromArray($styleFooter);
-         
+
             $row += 1;
             $column = 7;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'Pejabat Pengusul');                 
+            $sheet->setCellValueByColumnAndRow($column, $row, 'Pejabat Pengusul');
             $sheet->mergeCellsByColumnAndRow($column,$row, 10, $row);
             $sheet->getStyleByColumnAndRow($column,$row, 10, $row)->applyFromArray($styleFooter);
-        
+
             $row += 6;
             $column = 7;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'MOHAMAD ALIAMSYAH, S.Sos., S.H., M.H.');  
+            $sheet->setCellValueByColumnAndRow($column, $row, 'MOHAMAD ALIAMSYAH, S.Sos., S.H., M.H.');
             $sheet->mergeCellsByColumnAndRow($column,$row, 10, $row);
             $sheet->getStyleByColumnAndRow($column,$row, 10, $row)->applyFromArray($styleFooter);
 
             $row += 1;
             $column = 7;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'NIP. 192122544429');  
+            $sheet->setCellValueByColumnAndRow($column, $row, 'NIP. 192122544429');
             $sheet->mergeCellsByColumnAndRow($column,$row, 10, $row);
             $sheet->getStyleByColumnAndRow($column,$row, 10, $row)->applyFromArray($styleFooter);
-         
+
             //Table bawah
             $row += 3;
             $startRowFooter = $row;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'Catatan Tim Penilai'); 
+            $sheet->setCellValueByColumnAndRow($column, $row, 'Catatan Tim Penilai');
             $sheet->getRowDimension($row)->setRowHeight(90.23);
-			
-            $row += 3;
-            $column = 1;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'Ketua Tim Penilai');  
-            $sheet->getRowDimension($row)->setRowHeight(90.23);
-            
 
             $row += 3;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'NIP.');  
-         
+            $sheet->setCellValueByColumnAndRow($column, $row, 'Ketua Tim Penilai');
+            $sheet->getRowDimension($row)->setRowHeight(90.23);
+
+
+            $row += 3;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow($column, $row, 'NIP.');
+
             $sheet->getStyleByColumnAndRow($column,$startRowFooter, $totalColumn, $row)->applyFromArray(array(
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
@@ -1540,28 +1540,28 @@ class PakLogic
 						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
 						'color' => array('argb' => '00000000'),
                     )
-                
-              
+
+
 				)
 			));
 
-                
+
             $row += 1;
             $startRowFooter = $row;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'Catatan Pejabat Penilai');  
+            $sheet->setCellValueByColumnAndRow($column, $row, 'Catatan Pejabat Penilai');
             $sheet->getRowDimension($row)->setRowHeight(90.23);
-			
+
             $row += 3;
             $column = 1;
             $sheet->setCellValueByColumnAndRow($column, $row, 'Pejabat Penilai');
             $sheet->getRowDimension($row)->setRowHeight(90.23);
-            
+
 
             $row += 3;
             $column = 1;
-            $sheet->setCellValueByColumnAndRow($column, $row, 'NIP.');  
-         
+            $sheet->setCellValueByColumnAndRow($column, $row, 'NIP.');
+
             $sheet->getStyleByColumnAndRow($column,$startRowFooter, $totalColumn, $row)->applyFromArray(array(
 				'alignment' => array(
 					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
@@ -1573,12 +1573,12 @@ class PakLogic
 						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
 						'color' => array('argb' => '00000000'),
                     )
-                
-              
+
+
 				)
 			));
 
-      
+
 
 
 
@@ -1647,7 +1647,7 @@ class PakLogic
         ini_set('memory_limit', -1);
         ini_set('max_execution_time', -1);
 
-        
+
         $spreadsheet = new Spreadsheet();
         $spreadsheet->getProperties()->setCreator('Peraturan Perundang-undangan')
             ->setLastModifiedBy('PAK')
@@ -1667,11 +1667,11 @@ class PakLogic
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 'wrapText' => true
             )
-          
+
         );
         $styleJudul2 = array(
             'font' => array(
-               
+
                 'size' => 12
             ),
             'alignment' => array(
@@ -1679,11 +1679,11 @@ class PakLogic
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 'wrapText' => true
             )
-          
+
         );
         $styleJudul2b = array(
             'font' => array(
-               
+
                 'size' => 12
             ),
             'alignment' => array(
@@ -1691,7 +1691,7 @@ class PakLogic
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 'wrapText' => true
             )
-          
+
         );
 
         $stlyeJudulBot = array(
@@ -1711,7 +1711,7 @@ class PakLogic
                 )
             )
 
-          
+
         );
         $styleIsi1No = array(
             'font' => array(
@@ -1729,7 +1729,7 @@ class PakLogic
                 )
             )
 
-          
+
         );
 
         $styleIsi1Left = array(
@@ -1741,8 +1741,8 @@ class PakLogic
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 'wrapText' => true
             ),
-          
-          
+
+
         );
         $styleIsi1Right = array(
             'font' => array(
@@ -1753,12 +1753,12 @@ class PakLogic
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
                 'wrapText' => true
             ),
-          
-          
+
+
         );
 
 
-        
+
 
 
         $column = 1;
@@ -1779,21 +1779,21 @@ class PakLogic
         $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
         $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray($styleJudul);
 
-      
+
         $row += 1;
         $column = 1;
         $sheet->setCellValueByColumnAndRow($column++, $row, 'PERATURAN PERUNDANG-UNDANGAN');
         $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
         $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray($styleJudul);
 
-      
+
         $row += 1;
         $column = 1;
         $sheet->setCellValueByColumnAndRow($column++, $row, 'NOMOR : PPE.KP.10.02 - 437 Tahun 2021');
         $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
         $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray($stlyeJudulBot);
 
-         
+
         $row += 2;
         $column = 1;
         $column2 = 4;
@@ -1804,7 +1804,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(1,$row, 2, $row)->applyFromArray($styleJudul2);
         $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleJudul2);
 
-           
+
         $row += 1;
         $column = 1;
         $column2 = 4;
@@ -1814,8 +1814,8 @@ class PakLogic
         $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
         $sheet->getStyleByColumnAndRow(1,$row, 2, $row)->applyFromArray($styleJudul2);
         $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleJudul2);
-       
-      
+
+
         $row += 2;
         $startRow = $row;
         $column = 1;
@@ -1827,7 +1827,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -1840,12 +1840,12 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
-        
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -1859,7 +1859,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -1892,7 +1892,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -1912,7 +1912,7 @@ class PakLogic
             )
         ));
 
-        
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -1926,7 +1926,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -1946,7 +1946,7 @@ class PakLogic
             )
         ));
 
-        
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -1960,7 +1960,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -1980,7 +1980,7 @@ class PakLogic
             )
         ));
 
-        
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -1994,7 +1994,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2014,7 +2014,7 @@ class PakLogic
             )
         ));
 
-            
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -2028,7 +2028,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2061,7 +2061,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2081,7 +2081,7 @@ class PakLogic
             )
         ));
 
-         
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -2092,7 +2092,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2105,8 +2105,8 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
@@ -2123,7 +2123,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2157,7 +2157,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2191,7 +2191,7 @@ class PakLogic
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2227,7 +2227,7 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-               
+
             )
         ));
 
@@ -2240,14 +2240,14 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '');
         $sheet->setCellValueByColumnAndRow(3, $row, 'PENETAPAN ANGKA KREDIT');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, 'LAMA');
         $sheet->setCellValueByColumnAndRow(5, $row, 'JUMLAH');
         $sheet->setCellValueByColumnAndRow(6, $row, 'BARU');
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2260,8 +2260,8 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
@@ -2273,14 +2273,14 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '1');
         $sheet->setCellValueByColumnAndRow(3, $row, 'UNSUR  UTAMA');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '');
         $sheet->setCellValueByColumnAndRow(5, $row, '');
         $sheet->setCellValueByColumnAndRow(6, $row, '');
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2293,8 +2293,8 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
@@ -2306,14 +2306,14 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '');
         $sheet->setCellValueByColumnAndRow(3, $row, 'a. Pendidikan :');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '');
         $sheet->setCellValueByColumnAndRow(5, $row, '');
         $sheet->setCellValueByColumnAndRow(6, $row, '');
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2326,8 +2326,8 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
@@ -2339,14 +2339,14 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '');
         $sheet->setCellValueByColumnAndRow(3, $row, '1)Pendidikan sekolah dan memperoleh gelar/ijazah');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '100,000');
         $sheet->setCellValueByColumnAndRow(5, $row, '-');
         $sheet->setCellValueByColumnAndRow(6, $row, '100,000');
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2359,8 +2359,8 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
@@ -2372,14 +2372,14 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '');
         $sheet->setCellValueByColumnAndRow(3, $row, '2)Pendidikan dan pelatihan fungsional perancang peraturan perundang-undangan dan mendapatkan Surat Tanda Tamat Pendidikan dan Pelatihan (STTPL)');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '9,000');
         $sheet->setCellValueByColumnAndRow(5, $row, '-');
         $sheet->setCellValueByColumnAndRow(6, $row, '9,000');
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2392,12 +2392,12 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
-        
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -2406,14 +2406,14 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '');
         $sheet->setCellValueByColumnAndRow(3, $row, 'a. Penyusunan Peraturan Perundang-undangan/instrumen hukum:');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '23,180');
         $sheet->setCellValueByColumnAndRow(5, $row, '49,859');
         $sheet->setCellValueByColumnAndRow(6, $row, '73,039');
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2426,11 +2426,11 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
-        
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -2439,7 +2439,7 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '');
         $sheet->setCellValueByColumnAndRow(3, $row, 'Jumlah Unsur Utama');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '132,180');
         $sheet->setCellValueByColumnAndRow(5, $row, '49,859');
         $sheet->setCellValueByColumnAndRow(6, $row, '73,039');
@@ -2459,8 +2459,8 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
@@ -2472,14 +2472,14 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '2');
         $sheet->setCellValueByColumnAndRow(3, $row, 'UNSUR  PENUNJANG');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '');
         $sheet->setCellValueByColumnAndRow(5, $row, '');
         $sheet->setCellValueByColumnAndRow(6, $row, '');
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2492,8 +2492,8 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
@@ -2505,14 +2505,14 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '');
         $sheet->setCellValueByColumnAndRow(3, $row, 'Kegiatan yang menunjang pelaksanaan kegiatan Perancang Peraturan Perundang-undangan');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '26,000');
         $sheet->setCellValueByColumnAndRow(5, $row, '10,000');
         $sheet->setCellValueByColumnAndRow(6, $row, '36,000');
         $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
         $sheet->getStyleByColumnAndRow($column3,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 10
             ),
             'alignment' => array(
@@ -2525,12 +2525,12 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
-        
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -2539,7 +2539,7 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '');
         $sheet->setCellValueByColumnAndRow(3, $row, 'Jumlah Unsur Penunjang');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '26,000');
         $sheet->setCellValueByColumnAndRow(5, $row, '10,000');
         $sheet->setCellValueByColumnAndRow(6, $row, '36,000');
@@ -2559,12 +2559,12 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
-        
+
         $row += 1;
         $column = 1;
         $column2 = 2;
@@ -2574,7 +2574,7 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column2++, $row, '');
         $sheet->setCellValueByColumnAndRow(3, $row, 'Jumlah Unsur Utama + Jumlah Unsur Penunjang');
         $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
-   
+
         $sheet->setCellValueByColumnAndRow(4, $row, '158,180');
         $sheet->setCellValueByColumnAndRow(5, $row, '59,859');
         $sheet->setCellValueByColumnAndRow(6, $row, '99,039');
@@ -2594,12 +2594,12 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
-        
+
         $sheet->setCellValueByColumnAndRow(1, $startRow, 'II');
         $sheet->mergeCellsByColumnAndRow(1,$startRow, 1, $endRow);
         $sheet->getStyleByColumnAndRow(1,$startRow, 1, $endRow)->applyFromArray(array(
@@ -2616,11 +2616,11 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-               
+
             )
         ));
 
-        
+
         $row += 1;
         $startRow = $row;
         $column = 1;
@@ -2632,7 +2632,7 @@ class PakLogic
         $sheet->mergeCellsByColumnAndRow($column3,$row, $totalColumn, $row);
         $sheet->getStyleByColumnAndRow($column,$row, $totalColumn, $row)->applyFromArray(array(
             'font' => array(
-                
+
                 'size' => 12
             ),
             'alignment' => array(
@@ -2645,8 +2645,8 @@ class PakLogic
                     'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => array('argb' => '00000000'),
                 )
-            
-          
+
+
             )
         ));
 
@@ -2692,7 +2692,7 @@ class PakLogic
         $sheet->setCellValueByColumnAndRow($column, $row, 'Kepala Kantor Badan Kepegawaian Negara Regional V di Jakarta');
         $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
 
-        
+
         $row += 1;
         $column = 1;
         $sheet->setCellValueByColumnAndRow($column, $row, 'TEMBUSAN disampaikan dengan hormat kepada');
@@ -2717,23 +2717,23 @@ class PakLogic
         $column = 2;
         $sheet->setCellValueByColumnAndRow($column, $row, '4. Pejabat yang berwenang menetapkan angka kredit; dan');
         $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
-       
+
         $row += 1;
         $column = 2;
         $sheet->setCellValueByColumnAndRow($column, $row, '5. Kepala Biro Kepegawaian Instansi yang bersangkutan');
         $sheet->mergeCellsByColumnAndRow($column,$row, $totalColumn, $row);
-       
 
 
-            
-
-            
-     
-
-       
 
 
-        
+
+
+
+
+
+
+
+
 
 
 

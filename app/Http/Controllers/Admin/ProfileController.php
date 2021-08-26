@@ -421,8 +421,6 @@ class ProfileController extends _GlobalFunctionController
             $getPassing = $this->passing;
         }
 
-        dd($getRoleType);
-
         $data['data'] = $getData;
         $data['formsTitle'] = __('general.title_edit', ['field' => __('general.profile') . ' ' . $getData->name]);
         $data['thisLabel'] = __('general.title_show', ['field' => __('general.profile') . ' ' . $getData->name]);
