@@ -166,6 +166,14 @@ class SetupSeeder extends Seeder
             )
         );
 
+        DB::table('instansi')->truncate();
+
+        DB::table('instansi')->insert(
+            array(
+                array('name' => 'Direktorat Jenderal Peraturan Dan Perundang Undangan'),
+            )
+        );
+
 
         DB::table('pendidikan')->truncate();
 
