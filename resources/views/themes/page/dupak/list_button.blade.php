@@ -4,6 +4,7 @@
         <i class="fa fa-eye"></i>
         <span class="d-none d-md-inline"> @lang('general.show')</span>
     </a>
+
 @endif
 @if ($permission['destroy'])
     <a href="#" class="mb-1 btn btn-danger btn-sm" title="@lang('general.delete')"

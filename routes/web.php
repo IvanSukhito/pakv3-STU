@@ -123,5 +123,6 @@ Route::group(['prefix' => '/', 'middleware'=>['web']], function () use ($router)
 
 Route::get('truncate', 'Admin\HomeController@truncate');
 Route::get('pakPdf', 'Admin\PersetujuanPakController@pdf');
+Route::get('bapakPdf', 'Admin\PersetujuanPakController@bapakPdf');
 //Route::get('check-butir-kegiatan', 'Admin\HomeController@checkButirKegiatan');
 Route::get('fixing-data', 'Admin\HomeController@fixingData');

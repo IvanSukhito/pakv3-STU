@@ -212,6 +212,11 @@ class PersetujuanPakController extends _CrudController
         $getPAKLogic->generatePak();
     }
 
+    public function bapakPdf(){
+        $getBapakLogic = new PakLogic();
+        $getBapakLogic->generateBapak();
+    }
+
     public function show($id)
     {
         $this->callPermission();

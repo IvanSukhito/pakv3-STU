@@ -977,6 +977,9 @@ class PakLogic
             $getPerancangUnitKerja = $getInfoSuratPernyataan['perancang_unit_kerja'] ?? '';
             $getAtasanName = $getInfoSuratPernyataan['atasan_name'] ?? '';
             $getAtasanNIP = $getInfoSuratPernyataan['atasan_nip'] ?? '';
+            $getAtasanPangkat = $getInfoSuratPernyataan['atasan_pangkat'] ?? '';
+            $getAtasanJabatan = $getInfoSuratPernyataan['atasan_jabatan'] ?? '';
+            $getAtasanUnitKerja = $getInfoSuratPernyataan['atasan_unit_kerja'] ?? '';
             $getListOldKredit = $getInfoSuratPernyataan['old_kredit'] ?? [];
             $getListOldTopKredit = $getInfoSuratPernyataan['old_top_kredit'] ?? [];
 
@@ -1538,6 +1541,8 @@ class PakLogic
 						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
 						'color' => array('argb' => '00000000'),
                     )
+
+
 				)
 			));
 
@@ -2752,4 +2757,524 @@ class PakLogic
 
     }
 
+    public function generateBapak(){
+        ini_set('memory_limit', -1);
+        ini_set('max_execution_time', -1);
+
+
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->getProperties()->setCreator('Peraturan Perundang-undangan')
+            ->setLastModifiedBy('PAK')
+            ->setTitle('Laporan Surat Pernyataan')
+            ->setSubject('Laporan Surat Pernyataan')
+            ->setDescription('Laporan Surat Pernyataan');
+
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $styleJudul = array(
+            'font' => array(
+
+                'size' => 12
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            )
+
+        );
+        $styleJudul2 = array(
+            'font' => array(
+
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            )
+
+        );
+        $styleJudul2b = array(
+            'font' => array(
+
+                'size' => 12
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            )
+
+        );
+
+        $stlyeJudulBot = array(
+            'font' => array(
+                'bold' => true,
+                'size' => 12
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'bottom' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+            )
+
+
+        );
+        $styleIsi1No = array(
+            'font' => array(
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+            )
+
+
+        );
+
+        $styleIsi1Left = array(
+            'font' => array(
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+
+
+        );
+        $styleIsi1Right = array(
+            'font' => array(
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+
+
+        );
+        $datenow = date('d-M-Y');
+        $column = 1;
+        //$sheet->getRowDimension('2')->setRowHeight(90.23);
+        $sheet->getColumnDimensionByColumn($column++)->setWidth(5.43);
+        $sheet->getColumnDimensionByColumn($column++)->setWidth(20);
+        $sheet->getColumnDimensionByColumn($column++)->setWidth(20);
+        $sheet->getColumnDimensionByColumn($column++)->setWidth(20);
+        $sheet->getColumnDimensionByColumn($column++)->setWidth(20);
+       // $sheet->getColumnDimensionByColumn($column++)->setWidth(12.43);
+       // $sheet->getColumnDimensionByColumn($column++)->setWidth(50.00);
+        $sheet->getColumnDimensionByColumn($column++)->setWidth(10);
+        $sheet->getColumnDimensionByColumn($column++)->setWidth(10);
+        $sheet->getColumnDimensionByColumn($column++)->setWidth(10);
+
+        $totalColumn = 8;
+
+        $row = 2;
+        $column = 1;
+        $sheet->setCellValueByColumnAndRow($column++, $row, 'BERITA ACARA PENETAPAN ANGKA KREDIT (BAPAK)');
+        $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+        $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray($styleJudul);
+
+
+
+        $row += 1;
+        $column = 1;
+        $sheet->setCellValueByColumnAndRow($column++, $row, 'JABATAN FUNGSIONAL PERANCANG PERATURAN PERUNDANG-UNDANGAN');
+        $sheet->mergeCellsByColumnAndRow(1,$row, $totalColumn, $row);
+        $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray($styleJudul);
+
+
+        $row += 2;
+        $column = 1;
+        $column2 = 4;
+        $sheet->setCellValueByColumnAndRow($column, $row, 'Instansi');
+        $sheet->setCellValueByColumnAndRow($column2, $row, ': Kementrian Hukum dan Hak Asasi Manusia');
+        $sheet->mergeCellsByColumnAndRow(1,$row, 3, $row);
+        $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
+        $sheet->getStyleByColumnAndRow(1,$row, 2, $row)->applyFromArray($styleJudul2);
+        $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleJudul2);
+
+
+        $row += 1;
+        $column = 1;
+        $column2 = 4;
+        $sheet->setCellValueByColumnAndRow($column, $row, 'Masa Penilaian');
+        $sheet->setCellValueByColumnAndRow($column2, $row, ': '.$datenow);
+        $sheet->mergeCellsByColumnAndRow(1,$row, 3, $row);
+        $sheet->mergeCellsByColumnAndRow($column2,$row, $totalColumn, $row);
+        $sheet->getStyleByColumnAndRow(1,$row, 2, $row)->applyFromArray($styleJudul2);
+        $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray($styleJudul2);
+
+        $row += 2;
+        $startRow = $row;
+        $column = 1;
+        $column2 = 2;
+        $column3 = 3;
+       // $sheet->setCellValueByColumnAndRow($column2++, $row, 'No');
+        $sheet->setCellValueByColumnAndRow($column2, $row, 'Perancang yang ditetapkan angka kreditnya');
+        $sheet->mergeCellsByColumnAndRow($column2,$row, 4, $row);
+        $sheet->setCellValueByColumnAndRow(5, $row, 'Jumlah Angka Kredit');
+        $sheet->mergeCellsByColumnAndRow(5,$row, $totalColumn, $row);
+        $sheet->getStyleByColumnAndRow(5,$row, $totalColumn, $row)->applyFromArray($styleIsi1No);
+        $sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
+        $sheet->getStyleByColumnAndRow($column3,$row, 4, $row)->applyFromArray(array(
+            'font' => array(
+
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+
+
+            )
+        ));
+
+        $row += 1;
+        $endRow = $row;
+        $column = 1;
+        $column2 = 2;
+        $sheet->setCellValueByColumnAndRow(2, $row, 'Nama');
+        $sheet->setCellValueByColumnAndRow(3, $row, 'NIP');
+        $sheet->mergeCellsByColumnAndRow(3,$row, 3, $row);
+
+        $sheet->setCellValueByColumnAndRow(4, $row, 'Jabatan');
+        $sheet->setCellValueByColumnAndRow(5, $row, 'Unit Kerja');
+        $sheet->setCellValueByColumnAndRow(6, $row, 'Unsur Utama');
+        $sheet->setCellValueByColumnAndRow(7, $row, 'Unsur Penujang');
+        $sheet->setCellValueByColumnAndRow(8, $row, 'Total');
+        //$sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
+        $sheet->getStyleByColumnAndRow($column2,$row, $totalColumn, $row)->applyFromArray(array(
+            'font' => array(
+
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+
+
+            )
+        ));
+
+        $sheet->setCellValueByColumnAndRow(1, $startRow, '');
+        $sheet->mergeCellsByColumnAndRow(1,$startRow, 1, $endRow);
+        $sheet->getStyleByColumnAndRow(1,$startRow, 1, $endRow)->applyFromArray(array(
+            'font' => array(
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+               'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+
+            )
+        ));
+
+
+        $row += 1;
+        $endRow = $row;
+        $column = 1;
+        $column2 = 2;
+        $sheet->setCellValueByColumnAndRow(1, $row, '1');
+        $sheet->setCellValueByColumnAndRow(2, $row, 'Imam Santoso, S.H., M.M');
+        $sheet->setCellValueByColumnAndRow(3, $row, '');
+        $sheet->setCellValueByColumnAndRow(4, $row, '');
+        $sheet->setCellValueByColumnAndRow(5, $row, '');
+        $sheet->setCellValueByColumnAndRow(6, $row, '0');
+        $sheet->setCellValueByColumnAndRow(7, $row, '0');
+        $sheet->setCellValueByColumnAndRow(8, $row, '0');
+        //$sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
+        $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
+            'font' => array(
+
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+
+
+            )
+        ));
+
+
+        $row += 2;
+        $sheet->setCellValueByColumnAndRow(7, $row, 'Jakarta, '.$datenow);
+        $sheet->mergeCellsByColumnAndRow(7,$row, 8, $row);
+        $sheet->getStyleByColumnAndRow(7,$row, 8, $row)->applyFromArray($styleJudul2);
+
+        $row += 2;
+        $endRow = $row;
+        $column = 1;
+        $column2 = 2;
+        $sheet->setCellValueByColumnAndRow(1, $row, 'No');
+        $sheet->setCellValueByColumnAndRow(2, $row, 'Nama');
+        $sheet->setCellValueByColumnAndRow(3, $row, 'NIP');
+        $sheet->mergeCellsByColumnAndRow(3,$row, 4, $row);
+        $sheet->setCellValueByColumnAndRow(5, $row, 'Jabatan');
+        $sheet->mergeCellsByColumnAndRow(5,$row, 6, $row);
+        $sheet->setCellValueByColumnAndRow(7, $row, 'Tanda Tangan');
+        $sheet->mergeCellsByColumnAndRow(7,$row, 8, $row);
+        //$sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
+        $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
+            'font' => array(
+
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+
+
+            )
+        ));
+
+
+        $row += 1;
+        $endRow = $row;
+        $column = 1;
+        $column2 = 2;
+        $sheet->setCellValueByColumnAndRow(1, $row, '1');
+        $sheet->setCellValueByColumnAndRow(2, $row, 'Irma Suryanti');
+        $sheet->setCellValueByColumnAndRow(3, $row, '196510051992022001');
+        $sheet->mergeCellsByColumnAndRow(3,$row, 4, $row);
+        $sheet->setCellValueByColumnAndRow(5, $row, 'Ketua');
+        $sheet->mergeCellsByColumnAndRow(5,$row, 6, $row);
+        $sheet->setCellValueByColumnAndRow(7, $row, '');
+        $sheet->mergeCellsByColumnAndRow(7,$row, 8, $row);
+        //$sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
+        $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
+            'font' => array(
+
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+
+
+            )
+        ));
+
+
+        $row += 1;
+        $endRow = $row;
+        $column = 1;
+        $column2 = 2;
+        $sheet->setCellValueByColumnAndRow(1, $row, '2');
+        $sheet->setCellValueByColumnAndRow(2, $row, 'Yunita Asteria, S.H.');
+        $sheet->setCellValueByColumnAndRow(3, $row, '198503051992022002');
+        $sheet->mergeCellsByColumnAndRow(3,$row, 4, $row);
+        $sheet->setCellValueByColumnAndRow(5, $row, 'Wakil Ketua');
+        $sheet->mergeCellsByColumnAndRow(5,$row, 6, $row);
+        $sheet->setCellValueByColumnAndRow(7, $row, '');
+        $sheet->mergeCellsByColumnAndRow(7,$row, 8, $row);
+        //$sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
+        $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
+            'font' => array(
+
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+
+
+            )
+        ));
+
+
+        $row += 1;
+        $endRow = $row;
+        $column = 1;
+        $column2 = 2;
+        $sheet->setCellValueByColumnAndRow(1, $row, '3');
+        $sheet->setCellValueByColumnAndRow(2, $row, 'Mukhaira, S.H., M.H.');
+        $sheet->setCellValueByColumnAndRow(3, $row, '198503051992022002');
+        $sheet->mergeCellsByColumnAndRow(3,$row, 4, $row);
+        $sheet->setCellValueByColumnAndRow(5, $row, 'Sekretaris');
+        $sheet->mergeCellsByColumnAndRow(5,$row, 6, $row);
+        $sheet->setCellValueByColumnAndRow(7, $row, '');
+        $sheet->mergeCellsByColumnAndRow(7,$row, 8, $row);
+        //$sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
+        $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
+            'font' => array(
+
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+
+
+            )
+        ));
+
+
+        $row += 1;
+        $endRow = $row;
+        $column = 1;
+        $column2 = 2;
+        $sheet->setCellValueByColumnAndRow(1, $row, '4');
+        $sheet->setCellValueByColumnAndRow(2, $row, 'Nia Husnia, S.H., M.H.');
+        $sheet->setCellValueByColumnAndRow(3, $row, '196908051992022001');
+        $sheet->mergeCellsByColumnAndRow(3,$row, 4, $row);
+        $sheet->setCellValueByColumnAndRow(5, $row, 'Anggota');
+        $sheet->mergeCellsByColumnAndRow(5,$row, 6, $row);
+        $sheet->setCellValueByColumnAndRow(7, $row, '');
+        $sheet->mergeCellsByColumnAndRow(7,$row, 8, $row);
+        //$sheet->getStyleByColumnAndRow(2,$row, 2, $row)->applyFromArray($styleIsi1No);
+        $sheet->getStyleByColumnAndRow(1,$row, $totalColumn, $row)->applyFromArray(array(
+            'font' => array(
+
+                'size' => 10
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => array('argb' => '00000000'),
+                )
+
+
+            )
+        ));
+
+            //Table bawah
+            $row += 1;
+            $startRowFooter = $row;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow(2, $row, 'Catatan Tim Penilai');
+            $sheet->mergeCellsByColumnAndRow(2,$row, 7, $row);
+            $sheet->getRowDimension($row)->setRowHeight(30.23);
+
+            $row += 3;
+            $column = 1;
+            $sheet->setCellValueByColumnAndRow(2, $row, 'testing 123');
+            $sheet->mergeCellsByColumnAndRow(2,$row, 7, $row);
+            $sheet->getRowDimension($row)->setRowHeight(30.23);
+
+
+
+            $sheet->getStyleByColumnAndRow($column,$startRowFooter, $totalColumn, $row)->applyFromArray(array(
+				'alignment' => array(
+					'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+					'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP,
+					'wrapText' => true
+				),
+                'borders' => array(
+					'outline' => array(
+						'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+						'color' => array('argb' => '00000000'),
+                    ),
+
+
+
+				)
+			));
+
+
+
+
+
+
+
+            // Redirect output to a client’s web browser (Xls)
+//            header('Content-Type: application/vnd.ms-excel');
+//            header('Content-Disposition: attachment;filename="dupak_' . $getPerancangNIP . '_' . strtotime("now") . '.xlsx"');
+
+            // Redirect output to a client’s web browser (PDF)
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment;filename="Bapak_' . '_' . strtotime("now") . '.pdf"');
+
+            header('Cache-Control: max-age=0');
+            // If you're serving to IE 9, then the following may be needed
+            header('Cache-Control: max-age=1');
+
+//            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            IOFactory::registerWriter('Pdf', \PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf::class);
+            $writer = IOFactory::createWriter($spreadsheet, 'Pdf');
+            $writer->save('php://output');
+            exit;
+
+
+
+    }
 }
