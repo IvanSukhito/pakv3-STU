@@ -121,7 +121,7 @@ else {
                            <ul>
                                <?php $sumAk = 0;?>
                                @foreach($dataAk as $listAk)
-                               <?php $sumAk += $listAk?>
+                               <?php $sumAk += $listAk ?>
                                @endforeach
 
                                    <li>{!! $dataTop ? $dataTop['name'] : '' !!} - {!!number_format($sumAk,3)!!}
@@ -137,6 +137,9 @@ else {
                         </li>
 
                         <li>Total AK yang di ajukan: {!! number_format($totalAk, 3) !!}</li>
+                        @if(in_array($data->status, [80,88,99]))
+                            <li>Total AK yang di setujui: {!! number_format($data->total_kredit, 3) !!}</li>
+                        @endif
                     </ul>
                 </div>
                 <div class="card-body">

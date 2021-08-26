@@ -357,6 +357,8 @@ class PersetujuanSuratPernyataanController extends _CrudController
             ->whereIn('surat_pernyataan_id', $getSuratPernyataanIds)->get();
         $totalKredit = [];
         $allTotalKredit = 0;
+
+        $saveDupakKegiatan = [];
         foreach ($getSuratPernyataanKegiatan as $list) {
             $getAction = isset($actionKegiatan[$list->id]) ? $actionKegiatan[$list->id] : 1;
             $getMessage = '';
@@ -371,6 +373,15 @@ class PersetujuanSuratPernyataanController extends _CrudController
                     $totalKredit[$list->surat_pernyataan_id] = $list->kredit;
                 }
                 $allTotalKredit += $list->kredit;
+
+                $saveDupakKegiatan[] = [
+                    'kegiatan_id' => $list->kegiatan_id,
+                    'ms_kegiatan_id' => $list->ms_kegiatan_id,
+                    'status' => 1,
+                    'created_at' => $dateNow,
+                    'updated_at' => $dateNow
+                ];
+
             }
             $list->message = $getMessage;
             $list->status = $getAction;
@@ -446,22 +457,17 @@ class PersetujuanSuratPernyataanController extends _CrudController
 
             $dupakId = $saveDupak->id;
 
-            $saveDupakKegiatan = [];
-            foreach ($getSuratPernyataanKegiatan as $list) {
-                if ($getAction != 99) {
-                    $saveDupakKegiatan[] = [
-                        'dupak_id' => $dupakId,
-                        'kegiatan_id' => $list->kegiatan_id,
-                        'ms_kegiatan_id' => $list->ms_kegiatan_id,
-                        'status' => 1,
-                        'created_at' => $dateNow,
-                        'updated_at' => $dateNow
-                    ];
-                }
-            }
-
             if (count($saveDupakKegiatan) > 0) {
+                $temp = [];
+                foreach ($saveDupakKegiatan as $list) {
+                    $list['dupak_id'] = $dupakId;
+                    $temp[] = $list;
+                }
+
+                $saveDupakKegiatan = $temp;
+
                 DupakKegiatan::insert($saveDupakKegiatan);
+
             }
 
             foreach ($getSuratPernyataan as $list) {

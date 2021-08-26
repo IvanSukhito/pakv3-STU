@@ -176,15 +176,19 @@ class PakLogic
 
     }
 
-    public function getSuratPernyataanUser($getSuratpernyataanIds)
+    public function getSuratPernyataanUser($getSuratpernyataanIds, $status = [])
     {
         $getKegiatan = Kegiatan::selectRaw('tx_kegiatan.*, tx_surat_pernyataan_kegiatan.id AS sp_kegiatan_id,
             tx_surat_pernyataan_kegiatan.message AS sp_kegiatan_message,
             tx_surat_pernyataan_kegiatan.status AS sp_kegiatan_status')
             ->join('tx_surat_pernyataan_kegiatan', 'tx_surat_pernyataan_kegiatan.kegiatan_id', '=', 'tx_kegiatan.id')
-            ->whereIn('tx_surat_pernyataan_kegiatan.surat_pernyataan_id', $getSuratpernyataanIds)
-//            ->whereIn('tx_surat_pernyataan_kegiatan.status', [80])
-            ->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
+            ->whereIn('tx_surat_pernyataan_kegiatan.surat_pernyataan_id', $getSuratpernyataanIds);
+
+        if ($status) {
+            $getKegiatan = $getKegiatan->whereIn('tx_surat_pernyataan_kegiatan.status', $status);
+        }
+
+        $getKegiatan = $getKegiatan->orderBy('tx_kegiatan.tanggal', 'ASC')->get();
 
         if ($getKegiatan) {
             $getJudul = [];
@@ -455,7 +459,7 @@ class PakLogic
             $getAtasanJabatan = $getInfoSuratPernyataan['atasan_jabatan'] ?? '';
             $getAtasanUnitKerja = $getInfoSuratPernyataan['atasan_unit_kerja'] ?? '';
 
-            $getData = $this->getSuratPernyataanUser([$suratPernyataanId]);
+            $getData = $this->getSuratPernyataanUser([$suratPernyataanId], [80, 88]);
             $getDataKegiatan = $getData['data'] ?? [];
             $getTotalTop = $getData['total_top'][0] ?? 0;
             $getListTopKegiatan = $getData['top_kegiatan'];
