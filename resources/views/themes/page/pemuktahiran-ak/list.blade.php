@@ -32,6 +32,7 @@
                 @if ($permission['create'])
 
               @if(isset($status) ? !in_array($status,[1]) : true)
+              
                     <div class="card-header">
                         <a href="<?php echo route('admin.' . $thisRoute . '.create') ?>" class="mb-2 mr-2 btn btn-primary"
                            title="@lang('general.create')">

@@ -11,7 +11,7 @@
        title="@lang('general.approve')">
         <i class="fa fa-check"></i>
         <span class="d-none d-md-inline"> @lang('general.approve')</span>
-    </a>
+    </a>    
     <a href="{{ route('admin.' . $thisRoute . '.reject', $query->{$masterId}) }}"  onclick="return askingReject(this)"  class="mb-1 btn btn-danger btn-sm"
        title="@lang('general.reject')">
         <i class="fa fa-ban"></i>

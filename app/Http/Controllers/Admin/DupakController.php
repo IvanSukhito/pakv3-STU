@@ -311,7 +311,7 @@ class DupakController extends _CrudController
 
         $listDokument = ['dupak'];
         $getNiceNameDoc = [];
-        $setPassing = [
+        $setPassing = [ 
             'unit_kerja_id' => 'required',
             'dupak' => 'required',
         ];
